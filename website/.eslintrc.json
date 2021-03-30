@@ -20,9 +20,6 @@
         "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
-      "plugins": [
-        "eslint-plugin-unicorn"
-      ],
       "rules": {
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-non-null-assertion": "off",
@@ -38,8 +35,7 @@
           }
         ],
         "no-sequences": "error",
-        "no-sparse-arrays": "error",
-        "unicorn/filename-case": "error"
+        "no-sparse-arrays": "error"
       }
     },
     {
