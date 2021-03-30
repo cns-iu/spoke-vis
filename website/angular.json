@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "spoke": {
@@ -8,6 +8,9 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
         }
       },
       "root": "projects/spoke",
@@ -24,7 +27,6 @@
             "tsConfig": "projects/spoke/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "projects/spoke/src/favicon.ico",
               "projects/spoke/src/assets"
             ],
             "styles": [
@@ -43,7 +45,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -51,13 +52,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ]
             }
@@ -88,7 +89,6 @@
             "tsConfig": "projects/spoke/tsconfig.spec.json",
             "karmaConfig": "projects/spoke/karma.conf.js",
             "assets": [
-              "projects/spoke/src/favicon.ico",
               "projects/spoke/src/assets"
             ],
             "styles": [
@@ -98,15 +98,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/spoke/tsconfig.app.json",
-              "projects/spoke/tsconfig.spec.json",
-              "projects/spoke/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/spoke/**/*.ts",
+              "projects/spoke/**/*.html"
             ]
           }
         },
@@ -123,6 +119,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "spoke"
 }
