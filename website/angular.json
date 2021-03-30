@@ -12,7 +12,7 @@
       },
       "root": "projects/spoke",
       "sourceRoot": "projects/spoke/src",
-      "prefix": "app",
+      "prefix": "spoke",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
