@@ -35,14 +35,14 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run test
-      # - name: SonarCloud Scan
-      #   uses: sonarsource/sonarcloud-github-action@master
-      #   with:
-      #     projectBaseDir: ./website
-      #     args: '-Dsonar.verbose=true'
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: ./website
+          args: '-X'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Slack Notification
         if: always()
         uses: kpritam/slack-job-status-action@v1
