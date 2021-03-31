@@ -1,4 +1,4 @@
-﻿source_type,target_type,edge_type,weight
+source_type,target_type,edge_type,weight
 Disease,Gene,ASSOCIATES_DaG,4241843
 Organism,EC,INCLUDES_OiEC,3916234
 Organism,Pathway,INCLUDES_OiPW,1866743
