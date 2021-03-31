@@ -46,4 +46,4 @@ jobs:
           NETLIFY_DEPLOY_MESSAGE: "Staging deploy to Netlify"
           NETLIFY_DEPLOY_TO_PROD: true
           build_command: false
-          build_directory: dist/spoke
+          build_directory: website/dist/spoke
