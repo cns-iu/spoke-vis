@@ -3,17 +3,17 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Vis1ComponentModule } from './pages/vis1/vis1.module';
 
 
 @NgModule({
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    Vis1ComponentModule
   ],
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]

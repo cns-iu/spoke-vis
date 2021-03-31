@@ -1,0 +1,154 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "config": {
+    "view": {
+      "stroke": "transparent"
+    }
+  },
+  "width": 1000,
+  "height": 800,
+  "data": {
+    "values": [
+      {"a": 1, "b": 1, "label": "Protein Family"}, 
+      {"a": 1, "b": 2, "label": "Protein Domain"},
+      {"a": 1, "b": 4, "label": "SARS Cov2", "weight": 27},
+      {"a": 2, "b": 1, "label": "Nutrient", "weight": 38},
+      {"a": 2, "b": 2, "label": "Food", "weight": 897},
+      {"a": 2, "b": 4, "label": "Pathway", "weight": 2128},
+      {"a": 3, "b": 2, "label": "Pharmacologic Class", "weight": 534},
+      {"a": 3, "b": 3, "label": "Protein", "weight": 196097},
+      {"a": 3, "b": 4, "label": "EC", "weight": 6682},
+      {"a": 3, "b": 5, "label": "Organism", "weight": 8109},
+      {"a": 4, "b": 2, "label": "Side Effect", "weight": 6061},
+      {"a": 4, "b": 3, "label": "Compound", "weight": 1967305},
+      {"a": 4, "b": 4, "label": "Reaction", "weight": 16320},
+      {"a": 5, "b": 3, "label": "Gene", "weight": 19989},
+      {"a": 6, "b": 1, "label": "Celltype", "weight": 54},
+      {"a": 6, "b": 2, "label": "Anatomy Celltype", "weight": 102},
+      {"a": 6, "b": 3, "label": "Anatomy", "weight": 14939},
+      {"a": 6, "b": 5, "label": "Disease", "weight": 10209},
+      {"a": 7, "b": 5, "label": "Symptom", "weight": 386}
+    ]
+  },
+  "layer": [
+    {
+      "data": {
+        "values": [
+          {"a1": 5, "b1": 3, "a2": 6, "b2": 5, "edge_type": "ASSOCIATES_DaG", "weight": 4241843}, 
+          {"a1": 3, "b1": 4, "a2": 3, "b2": 5, "edge_type": "INCLUDES_OiEC", "weight": 3916234},
+          {"a1": 2, "b1": 4, "a2": 3, "b2": 5, "edge_type": "INCLUDES_OiPW", "weight": 1866743},
+          {"a1": 6, "b1": 3, "a2": 5, "b2": 3, "edge_type": "EXPRESSES_AeG", "weight": 1585845}
+        ]
+      },
+      "mark": {
+        "type": "rule"
+      },
+      "encoding": {
+        "x": {
+          "field": "a1",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "b1",
+          "type": "quantitative"
+        },
+        "x2": {
+          "field": "a2"
+        },
+        "y2": {
+          "field": "b2"
+        },
+        "strokeWidth": {
+          "field": "weight",
+          "scale": {
+            "type": "log",
+            "range": [1, 10]
+          }
+        },
+        "tooltip": [
+          {
+            "field": "edge_type",
+            "title": "Link type",
+            "type": "nominal"
+          },
+          {
+            "field": "weight",
+            "title": "#Links",
+            "type": "quantitative"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "opacity": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "a",
+          "type": "quantitative",
+          "axis": {
+            "tickCount": 7,
+            "domain": false,
+            "labels": false,
+            "ticks": false,
+            "title": null
+          },
+          "scale": {
+            "domain": [0.5, 7.5]
+          }
+        },
+        "y": {
+          "field": "b",
+          "type": "quantitative",
+          "axis": {
+            "tickCount": 5,
+            "domain": false,
+            "labels": false,
+            "ticks": false,
+            "title": null,
+            "gridOpacity": 0.5
+          },
+          "scale": {
+            "domain": [0.5, 5.5]
+          }
+        },
+        "color": {
+          "field": "label",
+          "legend": null
+        },
+        "size": {
+          "field": "weight",
+          "type": "quantitative",
+          "scale": {
+            "type": "log",
+            "range": [1000, 2000]
+          },
+          "legend": null
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "text", 
+        "dy": -40, 
+        "fontSize": 16
+      },
+      "encoding": {
+        "text": {
+          "field": "label", 
+          "type": "nominal"
+        },
+        "x": {
+          "field": "a",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "b",
+          "type": "quantitative"
+        }
+      }
+    }
+  ]
+}
