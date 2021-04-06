@@ -14,5 +14,6 @@ import { Vis1Component } from './vis1.component';
     Vis1Component
   ],
   providers: [Vis1Component],
+  exports: [Vis1Component]
 })
 export class Vis1ComponentModule { }

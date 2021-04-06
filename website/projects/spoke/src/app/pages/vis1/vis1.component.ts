@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Options, Spec } from 'ngx-vega';
+
+import { Spec } from 'ngx-vega'
+import { vis1Spec } from './vis1.vega';
 
 
 @Component({
@@ -9,8 +11,7 @@ import { Options, Spec } from 'ngx-vega';
 })
 export class Vis1Component implements OnInit {
 
-  @Input() spec?: Spec;
-  @Input() options: Options = { renderer: 'canvas', actions: true, width: 1268 };
+  @Input() spec?: Spec = vis1Spec();
 
   constructor() { }
 
