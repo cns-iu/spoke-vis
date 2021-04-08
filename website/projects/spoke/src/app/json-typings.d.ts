@@ -1,0 +1,14 @@
+declare module "*.geojson" {
+  const value: any;
+  export default value;
+}
+
+declare module "*.json" {
+  const value: any;
+  export default value;
+}
+
+declare module '@aesqe/mapboxgl-minimap' {
+  const value: any;
+  export default value;
+}
