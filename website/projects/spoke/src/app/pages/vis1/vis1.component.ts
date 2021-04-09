@@ -6,13 +6,9 @@ import { vis1Spec } from './vis1.vega';
 
 @Component({
   selector: 'spoke-vis1',
-  templateUrl: './vis1.component.html',
-  styleUrls: ['./vis1.component.scss']
+  templateUrl: './vis1.component.html'
 })
 export class Vis1Component {
 
   @Input() spec?: Spec = vis1Spec();
-
-  constructor() { }
-
 }
