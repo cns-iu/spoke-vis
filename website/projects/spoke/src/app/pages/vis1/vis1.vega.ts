@@ -12,12 +12,12 @@ export const vis1Spec = (): VisualizationSpec => (
     width: 1500,
     height: 750,
     data: {
-      url: 'http://localhost:4200/assets/datasets/overview/nodes-v3.csv'
+      url: 'assets/datasets/overview/nodes-v3.csv'
     },
     layer: [
       {
         data: {
-          url: 'http://localhost:4200/assets/datasets/overview/edges-v3.csv'
+          url: 'assets/datasets/overview/edges-v3.csv'
         },
         transform: [{
           joinaggregate: [{
