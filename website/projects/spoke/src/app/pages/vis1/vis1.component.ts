@@ -10,5 +10,5 @@ import { vis1Spec } from './vis1.vega';
 })
 export class Vis1Component {
 
-  @Input() spec?: Spec = vis1Spec();
+  spec: Spec = vis1Spec();
 }
