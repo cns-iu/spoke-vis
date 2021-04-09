@@ -7,7 +7,7 @@ describe('Vis1Component', () => {
   let shallow: Shallow<Vis1Component>;
 
   beforeEach(() => {
-    shallow = new Shallow(Vis1Component, Vis1ComponentModule)
+    shallow = new Shallow(Vis1Component, Vis1ComponentModule);
   });
 
   it('creates the vega spec', async () => {
