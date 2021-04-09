@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { Spec } from 'ngx-vega'
+import { Spec } from 'ngx-vega';
 import { vis1Spec } from './vis1.vega';
 
 
