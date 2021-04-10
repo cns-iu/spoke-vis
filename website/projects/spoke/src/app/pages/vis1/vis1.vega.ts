@@ -1,7 +1,6 @@
 import { VisualizationSpec } from 'vega-embed';
 
-export const vis1Spec = (): VisualizationSpec => (
-
+export const vis1Spec: VisualizationSpec = 
   {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     config: {
@@ -280,4 +279,3 @@ export const vis1Spec = (): VisualizationSpec => (
       }
     ]
   }
-);
