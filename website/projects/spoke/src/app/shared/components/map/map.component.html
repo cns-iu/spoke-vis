@@ -1,15 +1,66 @@
 <p>map component works.</p>
 <mgl-map
   [style]="mapStyle"
-  [zoom]="[9]"
-  [center]="[-74.5, 40]"
-  (load)="map = $event">
+  [zoom]="[1]"
+  [center]="[0, 0]"
+  (load)="map = $event"
+>
+  <mgl-geojson-source
+    id="edges"
+    [data]="edgeFeatures"
+  ></mgl-geojson-source>
+  <mgl-geojson-source
+    id="nodes"
+    [data]="nodeFeatures"
+  ></mgl-geojson-source>
+  <mgl-geojson-source
+    id="clusters"
+    [data]="clusterFeatures"
+  ></mgl-geojson-source>
+  <mgl-geojson-source
+    id="boundaries"
+    [data]="boundaryFeatures"
+  ></mgl-geojson-source>
 
   <mgl-layer
-    *ngFor="let layer of layers"
-    [id]="layer.id"
-    [type]="layer.type"
-    [paint]="layer.paint"
-    [source]="layer.source">
+    id="clusters"
+    source="clusters"
+    type="fill"
+    [paint]="{
+      'fill-color': ['get', 'fill'],
+      'fill-opacity': 0.7,
+      'fill-outline-color': ['get', 'stroke']
+    }">
   </mgl-layer>
+  <mgl-layer
+    id="boundaries"
+    source="boundaries"
+    type="line"
+    minZoom="2"
+    [paint]="{
+      'line-color': ['get', 'stroke'],
+      'line-width': 0.5,
+      'line-opacity': 0.8
+    }"
+  ></mgl-layer>
+  <mgl-layer
+    id="edges"
+    source="edges"
+    type="line"
+    [paint]="{
+      'line-color': ['get', 'color'],
+      'line-width': ['get', 'width'],
+      'line-opacity': ['-', 1, ['get', 'opacity']]
+    }"
+    (layerClick)="edgeClicked($event)">
+  </mgl-layer>
+  <mgl-layer
+  id="nodes"
+  source="nodes"
+  type="symbol"
+  [paint]="{
+    'text-color': '#000'
+  }"
+  (layerClick)="nodeClicked($event)">
+</mgl-layer>
 </mgl-map>

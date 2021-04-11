@@ -1,4 +1,9 @@
 <div>Spoke</div>
-<div style="height: 40rem; width: 40rem; background-color: lightgray;">
-  <spoke-map></spoke-map>
+<div style="height: 50rem; width: 50rem; margin-left: auto; margin-right: 1rem;">
+  <spoke-map
+    [edgeFeatures]="edgeFeatures"
+    [nodeFeatures]="nodeFeatures"
+    [clusterFeatures]="clusterFeatures"
+    [boundaryFeatures]="boundaryFeatures"
+  ></spoke-map>
 </div>

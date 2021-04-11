@@ -4,9 +4,6 @@ import { Cartesian2dBounds, Cartesian2dProjection } from './cartesian-2d-project
 import { EdgesGeojson } from './edges-geojson';
 import Minimap from '@aesqe/mapboxgl-minimap';
 
-// For Testing
-import CadEdges from './cad-food-tree/edges.json';
-
 
 export interface Edge {
   level: number,
@@ -93,7 +90,7 @@ const blankStyle: Style = {
       'id': 'background',
       'type': 'background',
       'paint': {
-        'background-color': 'red'
+        'background-color': 'white'
       }
     }
   ]
@@ -194,22 +191,12 @@ export class MapComponent {
   edges: Edge[] = defaultEdges;
   nodes: Node[] = defaultNodes;
 
-  constructor() { };
-
   // Inputs
   @Input() mapStyle = blankStyle;
-  tempType: "symbol" | "line" | "background" | "circle" | "fill-extrusion" | "fill" | "heatmap" | "hillshade" | "raster" | "custom" | "sky" = 'line';
-  @Input() layers = [
-    {
-      id: 'layer-1',
-      type: this.tempType,
-      paint: {
-        'line-color': 'pink',
-        'line-width': 2
-      },
-      source: CadEdges
-    }
-  ]
+  @Input() edgeFeatures!: mapboxgl.MapboxGeoJSONFeature;
+  @Input() nodeFeatures!: mapboxgl.MapboxGeoJSONFeature;
+  @Input() clusterFeatures!: mapboxgl.MapboxGeoJSONFeature;
+  @Input() boundaryFeatures!: mapboxgl.MapboxGeoJSONFeature;
 
   // Outputs
   @Output() nodeClick = new EventEmitter<MapMouseEvent>();
