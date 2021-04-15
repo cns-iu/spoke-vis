@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
 
+import { FooterModule } from './components/footer/footer.module';
 import { HeaderModule } from './components/header/header.module';
 import { StateModule } from './state/state.module';
 
@@ -10,11 +11,14 @@ import { StateModule } from './state/state.module';
     NgxGoogleAnalyticsModule.forRoot(''), // TODO: Add analytics token
     NgxGoogleAnalyticsRouterModule.forRoot({}),
 
-    HeaderModule,
     StateModule,
+
+    HeaderModule,
+    FooterModule,
   ],
   exports: [
-    HeaderModule
+    HeaderModule,
+    FooterModule,
   ]
 })
 export class CoreModule { }
