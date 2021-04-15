@@ -45,6 +45,15 @@ export function createFeatureLoader(feature: string, module?: string): () => Pro
  */
 const ROUTES: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: '/home'
+  },
+  {
+    path: 'home',
+    loadChildren: createFeatureLoader('home')
+  },
+  {
     path: 'visualization',
     loadChildren: createFeatureLoader('visualizations')
   }
