@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { OverviewComponent } from './pages/overview/overview.component';
 import { VisualizationsComponent } from './visualizations.component';
 
 
@@ -10,7 +11,13 @@ import { VisualizationsComponent } from './visualizations.component';
 const ROUTES: Routes = [
   {
     path: '',
-    component: VisualizationsComponent
+    component: VisualizationsComponent,
+    children: [
+      {
+        path: 'overview',
+        component: OverviewComponent
+      }
+    ]
   }
 ];
 

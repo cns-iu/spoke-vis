@@ -56,6 +56,10 @@ const ROUTES: Routes = [
   {
     path: 'visualization',
     loadChildren: createFeatureLoader('visualizations')
+  },
+  {
+    path: '**',
+    redirectTo: '/home'
   }
 ];
 

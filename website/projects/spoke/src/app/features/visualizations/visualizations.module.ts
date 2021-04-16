@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { OverviewModule } from './pages/overview/overview.module';
 import { StateModule } from './state/state.module';
 import { VisualizationsRoutingModule } from './visualizations-routing.module';
 import { VisualizationsComponent } from './visualizations.component';
@@ -11,7 +12,9 @@ import { VisualizationsComponent } from './visualizations.component';
     CommonModule,
 
     StateModule,
-    VisualizationsRoutingModule
+    VisualizationsRoutingModule,
+
+    OverviewModule
   ],
   declarations: [VisualizationsComponent]
 })
