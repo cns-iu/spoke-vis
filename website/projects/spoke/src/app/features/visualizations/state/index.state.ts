@@ -58,7 +58,7 @@ export function isPartialIndexItem(obj: unknown): obj is Partial<IndexItem> {
 })
 @Injectable()
 export class IndexState extends NgxsDataEntityCollectionsRepository<IndexItem> implements OnDestroy {
-  /** Subject used to controll the lifetime of subscriptions */
+  /** Subject used to control the lifetime of subscriptions */
   private readonly destroy$ = new ReplaySubject<void>(1);
 
   /**
