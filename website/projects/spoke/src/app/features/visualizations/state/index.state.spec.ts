@@ -7,6 +7,9 @@ import { isObservable } from 'rxjs';
 import { IndexItem, IndexState, isPartialIndexItem } from './index.state';
 
 
+const originalIt = it;
+
+
 describe('isPartialIndexItem(obj)', () => {
   it('is false for null or undefined', () => {
     expect(isPartialIndexItem(undefined)).toBeFalse();
@@ -36,7 +39,6 @@ describe('isPartialIndexItem(obj)', () => {
 });
 
 
-const originalIt = it;
 describe('IndexState', () => {
   let controller: HttpTestingController;
 
