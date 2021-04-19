@@ -2,8 +2,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Style, Map, MapMouseEvent } from 'mapbox-gl';
 import { Cartesian2dBounds, Cartesian2dProjection } from './cartesian-2d-projection';
 import { EdgesGeojson } from './edges-geojson';
-import Minimap from '@aesqe/mapboxgl-minimap';
+import mapboxgl from 'mapbox-gl';
 
+declare module 'mapbox-gl' {
+  const Minimap: new (options: MiniMapOptions) => mapboxgl.Control | mapboxgl.IControl;
+}
 
 export interface Edge {
   level: number,
@@ -69,7 +72,6 @@ interface Configuration {
   maxZoom: number,
   initialZoom: number,
   textOverlapEnabledZoom: number,
-  sources: Sources,
   edges: Edge[],
   nodes: Node[],
   clusters: Cluster,
@@ -77,10 +79,24 @@ interface Configuration {
   minimapOptions?: any
 };
 
+interface MapMarkerConfig {
+  color?: string;
+  rotation?: number;
+}
+interface MapMarker {
+  config?: MapMarkerConfig;
+  coordinates: [number, number];
+}
+
+interface ZoomLookupItem {
+  zoom: number;
+}
+type ZoomLookup = ZoomLookupItem[];
+
 const blankStyle: Style = {
   'version': 8,
   'name': 'Blank',
-  'center': [0,0],
+  'center': [0, 0],
   'zoom': 0,
   'sources': {},
   'sprite': 'https://cdn.jsdelivr.net/gh/lukasmartinelli/osm-liberty@gh-pages/sprites/osm-liberty',
@@ -170,6 +186,7 @@ const defaultClusters: Cluster = {
 };
 const defaultInitialZoom: number = 2;
 const defaultTextOverlapEnabledZoom: number = 3;
+const defaultTextOverlapEnabled: boolean = false;
 const defaultMinZoom: number = 0;
 const defaultMaxZoom: number = 10;
 
@@ -186,10 +203,19 @@ export class MapComponent {
   map!: Map;
   bounds = new Cartesian2dBounds();
   projection = new Cartesian2dProjection(this.bounds);
+  nodeZoomIndex = 0;
+  edgeZoomIndex = 0;
+
   edgesGeoJson!: EdgesGeojson;
   // nodesGeoJson!: NodesGeojson;
   edges: Edge[] = defaultEdges;
   nodes: Node[] = defaultNodes;
+
+  currentNode: Array<any> = ['at', ['get', 'level'], ['literal', this.nodes]];
+  currentEdge: Array<any> = ['get', 'zoom', ['at', ['get', 'level'], ['literal', this.edges]]];
+
+  edge = ['at', ['get', 'level'], ['literal', this.edges]];
+  lastEdge = ['at', this.edges.length - 1, ['literal', this.edges]];
 
   // Inputs
   @Input() mapStyle = blankStyle;
@@ -197,6 +223,25 @@ export class MapComponent {
   @Input() nodeFeatures!: mapboxgl.MapboxGeoJSONFeature;
   @Input() clusterFeatures!: mapboxgl.MapboxGeoJSONFeature;
   @Input() boundaryFeatures!: mapboxgl.MapboxGeoJSONFeature;
+  @Input() currentZoom = defaultInitialZoom;
+  @Input() mapCenter: [number, number] = [0,0];
+  @Input() minimapOptions: MiniMapOptions = defaultMinimapOptions;
+
+  // @TODO:  Remove test markers.
+  @Input() mapMarkers: MapMarker[] = [
+    {
+      coordinates: [0, 0],
+      config: {
+        color: 'green'
+      }
+    },
+    {
+      coordinates: [15, 0]
+    }
+  ];
+
+  textOverlapEnabledZoom = defaultTextOverlapEnabledZoom;
+  textOverlapEnabled = defaultTextOverlapEnabled;
 
   // Outputs
   @Output() nodeClick = new EventEmitter<MapMouseEvent>();
@@ -215,27 +260,106 @@ export class MapComponent {
     this.edgeClick.emit(event);
   };
 
-  onMapLoad(map: Map) {
+  onMapLoad(map: Map): void {
     this.map = map;
-    this.edgesGeoJson = new EdgesGeojson(this.edges, this.projection);
+    this.currentZoom = map.getZoom();
+    // this.edgesGeoJson = new EdgesGeojson(this.edges, this.projection);
     // this.nodesGeoJson = new NodesGeojson(nodes, this.projection);
+
     this.map.on("style.load", () => {
-      this.map.addControl(new Minimap(this.config.minimapOptions), 'top-right');
+      console.log('map.on(style.load).')
+      // map.addControl(new Minimap(), 'top-right');
+      // map.addControl(new mapboxgl.Minimap(), 'top-right');
     });
+
+    // ShowCompass off to disable rotation.
+    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
+
+    // @TODO:  get minimap to load in...
+    // map.addControl(new mapboxgl.Minimap(this.minimapOptions), 'top-right');
     this.map.resize();
+
+    if (this.mapMarkers.length) {
+      this.addMapMarkers(this.mapMarkers);
+    }
+
+    // When the user zooms the map, this method handles showing and hiding data based on zoom level
+    map.on('zoom', () => this.updateFilters());
   };
+
+  addMapMarkers(markers: MapMarker[]): void {
+    markers.forEach(marker => {
+      let marker1 = new mapboxgl.Marker(marker.config || {})
+        .setLngLat(marker.coordinates)
+        .addTo(this.map);
+    });
+  }
+
+  // In order to show more or less data based on the zoom level we have to update the layer filters when the map zooms.
+  updateFilters(): void {
+    const { map, edges, nodes, textOverlapEnabledZoom, textOverlapEnabled } = this;
+    const currentZoom: number = map.getZoom();
+
+    // When the zoom level changes, check if we need to display a different set of nodes. If we do, update the node filter.
+    if (this.nodeLevelChange()) {
+      const currentNode = ['get', 'zoom', ['at', ['get', 'level'], ['literal', nodes]]];
+      map.setFilter('node_labels', ['>=', currentZoom, currentNode]);
+    }
+
+    // When the zoom level changes, check if we need to display a different set of edges. If we do, update the node filter.
+    // We decided showing the nodes (without labels) at the same time as the edges was preferable, instead of waiting for
+    // when the labels will fit.
+    if (this.edgeLevelChange()) {
+      const currentEdge = ['get', 'zoom', ['at', ['get', 'level'], ['literal', edges]]];
+      map.setFilter('nodes', ['>=', currentZoom, currentEdge]);
+      map.setFilter('edges_border', ['>=', currentZoom, currentEdge]);
+      map.setFilter('edges', ['>=', currentZoom, currentEdge]);
+    }
+
+    //  Determing if text overlap should be enabled or disabled based on the break point set in the config object.
+    if (!textOverlapEnabled && currentZoom > textOverlapEnabledZoom) {
+      map.setLayoutProperty('node_labels', 'text-allow-overlap', true);
+      this.textOverlapEnabled = true;
+    } else if (textOverlapEnabled && currentZoom < textOverlapEnabledZoom) {
+      map.setLayoutProperty('node_labels', 'text-allow-overlap', false);
+      this.textOverlapEnabled = false;
+    }
+  }
+
+  // Returns whether or not the zoom level has changed enough to warrant a change in which nodes we are displaying.
+  nodeLevelChange(): boolean {
+    let currentIndex: number = this.getZoomIndex(this.nodes);
+    if (currentIndex === this.nodeZoomIndex) return false;
+    this.nodeZoomIndex = currentIndex;
+    return true;
+  }
+
+  // Returns whether or not the zoom level has changed enough to warrant a change in which edges we are displaying.
+  edgeLevelChange(): boolean {
+    let currentIndex: number = this.getZoomIndex(this.edges);
+    if (currentIndex === this.edgeZoomIndex) return false;
+    this.edgeZoomIndex = currentIndex;
+    return true;
+  }
+
+  // Converts the current zoom number, to the index number of the object with the same .zoom property in the lookup array passed in.
+  // Used because getZoom() will return very precise values, and the nodes / edges config objects will not match up exactly.
+  getZoomIndex(zoomLookup: ZoomLookup): number {
+    const zoom: number = this.map.getZoom();
+    for (let index = 0; index <= zoomLookup.length; index++) {
+      if (index == (zoomLookup.length - 1)) return index;
+      if (zoom >= zoomLookup[index]['zoom'] && zoom < zoomLookup[index + 1]['zoom']) return index;
+    }
+
+    console.error('No Zoom index found.  Zoom lookup: ', zoomLookup);
+    return 0;
+  }
 
   config: Configuration = {
     minZoom: defaultMinZoom,
     maxZoom: defaultMaxZoom,
     initialZoom: defaultInitialZoom,
     textOverlapEnabledZoom: defaultTextOverlapEnabledZoom,
-    sources: {
-      nodes: 'nodes.geojson',
-      edges: 'edges.geojson',
-      clusters: 'cluster.geojson',
-      clusterBoundaries: 'boundary.geojson'
-    },
     edges: defaultEdges,
     nodes: defaultNodes,
     clusters: defaultClusters,

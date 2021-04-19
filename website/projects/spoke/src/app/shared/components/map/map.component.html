@@ -1,9 +1,10 @@
 <p>map component works.</p>
 <mgl-map
   [style]="mapStyle"
-  [zoom]="[1]"
-  [center]="[0, 0]"
-  (load)="map = $event"
+  [zoom]="[currentZoom]"
+  [center]="mapCenter"
+  (mapLoad)="onMapLoad($event)"
+  [renderWorldCopies]="false"
 >
   <mgl-geojson-source
     id="edges"
@@ -22,6 +23,7 @@
     [data]="boundaryFeatures"
   ></mgl-geojson-source>
 
+  <!-- CLUSTERS -->
   <mgl-layer
     id="clusters"
     source="clusters"
@@ -32,6 +34,8 @@
       'fill-outline-color': ['get', 'stroke']
     }">
   </mgl-layer>
+
+  <!-- BOUNDARIES -->
   <mgl-layer
     id="boundaries"
     source="boundaries"
@@ -43,24 +47,67 @@
       'line-opacity': 0.8
     }"
   ></mgl-layer>
+
+  <!-- EDGES -->
   <mgl-layer
     id="edges"
     source="edges"
     type="line"
     [paint]="{
-      'line-color': ['get', 'color'],
-      'line-width': ['get', 'width'],
-      'line-opacity': ['-', 1, ['get', 'opacity']]
+      'line-color': ['case',
+          ['boolean', ['feature-state', 'hover'], false], 'red',
+          ['get', 'color', edge]
+      ],
+      'line-width': ['get', 'width', edge],
+      'line-opacity': ['get', 'opacity', edge]
     }"
+    [filter]="['>=', currentZoom, ['get', 'zoom', edge]]"
     (layerClick)="edgeClicked($event)">
   </mgl-layer>
+
+  <!-- EDGES BORDER -->
   <mgl-layer
-  id="nodes"
-  source="nodes"
-  type="symbol"
-  [paint]="{
-    'text-color': '#000'
-  }"
-  (layerClick)="nodeClicked($event)">
-</mgl-layer>
+    id="edges_border"
+    source="edges"
+    type="line"
+    [paint]="{
+      'line-color': ['get', 'borderColor', edge],
+      'line-width': ['get', 'borderWidth', edge],
+      'line-opacity': ['get', 'borderOpacity', edge],
+      'line-gap-width': ['get', 'width', edge]
+    }"
+    [filter]="['>=', currentZoom, ['get', 'zoom', edge]]">
+  </mgl-layer>
+
+  <!-- NODES -->
+  <mgl-layer
+    id="nodes"
+    source="nodes"
+    type="circle"
+    [paint]="{
+      'circle-color': ['case',
+          ['boolean', ['feature-state', 'hover'], false], 'red',
+          'black'
+      ],
+      'circle-radius': 3
+    }"
+    [filter]="['>=', currentZoom, currentEdge]"
+    (layerClick)="nodeClicked($event)">
+  </mgl-layer>
+
+  <!-- NODE LABELS -->
+  <mgl-layer
+    id="node_labels"
+    source="nodes"
+    type="symbol"
+    [layout]="{
+      'text-field': '{label}',
+      'text-font': ['Open Sans Regular'],
+      'text-size': ['get', 'fontSize', currentNode],
+      'text-variable-anchor': ['top', 'bottom', 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'left', 'right', 'center'],
+      'text-radial-offset': 0.25,
+      'text-allow-overlap': false
+    }"
+    [filter]="['>=', currentZoom, ['get', 'zoom', currentNode]]">
+  </mgl-layer>
 </mgl-map>
