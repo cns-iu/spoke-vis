@@ -4,7 +4,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MapModule } from './shared/components/map/map.module';
 import { CoreModule } from './core/core.module';
 
 
@@ -15,7 +14,6 @@ import { CoreModule } from './core/core.module';
     BrowserAnimationsModule,
 
     AppRoutingModule,
-    MapModule,
     CoreModule
   ],
   declarations: [
