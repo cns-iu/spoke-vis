@@ -30,7 +30,13 @@
         }
 
         .text {
+          height: 100%;
           padding-bottom: 5rem;
+
+          img {
+            height: 100%;
+            float: right;
+          }
         }
 
         .logos {
@@ -40,6 +46,10 @@
 
           width: 100%;
           height: 2.5rem;
+
+          img {
+            height: 2.5rem;
+          }
         }
       }
     }
