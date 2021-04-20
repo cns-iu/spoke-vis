@@ -23,7 +23,7 @@ export class Vis1Component implements AfterViewInit {
     if (!this.disease || !this.food ) {
       this.spec = createOverviewSpec();
     } else {
-      this.spec = createSpec(this.disease, this.food)
+      this.spec = createSpec(this.disease, this.food);
     }
   }
 };

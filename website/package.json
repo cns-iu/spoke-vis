@@ -51,7 +51,6 @@
     "d3-timer": "^2.0.0",
     "ngx-google-analytics": "^11.2.0",
     "ngx-vega": "^0.52.0",
-    "node": "^15.14.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "vega": "^5.20.2",

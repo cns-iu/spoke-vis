@@ -73,7 +73,7 @@ export function createSpec(source: string, destination: string): VisualizationSp
             ],
             field: 'total_weight',
             scale: {
-              scheme: "greys"
+              scheme: 'greys'
             },
             legend: null
           },
@@ -159,7 +159,7 @@ export function createSpec(source: string, destination: string): VisualizationSp
           },
           opacity: {
             condition: {
-              test: "datum.label === 'Disease'", 
+              test: "datum.label === 'Disease'",
               value: 1
             },
             value: 0.15
@@ -295,13 +295,13 @@ export function createSpec(source: string, destination: string): VisualizationSp
           url: 'assets/datasets/overview/nodes-v3.csv'
         },
         mark: {
-          type: 'text', 
-          dy: -30, 
+          type: 'text',
+          dy: -30,
           fontSize: 12
         },
         encoding: {
           text: {
-            field: 'label', 
+            field: 'label',
             type: 'nominal'
           },
           x: {
@@ -314,7 +314,7 @@ export function createSpec(source: string, destination: string): VisualizationSp
           },
           opacity: {
             condition: {
-              test: "datum.label === 'Disease'", 
+              test: "datum.label === 'Disease'",
               value: 1
             },
             value: 0.15
@@ -337,14 +337,14 @@ export function createSpec(source: string, destination: string): VisualizationSp
           {filter: `datum.dest_name == '${destination}'`}
         ],
         mark: {
-          type: 'text', 
-          dy: -30, 
+          type: 'text',
+          dy: -30,
           fontSize: 12,
           opacity: 1
         },
         encoding: {
           text: {
-            field: 'label', 
+            field: 'label',
             type: 'nominal'
           },
           x: {
@@ -368,14 +368,14 @@ export function createSpec(source: string, destination: string): VisualizationSp
           ]
         },
         mark: {
-          type: 'text', 
+          type: 'text',
           fontSize: 12,
           dx: 10,
           opacity: 0.5
         },
         encoding: {
           text: {
-            field: 'label', 
+            field: 'label',
             type: 'nominal'
           },
           x: {
@@ -406,14 +406,14 @@ export function createSpec(source: string, destination: string): VisualizationSp
           ]
         },
         mark: {
-          type: 'text', 
+          type: 'text',
           fontSize: 12,
           dy: 10,
           opacity: 0.5
         },
         encoding: {
           text: {
-            field: 'label', 
+            field: 'label',
             type: 'nominal'
           },
           x: {
@@ -444,14 +444,14 @@ export function createSpec(source: string, destination: string): VisualizationSp
           ]
         },
         mark: {
-          type: 'text', 
+          type: 'text',
           fontSize: 12,
           dy: -10,
           opacity: 0.5
         },
         encoding: {
           text: {
-            field: 'label', 
+            field: 'label',
             type: 'nominal'
           },
           x: {
