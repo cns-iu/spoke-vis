@@ -21,9 +21,7 @@ export interface DatasetDefinition {
 /**
  * A service for dataset definition lookup
  */
-@Injectable({
-  providedIn: VisualizationsModule
-})
+@Injectable()
 export class DatasetDefinitionService {
   /** Definitions indexed by dataset */
   private readonly definitions: Record<string, DatasetDefinition> = {};
