@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
 
@@ -17,6 +17,9 @@ import CadCluster from '../../../../shared/components/map/cad-food-tree/cluster.
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DetailComponent {
+  /** HTML class name */
+  @HostBinding('class') readonly clsName = 'spoke-detail';
+
   edgeFeatures: mapboxgl.MapboxGeoJSONFeature = CadEdges;
   nodeFeatures: mapboxgl.MapboxGeoJSONFeature = CadNodes;
   clusterFeatures: mapboxgl.MapboxGeoJSONFeature = CadCluster;

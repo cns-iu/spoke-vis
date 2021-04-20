@@ -1,13 +1,7 @@
-<h1>Details Page</h1>
-<p>Disease: {{ disease$ | async }}</p>
-<p>Food: {{ food$ | async }}</p>
-
-<div style="height: 60vh; width: 90vw; padding: 1rem; margin: auto;">
-  <spoke-map
-    [edgeFeatures]="edgeFeatures"
-    [nodeFeatures]="nodeFeatures"
-    [clusterFeatures]="clusterFeatures"
-    [boundaryFeatures]="boundaryFeatures"
-    [mapCenter]="[0, -40]"
-  ></spoke-map>
-</div>
+<spoke-map
+  [edgeFeatures]="edgeFeatures"
+  [nodeFeatures]="nodeFeatures"
+  [clusterFeatures]="clusterFeatures"
+  [boundaryFeatures]="boundaryFeatures"
+  [mapCenter]="[0, -40]"
+></spoke-map>

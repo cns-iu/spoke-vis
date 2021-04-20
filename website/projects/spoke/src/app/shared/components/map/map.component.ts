@@ -1,74 +1,8 @@
 import { Any } from '@angular-ru/common/typings';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import mapboxgl, { Map, MapMouseEvent, Style } from 'mapbox-gl';
+import mapboxgl, { Map, MapboxGeoJSONFeature, MapMouseEvent, Style } from 'mapbox-gl';
+import { MiniMapOptions, Node, Edge, Cluster, MapMarker, ZoomLookup } from '../../../core/models/Map';
 import MiniMap from './mapboxgl-minimap';
-
-export interface Edge {
-  level: number;
-  zoom: number;
-  color?: string;
-  width?: number;
-  opacity?: number;
-  borderOpacity?: number;
-  borderColor?: string;
-  borderWidth?: number;
-};
-interface Node {
-  level: number;
-  zoom: number;
-  fontSize: number;
-};
-interface Cluster {
-  fillOpacity: number;
-  borderLineWidth: number;
-  borderLineOpacity: number;
-  borderLineMinZoom: number;
-};
-
-type ZoomLevel = [number, number, number];
-interface MiniMapOptions {
-  id: number | string;
-  width: string;
-  height: string;
-  style: Style;
-  center: [number, number];
-  zoom: number;
-  containerStyles: string;
-  zoomAdjust: null | (() => unknown);
-  zoomLevels: ZoomLevel[];
-  edgeColor: string;
-  edgeWidth: number;
-  edgeOpacity: number;
-  fillColor: string;
-  fillOpacity: number;
-  dragPan: boolean;
-  scrollZoom: boolean;
-  boxZoom: boolean;
-  dragRotate: boolean;
-  keyboard: boolean;
-  doubleClickZoom: boolean;
-  touchZoomRotate: boolean;
-};
-
-type PopupContent = (string | [string, (() => unknown)])[];
-interface Popup {
-  layer: string;
-  content: PopupContent;
-};
-
-interface MapMarkerConfig {
-  color?: string;
-  rotation?: number;
-}
-interface MapMarker {
-  config?: MapMarkerConfig;
-  coordinates: [number, number];
-}
-
-interface ZoomLookupItem {
-  zoom: number;
-}
-type ZoomLookup = ZoomLookupItem[];
 
 const blankStyle: Style = {
   version: 8,
@@ -177,10 +111,10 @@ const defaultMaxZoom = 10;
 export class MapComponent {
   // Inputs
   @Input() mapStyle = blankStyle;
-  @Input() edgeFeatures!: mapboxgl.MapboxGeoJSONFeature;
-  @Input() nodeFeatures!: mapboxgl.MapboxGeoJSONFeature;
-  @Input() clusterFeatures!: mapboxgl.MapboxGeoJSONFeature;
-  @Input() boundaryFeatures!: mapboxgl.MapboxGeoJSONFeature;
+  @Input() edgeFeatures!: MapboxGeoJSONFeature;
+  @Input() nodeFeatures!: MapboxGeoJSONFeature;
+  @Input() clusterFeatures!: MapboxGeoJSONFeature;
+  @Input() boundaryFeatures!: MapboxGeoJSONFeature;
   @Input() currentZoom = defaultInitialZoom;
   @Input() mapCenter: [number, number] = [0,0];
   @Input() minimapOptions: MiniMapOptions = defaultMinimapOptions;
