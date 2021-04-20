@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
 
 import { Spec } from 'ngx-vega';
 import { createSpec, createOverviewSpec, vis1Spec } from './vis1.vega';
@@ -8,7 +8,7 @@ import { createSpec, createOverviewSpec, vis1Spec } from './vis1.vega';
   selector: 'spoke-vis1',
   templateUrl: './vis1.component.html'
 })
-export class Vis1Component implements AfterViewInit {
+export class Vis1Component implements AfterViewInit, OnChanges {
 
   @Input() spec?: Spec = vis1Spec;
 
@@ -17,6 +17,12 @@ export class Vis1Component implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.updateSpec();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('disease' in changes || 'food' in changes) { 
+      this.updateSpec(); 
+    }
   }
 
   updateSpec(): void {
