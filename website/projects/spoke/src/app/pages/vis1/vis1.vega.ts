@@ -159,7 +159,7 @@ export function createSpec(source: string, destination: string): VisualizationSp
           },
           opacity: {
             condition: {
-              test: "datum.label === 'Disease'",
+              test: 'datum.label === "Disease"',
               value: 1
             },
             value: 0.15
@@ -314,7 +314,7 @@ export function createSpec(source: string, destination: string): VisualizationSp
           },
           opacity: {
             condition: {
-              test: "datum.label === 'Disease'",
+              test: 'datum.label === "Disease"',
               value: 1
             },
             value: 0.15
