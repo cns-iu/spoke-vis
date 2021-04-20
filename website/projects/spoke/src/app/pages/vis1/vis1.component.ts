@@ -15,14 +15,29 @@ export class Vis1Component implements AfterViewInit, OnChanges {
   @Input() disease?: string;
   @Input() food?: string;
 
+  ready = false;
+
   ngAfterViewInit(): void {
     this.updateSpec();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if ('disease' in changes || 'food' in changes) { 
-      this.updateSpec(); 
+    console.log('changes')
+    if ('disease' in changes || 'food' in changes) {
+      this.updateSpec();
     }
+  }
+
+  toggleDisease(): void {
+    this.disease = this.disease ? undefined : "alzheimers";
+    console.log(this.disease)
+    this.ready = this.disease && this.food ? true : false;
+  }
+
+  toggleFood(): void {
+    this.food = this.food ? undefined : "Hot chocolate";
+    console.log(this.food)
+    this.ready = this.disease && this.food ? true : false;
   }
 
   updateSpec(): void {
