@@ -24,7 +24,7 @@ const ROOT_STATES: Type<unknown>[] = [
     NgxsRouterPluginModule.forRoot(),
 
     /**
-     * TODO: Switch from NgxsStoragePlugin to @Persistence decorator from NgxsDataPluginModule (requires ngxs-labs/data@5)
+     * Switch from NgxsStoragePlugin to @Persistence decorator from NgxsDataPluginModule (requires ngxs-labs/data@5)
      * See: https://github.com/ngxs-labs/data/blob/master/docs/pages/persistence-state.md
      */
     NgxsStoragePluginModule.forRoot({

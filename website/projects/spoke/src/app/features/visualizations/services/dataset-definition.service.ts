@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { VisualizationsModule } from '../visualizations.module';
-
 
 /**
  * Definition with location, type, and parsing required for loading a dataset
@@ -21,9 +19,7 @@ export interface DatasetDefinition {
 /**
  * A service for dataset definition lookup
  */
-@Injectable({
-  providedIn: VisualizationsModule
-})
+@Injectable()
 export class DatasetDefinitionService {
   /** Definitions indexed by dataset */
   private readonly definitions: Record<string, DatasetDefinition> = {};
