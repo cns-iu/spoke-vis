@@ -19,7 +19,11 @@ const ROUTES: Routes = [
         component: OverviewComponent
       },
       {
-        path: 'details/:id',
+        path: 'overview/:disease/:food',
+        component: OverviewComponent
+      },
+      {
+        path: 'details/:disease/:food',
         component: DetailComponent
       }
     ]
