@@ -37,9 +37,9 @@
     "ngx-vega": "^0.52.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
-    "vega": "^5.17.0",
-    "vega-embed": "^6.12.2",
-    "vega-lite": "^4.17.0",
+    "vega": "^5.20.1",
+    "vega-embed": "^6.17.0",
+    "vega-lite": "^5.1.0",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
