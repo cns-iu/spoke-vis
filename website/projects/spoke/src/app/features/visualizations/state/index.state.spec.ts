@@ -42,11 +42,11 @@ describe('isPartialIndexItem(obj)', () => {
 describe('IndexState', () => {
   let controller: HttpTestingController;
 
-  function it(expectation: string, assertion: (state: IndexState) => unknown): void;
-  function it(expectation: string, providers: Provider[], assertion: (state: IndexState) => unknown): void;
-  function it(expectation: string, providersOrAssertion: unknown, assertion?: (state: IndexState) => unknown): void {
+  function it(expectation: string, assertion: (state: IndexState) => void | Promise<void>): void;
+  function it(expectation: string, providers: Provider[], assertion: (state: IndexState) => void | Promise<void>): void;
+  function it(expectation: string, providersOrAssertion: unknown, assertion?: (state: IndexState) => void | Promise<void>): void {
     if (typeof providersOrAssertion === 'function') {
-      assertion = providersOrAssertion as (state: IndexState) => unknown;
+      assertion = providersOrAssertion as (state: IndexState) => void | Promise<void>;
       providersOrAssertion = [];
     }
 

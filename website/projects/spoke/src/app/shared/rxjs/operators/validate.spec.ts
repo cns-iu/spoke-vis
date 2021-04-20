@@ -1,4 +1,4 @@
-import { from, Observer } from 'rxjs';
+import { from } from 'rxjs';
 
 import { validate } from './validate';
 

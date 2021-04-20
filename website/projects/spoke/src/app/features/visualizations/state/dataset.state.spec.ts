@@ -25,11 +25,11 @@ describe('DatasetState', () => {
   let spy: jasmine.Spy;
 
 
-  function it(expectation: string, assertion: (state: DatasetState) => unknown): void;
-  function it(expectation: string, providers: Provider[], assertion: (state: DatasetState) => unknown): void;
-  function it(expectation: string, providersOrAssertion: unknown, assertion?: (state: DatasetState) => unknown): void {
+  function it(expectation: string, assertion: (state: DatasetState) => void | Promise<void>): void;
+  function it(expectation: string, providers: Provider[], assertion: (state: DatasetState) => void | Promise<void>): void;
+  function it(expectation: string, providersOrAssertion: unknown, assertion?: (state: DatasetState) => void | Promise<void>): void {
     if (typeof providersOrAssertion === 'function') {
-      assertion = providersOrAssertion as (state: DatasetState) => unknown;
+      assertion = providersOrAssertion as (state: DatasetState) => void | Promise<void>;
       providersOrAssertion = [];
     }
 
