@@ -1,0 +1,26 @@
+[
+  {
+    "id": "alzheimers-all",
+    "name": "Alzheimers All",
+    "description": "",
+    "dir": "/assets/datasets/alzheimers-all-food-tree"
+  },
+  {
+    "id": "alzheimers",
+    "name": "Alzheimers",
+    "description": "",
+    "dir": "/assets/datasets/alzheimers-food-tree"
+  },
+  {
+    "id": "cad",
+    "name": "Coronary Artery Disease",
+    "description": "",
+    "dir": "/assets/datasets/cad-food-tree"
+  },
+  {
+    "id": "epilepsy",
+    "name": "Epilepsy",
+    "description": "",
+    "dir": "/assets/datasets/epilepsy-food-tree"
+  }
+]
