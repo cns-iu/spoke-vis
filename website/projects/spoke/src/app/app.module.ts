@@ -1,18 +1,22 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MapModule } from './shared/components/map/map.module';
+import { CoreModule } from './core/core.module';
+
 
 
 @NgModule({
   imports: [
     BrowserModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
+
+    AppRoutingModule,
     MapModule
+    CoreModule
   ],
   declarations: [
     AppComponent

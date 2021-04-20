@@ -39,3 +39,11 @@ $spoke-theme: mat-light-theme((
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+body {
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: inherit;
+}
