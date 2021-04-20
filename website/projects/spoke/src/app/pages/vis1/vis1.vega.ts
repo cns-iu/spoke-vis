@@ -12,8 +12,10 @@ export function createSpec(source: string, destination: string): VisualizationSp
         stroke: 'transparent'
       }
     },
-    width: 1500,
-    height: 750,
+    autosize: {
+      type: 'fit',
+      contains: 'padding'
+    },
     layer: [
       {
         data: {
@@ -474,8 +476,10 @@ export const vis1Spec: VisualizationSpec =
         stroke: 'transparent'
       }
     },
-    width: 1500,
-    height: 750,
+    autosize: {
+      type: 'fit',
+      contains: 'padding'
+    },
     data: {
       url: 'assets/datasets/overview/nodes-v3.csv'
     },
