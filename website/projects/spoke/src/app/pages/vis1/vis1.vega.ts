@@ -1,17 +1,10 @@
 import { VisualizationSpec } from 'vega-embed';
 
-export interface SpecOptions {
-  overviewNodes: any[];
-  overviewEdges: any[];
-  diseaseEdges?: any[];
-  targetFood?: string;
-}
-
 export function createOverviewSpec() {
   return vis1Spec;
 }
 
-export function createSpec(source?: string, destination?: string, options?: SpecOptions): VisualizationSpec {
+export function createSpec(source: string, destination: string): VisualizationSpec {
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     config: {
@@ -761,4 +754,3 @@ export const vis1Spec: VisualizationSpec =
       }
     ]
   };
-  
