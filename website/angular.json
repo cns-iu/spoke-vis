@@ -97,7 +97,8 @@
             "styles": [
               "projects/spoke/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "codeCoverage": true
           }
         },
         "lint": {
