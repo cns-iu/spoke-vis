@@ -1,17 +1,28 @@
-import { Shallow } from 'shallow-render';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Vis1Component } from './vis1.component';
-import { Vis1ComponentModule } from './vis1.module';
+import { NgxVegaModule } from 'ngx-vega';
 
 
-describe('AppComponent', () => {
-  let shallow: Shallow<Vis1Component>;
+describe('Vis1Component', () => {
+  let component: Vis1Component;
+  let fixture: ComponentFixture<Vis1Component>;
+
+  beforeEach(waitForAsync(async () => {
+    TestBed.configureTestingModule({
+      declarations: [ Vis1Component ],
+      imports: [ NgxVegaModule ]
+    })
+    .compileComponents();
+  }));
 
   beforeEach(() => {
-    shallow = new Shallow(Vis1Component, Vis1ComponentModule);
+    fixture = TestBed.createComponent(Vis1Component);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  it('passes the dummy test', () => {
-    expect().nothing();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 });
