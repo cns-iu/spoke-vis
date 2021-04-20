@@ -1,12 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Style, Map, MapMouseEvent } from 'mapbox-gl';
-import { Cartesian2dBounds, Cartesian2dProjection } from './cartesian-2d-projection';
-import { EdgesGeojson } from './edges-geojson';
-import mapboxgl from 'mapbox-gl';
-
-declare module 'mapbox-gl' {
-  const Minimap: new (options: MiniMapOptions) => mapboxgl.Control | mapboxgl.IControl;
-}
+import mapboxgl, { Map, MapMouseEvent, Style } from 'mapbox-gl';
+import MiniMap from './mapboxgl-minimap';
 
 export interface Edge {
   level: number,
@@ -198,16 +192,12 @@ const defaultMaxZoom: number = 10;
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent {
-  idCounter = 0;
-  readonly mapId = `m4s-mapboxgl-map-${this.idCounter++}`;
   map!: Map;
-  bounds = new Cartesian2dBounds();
-  projection = new Cartesian2dProjection(this.bounds);
   nodeZoomIndex = 0;
   edgeZoomIndex = 0;
+  textOverlapEnabledZoom = defaultTextOverlapEnabledZoom;
+  textOverlapEnabled = defaultTextOverlapEnabled;
 
-  edgesGeoJson!: EdgesGeojson;
-  // nodesGeoJson!: NodesGeojson;
   edges: Edge[] = defaultEdges;
   nodes: Node[] = defaultNodes;
 
@@ -226,22 +216,7 @@ export class MapComponent {
   @Input() currentZoom = defaultInitialZoom;
   @Input() mapCenter: [number, number] = [0,0];
   @Input() minimapOptions: MiniMapOptions = defaultMinimapOptions;
-
-  // @TODO:  Remove test markers.
-  @Input() mapMarkers: MapMarker[] = [
-    {
-      coordinates: [0, 0],
-      config: {
-        color: 'green'
-      }
-    },
-    {
-      coordinates: [15, 0]
-    }
-  ];
-
-  textOverlapEnabledZoom = defaultTextOverlapEnabledZoom;
-  textOverlapEnabled = defaultTextOverlapEnabled;
+  @Input() mapMarkers: MapMarker[] = [];
 
   // Outputs
   @Output() nodeClick = new EventEmitter<MapMouseEvent>();
@@ -263,20 +238,16 @@ export class MapComponent {
   onMapLoad(map: Map): void {
     this.map = map;
     this.currentZoom = map.getZoom();
-    // this.edgesGeoJson = new EdgesGeojson(this.edges, this.projection);
-    // this.nodesGeoJson = new NodesGeojson(nodes, this.projection);
 
-    this.map.on("style.load", () => {
-      console.log('map.on(style.load).')
-      // map.addControl(new Minimap(), 'top-right');
-      // map.addControl(new mapboxgl.Minimap(), 'top-right');
-    });
+    // Use the same map center for the minimap unless the minimapOptions have been customized.
+    if (this.minimapOptions === defaultMinimapOptions) {
+      this.minimapOptions.center = this.mapCenter;
+    }
 
     // ShowCompass off to disable rotation.
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
+    map.addControl(new MiniMap({nodes: this.nodeFeatures, clusters: this.clusterFeatures}, this.minimapOptions), 'top-right');
 
-    // @TODO:  get minimap to load in...
-    // map.addControl(new mapboxgl.Minimap(this.minimapOptions), 'top-right');
     this.map.resize();
 
     if (this.mapMarkers.length) {
@@ -354,33 +325,4 @@ export class MapComponent {
     console.error('No Zoom index found.  Zoom lookup: ', zoomLookup);
     return 0;
   }
-
-  config: Configuration = {
-    minZoom: defaultMinZoom,
-    maxZoom: defaultMaxZoom,
-    initialZoom: defaultInitialZoom,
-    textOverlapEnabledZoom: defaultTextOverlapEnabledZoom,
-    edges: defaultEdges,
-    nodes: defaultNodes,
-    clusters: defaultClusters,
-    popups: [
-      {
-        layer: 'edges',
-        content: [
-          '<p class="popup-label">Edge</p><p>',
-          ['label', this.capitalizeFirstLetter],
-          '</p>'
-        ]
-      },
-      {
-        layer: 'nodes',
-        content: [
-          '<p class="popup-label">Node</p><p>',
-          'label',
-          '</p>'
-        ]
-      }
-    ],
-    minimapOptions: defaultMinimapOptions
-  };
 }

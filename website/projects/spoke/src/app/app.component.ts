@@ -17,4 +17,15 @@ export class AppComponent {
   nodeFeatures: mapboxgl.MapboxGeoJSONFeature = CadNodes;
   clusterFeatures: mapboxgl.MapboxGeoJSONFeature = CadCluster;
   boundaryFeatures: mapboxgl.MapboxGeoJSONFeature = CadBoundary;
+  mapMarkers: any = [
+    {
+      coordinates: [0, 0],
+      config: {
+        color: 'green'
+      }
+    },
+    {
+      coordinates: [15, 0]
+    }
+  ];
 }
