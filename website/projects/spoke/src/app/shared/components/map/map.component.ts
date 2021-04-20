@@ -1,76 +1,59 @@
+import { Any } from '@angular-ru/common/typings';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import mapboxgl, { Map, MapMouseEvent, Style } from 'mapbox-gl';
 import MiniMap from './mapboxgl-minimap';
 
 export interface Edge {
-  level: number,
-  zoom: number,
-  color?: string,
-  width?: number,
-  opacity?: number,
-  borderOpacity?: number,
-  borderColor?: string,
-  borderWidth?: number
+  level: number;
+  zoom: number;
+  color?: string;
+  width?: number;
+  opacity?: number;
+  borderOpacity?: number;
+  borderColor?: string;
+  borderWidth?: number;
 };
 interface Node {
-  level: number,
-  zoom: number,
-  fontSize: number
+  level: number;
+  zoom: number;
+  fontSize: number;
 };
 interface Cluster {
-  fillOpacity: number,
-  borderLineWidth: number,
-  borderLineOpacity: number,
-  borderLineMinZoom: number
+  fillOpacity: number;
+  borderLineWidth: number;
+  borderLineOpacity: number;
+  borderLineMinZoom: number;
 };
 
 type ZoomLevel = [number, number, number];
 interface MiniMapOptions {
-  id: number | string,
-  width: string,
-  height: string,
-  style: Style,
-  center: [number, number],
-  zoom: number,
-  containerStyles: string,
-  zoomAdjust: null | Function,
-  zoomLevels: ZoomLevel[],
-  edgeColor: string,
-  edgeWidth: number,
-  edgeOpacity: number,
-  fillColor: string,
-  fillOpacity: number,
-  dragPan: boolean,
-  scrollZoom: boolean,
-  boxZoom: boolean,
-  dragRotate: boolean,
-  keyboard: boolean,
-  doubleClickZoom: boolean,
-  touchZoomRotate: boolean
+  id: number | string;
+  width: string;
+  height: string;
+  style: Style;
+  center: [number, number];
+  zoom: number;
+  containerStyles: string;
+  zoomAdjust: null | (() => unknown);
+  zoomLevels: ZoomLevel[];
+  edgeColor: string;
+  edgeWidth: number;
+  edgeOpacity: number;
+  fillColor: string;
+  fillOpacity: number;
+  dragPan: boolean;
+  scrollZoom: boolean;
+  boxZoom: boolean;
+  dragRotate: boolean;
+  keyboard: boolean;
+  doubleClickZoom: boolean;
+  touchZoomRotate: boolean;
 };
 
-type PopupContent = (string | [string, Function])[];
+type PopupContent = (string | [string, (() => unknown)])[];
 interface Popup {
-  layer: string,
-  content: PopupContent
-};
-interface Sources {
-  nodes: string,
-  edges: string,
-  clusters: string,
-  clusterBoundaries: string,
-  allEdges?: string
-};
-interface Configuration {
-  minZoom: number,
-  maxZoom: number,
-  initialZoom: number,
-  textOverlapEnabledZoom: number,
-  edges: Edge[],
-  nodes: Node[],
-  clusters: Cluster,
-  popups?: Popup[],
-  minimapOptions?: any
+  layer: string;
+  content: PopupContent;
 };
 
 interface MapMarkerConfig {
@@ -88,18 +71,18 @@ interface ZoomLookupItem {
 type ZoomLookup = ZoomLookupItem[];
 
 const blankStyle: Style = {
-  'version': 8,
-  'name': 'Blank',
-  'center': [0, 0],
-  'zoom': 0,
-  'sources': {},
-  'sprite': 'https://cdn.jsdelivr.net/gh/lukasmartinelli/osm-liberty@gh-pages/sprites/osm-liberty',
-  'glyphs': 'https://cdn.jsdelivr.net/gh/orangemug/font-glyphs@gh-pages/glyphs/{fontstack}/{range}.pbf',
-  'layers': [
+  version: 8,
+  name: 'Blank',
+  center: [0, 0],
+  zoom: 0,
+  sources: {},
+  sprite: 'https://cdn.jsdelivr.net/gh/lukasmartinelli/osm-liberty@gh-pages/sprites/osm-liberty',
+  glyphs: 'https://cdn.jsdelivr.net/gh/orangemug/font-glyphs@gh-pages/glyphs/{fontstack}/{range}.pbf',
+  layers: [
     {
-      'id': 'background',
-      'type': 'background',
-      'paint': {
+      id: 'background',
+      type: 'background',
+      paint: {
         'background-color': 'white'
       }
     }
@@ -178,11 +161,11 @@ const defaultClusters: Cluster = {
   borderLineOpacity: 0.8,
   borderLineMinZoom: 3
 };
-const defaultInitialZoom: number = 2;
-const defaultTextOverlapEnabledZoom: number = 3;
-const defaultTextOverlapEnabled: boolean = false;
-const defaultMinZoom: number = 0;
-const defaultMaxZoom: number = 10;
+const defaultInitialZoom = 2;
+const defaultTextOverlapEnabledZoom = 3;
+const defaultTextOverlapEnabled = false;
+const defaultMinZoom = 0;
+const defaultMaxZoom = 10;
 
 
 
@@ -192,21 +175,6 @@ const defaultMaxZoom: number = 10;
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent {
-  map!: Map;
-  nodeZoomIndex = 0;
-  edgeZoomIndex = 0;
-  textOverlapEnabledZoom = defaultTextOverlapEnabledZoom;
-  textOverlapEnabled = defaultTextOverlapEnabled;
-
-  edges: Edge[] = defaultEdges;
-  nodes: Node[] = defaultNodes;
-
-  currentNode: Array<any> = ['at', ['get', 'level'], ['literal', this.nodes]];
-  currentEdge: Array<any> = ['get', 'zoom', ['at', ['get', 'level'], ['literal', this.edges]]];
-
-  edge = ['at', ['get', 'level'], ['literal', this.edges]];
-  lastEdge = ['at', this.edges.length - 1, ['literal', this.edges]];
-
   // Inputs
   @Input() mapStyle = blankStyle;
   @Input() edgeFeatures!: mapboxgl.MapboxGeoJSONFeature;
@@ -222,9 +190,22 @@ export class MapComponent {
   @Output() nodeClick = new EventEmitter<MapMouseEvent>();
   @Output() edgeClick = new EventEmitter<MapMouseEvent>();
 
+  map!: Map;
+  nodeZoomIndex = 0;
+  edgeZoomIndex = 0;
+  textOverlapEnabledZoom = defaultTextOverlapEnabledZoom;
+  textOverlapEnabled = defaultTextOverlapEnabled;
+  edges: Edge[] = defaultEdges;
+  nodes: Node[] = defaultNodes;
 
-  capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  // @TODO:  Work these variables back into the layer tags.
+  currentNodeFormula: Any = ['at', ['get', 'level'], ['literal', this.nodes]];
+  currentEdgeFormula: Any = ['get', 'zoom', ['at', ['get', 'level'], ['literal', this.edges]]];
+  edgeFormula = ['at', ['get', 'level'], ['literal', this.edges]];
+  lastEdgeFormula = ['at', this.edges.length - 1, ['literal', this.edges]];
+
+  capitalizeFirstLetter(input: string): string {
+    return input.charAt(0).toUpperCase() + input.slice(1);
   };
 
   nodeClicked(event: MapMouseEvent): void {
@@ -260,7 +241,7 @@ export class MapComponent {
 
   addMapMarkers(markers: MapMarker[]): void {
     markers.forEach(marker => {
-      let marker1 = new mapboxgl.Marker(marker.config || {})
+      const marker1 = new mapboxgl.Marker(marker.config || {})
         .setLngLat(marker.coordinates)
         .addTo(this.map);
     });
@@ -299,16 +280,20 @@ export class MapComponent {
 
   // Returns whether or not the zoom level has changed enough to warrant a change in which nodes we are displaying.
   nodeLevelChange(): boolean {
-    let currentIndex: number = this.getZoomIndex(this.nodes);
-    if (currentIndex === this.nodeZoomIndex) return false;
+    const currentIndex: number = this.getZoomIndex(this.nodes);
+    if (currentIndex === this.nodeZoomIndex) {
+      return false;
+    }
     this.nodeZoomIndex = currentIndex;
     return true;
   }
 
   // Returns whether or not the zoom level has changed enough to warrant a change in which edges we are displaying.
   edgeLevelChange(): boolean {
-    let currentIndex: number = this.getZoomIndex(this.edges);
-    if (currentIndex === this.edgeZoomIndex) return false;
+    const currentIndex: number = this.getZoomIndex(this.edges);
+    if (currentIndex === this.edgeZoomIndex) {
+      return false;
+    }
     this.edgeZoomIndex = currentIndex;
     return true;
   }
@@ -318,8 +303,12 @@ export class MapComponent {
   getZoomIndex(zoomLookup: ZoomLookup): number {
     const zoom: number = this.map.getZoom();
     for (let index = 0; index <= zoomLookup.length; index++) {
-      if (index == (zoomLookup.length - 1)) return index;
-      if (zoom >= zoomLookup[index]['zoom'] && zoom < zoomLookup[index + 1]['zoom']) return index;
+      if (index === (zoomLookup.length - 1)) {
+        return index;
+      }
+      if (zoom >= zoomLookup[index].zoom && zoom < zoomLookup[index + 1].zoom) {
+        return index;
+      }
     }
 
     console.error('No Zoom index found.  Zoom lookup: ', zoomLookup);

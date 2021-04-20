@@ -56,12 +56,12 @@
     [paint]="{
       'line-color': ['case',
           ['boolean', ['feature-state', 'hover'], false], 'red',
-          ['get', 'color', edge]
+          ['get', 'color', edgeFormula]
       ],
-      'line-width': ['get', 'width', edge],
-      'line-opacity': ['get', 'opacity', edge]
+      'line-width': ['get', 'width', edgeFormula],
+      'line-opacity': ['get', 'opacity', edgeFormula]
     }"
-    [filter]="['>=', currentZoom, ['get', 'zoom', edge]]"
+    [filter]="['>=', currentZoom, ['get', 'zoom', edgeFormula]]"
     (layerClick)="edgeClicked($event)">
   </mgl-layer>
 
@@ -71,12 +71,12 @@
     source="edges"
     type="line"
     [paint]="{
-      'line-color': ['get', 'borderColor', edge],
-      'line-width': ['get', 'borderWidth', edge],
-      'line-opacity': ['get', 'borderOpacity', edge],
-      'line-gap-width': ['get', 'width', edge]
+      'line-color': ['get', 'borderColor', edgeFormula],
+      'line-width': ['get', 'borderWidth', edgeFormula],
+      'line-opacity': ['get', 'borderOpacity', edgeFormula],
+      'line-gap-width': ['get', 'width', edgeFormula]
     }"
-    [filter]="['>=', currentZoom, ['get', 'zoom', edge]]">
+    [filter]="['>=', currentZoom, ['get', 'zoom', edgeFormula]]">
   </mgl-layer>
 
   <!-- NODES -->
@@ -91,7 +91,7 @@
       ],
       'circle-radius': 3
     }"
-    [filter]="['>=', currentZoom, currentEdge]"
+    [filter]="['>=', currentZoom, currentEdgeFormula]"
     (layerClick)="nodeClicked($event)">
   </mgl-layer>
 
@@ -103,11 +103,11 @@
     [layout]="{
       'text-field': '{label}',
       'text-font': ['Open Sans Regular'],
-      'text-size': ['get', 'fontSize', currentNode],
+      'text-size': ['get', 'fontSize', currentNodeFormula],
       'text-variable-anchor': ['top', 'bottom', 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'left', 'right', 'center'],
       'text-radial-offset': 0.25,
       'text-allow-overlap': false
     }"
-    [filter]="['>=', currentZoom, ['get', 'zoom', currentNode]]">
+    [filter]="['>=', currentZoom, ['get', 'zoom', currentNodeFormula]]">
   </mgl-layer>
 </mgl-map>
