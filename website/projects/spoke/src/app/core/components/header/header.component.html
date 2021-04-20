@@ -3,7 +3,8 @@
 
   <div class="filler"></div>
 
-  <button mat-flat-button class="menu-button" [matMenuTriggerFor]="menu">
+  <button mat-flat-button class="menu-button" [class.menu-open]="menuOpen" [matMenuTriggerFor]="menu"
+          (menuOpened)="menuOpen = true" (menuClosed)="menuOpen = false" disableRipple>
     <mat-icon>menu</mat-icon>
   </button>
 
