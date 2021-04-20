@@ -33,8 +33,8 @@
     "@ngxs/store": "^3.7.1",
     "@types/mapbox__mapbox-gl-geocoder": "^4.7.0",
     "mapbox-gl": "^2.2.0",
-    "ngx-mapbox-gl": "^6.0.4",
     "ngx-google-analytics": "^11.2.0",
+    "ngx-mapbox-gl": "^6.0.4",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"

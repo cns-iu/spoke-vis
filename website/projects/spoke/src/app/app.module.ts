@@ -15,7 +15,7 @@ import { CoreModule } from './core/core.module';
     BrowserAnimationsModule,
 
     AppRoutingModule,
-    MapModule
+    MapModule,
     CoreModule
   ],
   declarations: [
