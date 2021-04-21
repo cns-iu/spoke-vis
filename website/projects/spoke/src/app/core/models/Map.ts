@@ -1,5 +1,7 @@
 import { Any } from '@angular-ru/common/typings';
-import { LngLatBoundsLike, MapboxGeoJSONFeature, Style } from 'mapbox-gl';
+import { FeatureCollection } from 'geojson';
+import { LngLatBoundsLike, Style } from 'mapbox-gl';
+
 
 export interface Edge {
   level: number;
@@ -26,8 +28,8 @@ export interface Cluster {
 }
 
 export interface MapSources {
-  clusters: MapboxGeoJSONFeature;
-  nodes: MapboxGeoJSONFeature;
+  clusters: FeatureCollection;
+  nodes: FeatureCollection;
 }
 
 export type ZoomLevel = [number, number, number];

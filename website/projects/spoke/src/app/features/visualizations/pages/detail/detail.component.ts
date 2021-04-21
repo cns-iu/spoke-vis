@@ -1,14 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MapboxGeoJSONFeature } from 'mapbox-gl';
+import { FeatureCollection } from 'geojson';
 import { forkJoin, Subscription } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 
-
-const EMPTY_FEATURES = {
+const EMPTY_FEATURES: FeatureCollection = {
   type: 'FeatureCollection', features: []
-} as unknown as MapboxGeoJSONFeature;
+} ;
 
 @Component({
   selector: 'spoke-detail',
@@ -35,10 +34,10 @@ export class DetailComponent implements OnInit, OnDestroy {
     switchMap(({disease, food}) => {
       const dataDir = `assets/datasets/${disease}-food-tree`;
       return forkJoin({
-        edges: this.http.get<MapboxGeoJSONFeature>(`${dataDir}/edges.geojson`),
-        nodes: this.http.get<MapboxGeoJSONFeature>(`${dataDir}/nodes.geojson`),
-        clusters: this.http.get<MapboxGeoJSONFeature>(`${dataDir}/cluster.geojson`),
-        boundaries: this.http.get<MapboxGeoJSONFeature>(`${dataDir}/boundary.geojson`)
+        edges: this.http.get<FeatureCollection>(`${dataDir}/edges.geojson`),
+        nodes: this.http.get<FeatureCollection>(`${dataDir}/nodes.geojson`),
+        clusters: this.http.get<FeatureCollection>(`${dataDir}/cluster.geojson`),
+        boundaries: this.http.get<FeatureCollection>(`${dataDir}/boundary.geojson`)
       });
     })
   );

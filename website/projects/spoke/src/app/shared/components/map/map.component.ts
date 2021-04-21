@@ -1,8 +1,11 @@
 import { Any } from '@angular-ru/common/typings';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import mapboxgl, { Map, MapboxGeoJSONFeature, MapMouseEvent, Style } from 'mapbox-gl';
-import { MiniMapOptions, Node, Edge, Cluster, MapMarker, ZoomLookup } from '../../../core/models/Map';
+import { FeatureCollection } from 'geojson';
+import mapboxgl, { Map, MapMouseEvent, Style } from 'mapbox-gl';
+
+import { Cluster, Edge, MapMarker, MiniMapOptions, Node, ZoomLookup } from '../../../core/models/Map';
 import { MiniMap } from './minimap';
+
 
 const blankStyle: Style = {
   version: 8,
@@ -111,10 +114,10 @@ const defaultMaxZoom = 10;
 export class MapComponent {
   // Inputs
   @Input() mapStyle = blankStyle;
-  @Input() edgeFeatures!: MapboxGeoJSONFeature;
-  @Input() nodeFeatures!: MapboxGeoJSONFeature;
-  @Input() clusterFeatures!: MapboxGeoJSONFeature;
-  @Input() boundaryFeatures!: MapboxGeoJSONFeature;
+  @Input() edgeFeatures!: FeatureCollection;
+  @Input() nodeFeatures!: FeatureCollection;
+  @Input() clusterFeatures!: FeatureCollection;
+  @Input() boundaryFeatures!: FeatureCollection;
   @Input() currentZoom = defaultInitialZoom;
   @Input() mapCenter: [number, number] = [0,0];
   @Input() minimapOptions: MiniMapOptions = defaultMinimapOptions;
