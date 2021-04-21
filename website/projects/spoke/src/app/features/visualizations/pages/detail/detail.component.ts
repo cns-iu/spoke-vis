@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnD
 import { ActivatedRoute } from '@angular/router';
 import { FeatureCollection, Point } from 'geojson';
 import { forkJoin, Subscription } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 
 import { MapMarker } from './../../../../core/models/Map';
 
@@ -36,6 +36,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       return {disease, food};
     }),
     filter(({disease, food}) => disease !== undefined),
+    tap(() => this.resetMap()),
     switchMap(({disease, food}) => {
       // Replace this with a lookup table in appropriate state (or in the URL)
       const diseaseLabel = ({
@@ -87,17 +88,19 @@ export class DetailComponent implements OnInit, OnDestroy {
           this.mapCenter = mapCenter;
           this.cd.detectChanges();
         },
-        error: () => {
-          this.edgeFeatures = EMPTY_FEATURES;
-          this.nodeFeatures = EMPTY_FEATURES;
-          this.clusterFeatures = EMPTY_FEATURES;
-          this.boundaryFeatures = EMPTY_FEATURES;
-          this.markers = [];
-          this.mapCenter = [0, -40];
-          this.cd.detectChanges();
-        }
+        error: () => this.resetMap()
       })
     );
+  }
+
+  resetMap() {
+    this.edgeFeatures = EMPTY_FEATURES;
+    this.nodeFeatures = EMPTY_FEATURES;
+    this.clusterFeatures = EMPTY_FEATURES;
+    this.boundaryFeatures = EMPTY_FEATURES;
+    this.markers = [];
+    this.mapCenter = [0, -40];
+    this.cd.detectChanges();
   }
 
   ngOnDestroy(): void {
