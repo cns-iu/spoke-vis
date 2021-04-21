@@ -27,7 +27,7 @@ const blankStyle: mapboxgl.Style = {
 	]
 };
 
-class Minimap {
+export class MiniMap {
   sources: MapSources;
   options: MiniMapOptions;
   ticking: boolean;
@@ -208,7 +208,7 @@ class Minimap {
 
 		this.update();
 
-		parentMap!.on('move', this.update.bind(this));
+		parentMap.on('move', this.update.bind(this));
 
 		miniMap.on('mousemove', this.mouseMove.bind(this));
 		miniMap.on('mousedown', this.mouseDown.bind(this));
@@ -373,5 +373,3 @@ class Minimap {
 		e.preventDefault();
 	}
 }
-
-export default Minimap;

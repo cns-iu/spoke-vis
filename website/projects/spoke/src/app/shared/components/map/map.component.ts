@@ -2,7 +2,7 @@ import { Any } from '@angular-ru/common/typings';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import mapboxgl, { Map, MapboxGeoJSONFeature, MapMouseEvent, Style } from 'mapbox-gl';
 import { MiniMapOptions, Node, Edge, Cluster, MapMarker, ZoomLookup } from '../../../core/models/Map';
-import MiniMap from './mapboxgl-minimap';
+import { MiniMap } from './minimap';
 
 const blankStyle: Style = {
   version: 8,
@@ -144,11 +144,11 @@ export class MapComponent {
 
   nodeClicked(event: MapMouseEvent): void {
     this.nodeClick.emit(event);
-  };
+  }
 
   edgeClicked(event: MapMouseEvent): void {
     this.edgeClick.emit(event);
-  };
+  }
 
   onMapLoad(map: Map): void {
     this.map = map;
@@ -171,11 +171,11 @@ export class MapComponent {
 
     // When the user zooms the map, this method handles showing and hiding data based on zoom level
     map.on('zoom', () => this.updateFilters());
-  };
+  }
 
   addMapMarkers(markers: MapMarker[]): void {
     markers.forEach(marker => {
-      const marker1 = new mapboxgl.Marker(marker.config || {})
+      new mapboxgl.Marker(marker.config || {})
         .setLngLat(marker.coordinates)
         .addTo(this.map);
     });

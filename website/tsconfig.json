@@ -26,9 +26,7 @@
       "vega-lite": [
         "node_modules/vega-lite/build/vega-lite"
       ]
-    },
-    "resolveJsonModule": true,
-    "esModuleInterop": true
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
