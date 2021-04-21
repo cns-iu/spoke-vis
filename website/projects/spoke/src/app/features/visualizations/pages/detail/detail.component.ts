@@ -3,8 +3,12 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnD
 import { ActivatedRoute } from '@angular/router';
 import { MapboxGeoJSONFeature } from 'mapbox-gl';
 import { forkJoin, Subscription } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 
+
+const EMPTY_FEATURES = {
+  type: 'FeatureCollection', features: []
+} as unknown as MapboxGeoJSONFeature;
 
 @Component({
   selector: 'spoke-detail',
@@ -16,10 +20,10 @@ export class DetailComponent implements OnInit, OnDestroy {
   /** HTML class name */
   @HostBinding('class') readonly clsName = 'spoke-detail';
 
-  edgeFeatures?: MapboxGeoJSONFeature;
-  nodeFeatures?: MapboxGeoJSONFeature;
-  clusterFeatures?: MapboxGeoJSONFeature;
-  boundaryFeatures?: MapboxGeoJSONFeature;
+  edgeFeatures = EMPTY_FEATURES;
+  nodeFeatures = EMPTY_FEATURES;
+  clusterFeatures = EMPTY_FEATURES;
+  boundaryFeatures = EMPTY_FEATURES;
 
   readonly mapData$ = this.route.paramMap.pipe(
     map(p => {
@@ -45,13 +49,15 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(
-      this.mapData$.subscribe(({edges, nodes, clusters, boundaries}) => {
-        this.edgeFeatures = edges;
-        this.nodeFeatures = nodes;
-        this.clusterFeatures = clusters;
-        this.boundaryFeatures = boundaries;
-        this.cd.detectChanges();
-      })
+      this.mapData$.pipe(
+        tap(({edges, nodes, clusters, boundaries}) => {
+          this.edgeFeatures = edges;
+          this.nodeFeatures = nodes;
+          this.clusterFeatures = clusters;
+          this.boundaryFeatures = boundaries;
+          this.cd.detectChanges();
+        }))
+        .subscribe()
     );
   }
 
