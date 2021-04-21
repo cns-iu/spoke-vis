@@ -1,0 +1,20 @@
+id,type,label,weight,a,b,tooltip
+0,Compound,Compound,1967305,5,3,
+1,Protein,Protein,196097,4,3,INTERACTS_PiP (1648233)
+2,Gene,Gene,19989,6,3,UPREGULATES_KGuG (259742); DOWNREGULATES_KGdG (259742); UPREGULATES_OGuG (54958); DOWNREGULATES_OGdG (31972); UPREGULATES_GPuG (11828); DOWNREGULATES_GPdG (7968)
+3,Reaction,Reaction,16320,5,4,
+4,Anatomy,Anatomy,14939,7,3,ISA_AiA (18685); CONTAINS_AcA (18685); PARTOF_ApA (9233)
+5,Disease,Disease,10209,7,5,RESEMBLES_DrD (62984); ISA_DiD (10393); CONTAINS_DcD (10393)
+6,Organism,Organism,8109,4,5,CONTAINS_OcO (7917); ISA_OiO (7917)
+7,EC,EC,6682,4,4,
+8,SideEffect,Side Effect,6061,5,2,
+9,Pathway,Pathway,2128,3,4,CONTAINS_PWcPW (1384); ISA_PWiPW (1384)
+10,Food,Food,897,3,2,
+11,PharmacologicClass,Pharmacologic Class,534,4,2,
+12,Symptom,Symptom,386,8,5,
+13,AnatomyCellType,Anatomy Cell Type,102,7,2,
+14,CellType,Cell Type,54,7,1,
+15,Nutrient,Nutrient,38,3,1,
+16,SARSCov2,SARS Cov2,27,2,4,
+17,ProteinFamily,Protein Family,0,2,1,
+18,ProteinDomain,Protein Domain,0,2,2,
