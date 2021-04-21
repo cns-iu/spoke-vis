@@ -10,20 +10,20 @@ export interface Edge {
   borderOpacity?: number;
   borderColor?: string;
   borderWidth?: number;
-};
+}
 
 export interface Node {
   level: number;
   zoom: number;
   fontSize: number;
-};
+}
 
 export interface Cluster {
   fillOpacity: number;
   borderLineWidth: number;
   borderLineOpacity: number;
   borderLineMinZoom: number;
-};
+}
 
 export interface MapSources {
   clusters: MapboxGeoJSONFeature;
@@ -53,15 +53,16 @@ export interface MiniMapOptions {
   keyboard: boolean;
   doubleClickZoom: boolean;
   touchZoomRotate: boolean;
-  maxBounds?: LngLatBoundsLike | undefined;
+  maxBounds?: LngLatBoundsLike;
   bounds?: Any;
-};
+}
 
 export type PopupContent = (string | [string, (() => unknown)])[];
+
 export interface Popup {
   layer: string;
   content: PopupContent;
-};
+}
 
 export interface MapMarkerConfig {
   color?: string;
