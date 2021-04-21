@@ -1,7 +1,9 @@
 <spoke-map
+  *ngIf="nodeFeatures.features.length > 0"
   [edgeFeatures]="edgeFeatures"
   [nodeFeatures]="nodeFeatures"
   [clusterFeatures]="clusterFeatures"
   [boundaryFeatures]="boundaryFeatures"
-  [mapCenter]="[0, -40]"
+  [mapMarkers]="markers"
+  [mapCenter]="mapCenter"
 ></spoke-map>
