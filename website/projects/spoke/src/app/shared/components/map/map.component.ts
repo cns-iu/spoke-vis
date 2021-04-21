@@ -132,7 +132,7 @@ export class MapComponent {
   edges: Edge[] = defaultEdges;
   nodes: Node[] = defaultNodes;
 
-  // @TODO:  Work these variables back into the layer tags.
+  // Work these variables back into the layer tags.
   currentNodeFormula: Any = ['at', ['get', 'level'], ['literal', this.nodes]];
   currentEdgeFormula: Any = ['get', 'zoom', ['at', ['get', 'level'], ['literal', this.edges]]];
   edgeFormula = ['at', ['get', 'level'], ['literal', this.edges]];
@@ -140,7 +140,7 @@ export class MapComponent {
 
   capitalizeFirstLetter(input: string): string {
     return input.charAt(0).toUpperCase() + input.slice(1);
-  };
+  }
 
   nodeClicked(event: MapMouseEvent): void {
     this.nodeClick.emit(event);
