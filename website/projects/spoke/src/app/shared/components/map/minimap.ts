@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/member-ordering */
-import { Any } from '@angular-ru/common/typings';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { GeoJSONSource, GeoJSONSourceRaw, LngLatBounds, LngLatBoundsLike, Map as MapboxMap, MapboxEvent, MapMouseEvent } from 'mapbox-gl';
 import { MapSources, MiniMapOptions } from '../../../core/models/Map';
 
+
 /*
-  Modified version of Brendan Matkin's Mapboxgl-Minimap:
+  This is a modified and updated version of Brendan Matkin's Mapboxgl-Minimap:
 	https://github.com/brendanmatkin/mapboxgl-minimap
 */
 
@@ -32,16 +31,17 @@ export class MiniMap {
   options: MiniMapOptions;
   ticking: boolean;
   lastMouseMoveEvent: null;
-  parentMap: Any;
+  parentMap!: MapboxMap;
   isDragging: boolean;
   isCursorOverFeature: boolean;
   previousPoint: number[];
   currentPoint: number[];
-  trackingRectCoordinates: never[][][];
-  container: HTMLDivElement | undefined;
-  miniMap: Any;
-  trackingRect: Any;
-  miniMapCanvas: Any;
+  trackingRectCoordinates: number[][][];
+  container?: HTMLDivElement;
+  miniMap!: MapboxMap;
+  trackingRect!: GeoJSONSource;
+  trackingRectData!: GeoJSONSourceRaw;
+  miniMapCanvas!: HTMLElement;
 
 	constructor(sources: MapSources, options: MiniMapOptions) {
 		this.sources = sources;
@@ -50,7 +50,6 @@ export class MiniMap {
 
 		this.ticking = false;
 		this.lastMouseMoveEvent = null;
-		this.parentMap = null;
 		this.isDragging = false;
 		this.isCursorOverFeature = false;
 		this.previousPoint = [0, 0];
@@ -58,12 +57,12 @@ export class MiniMap {
 		this.trackingRectCoordinates = [[[], [], [], [], []]];
 	}
 
-	onAdd(parentMap: Any) {
+	onAdd(parentMap: MapboxMap) {
 		this.parentMap = parentMap;
 
 		const opts = this.options;
 		const container = this.container = this.createContainer(parentMap);
-		const miniMap = this.miniMap = new mapboxgl.Map({
+		const miniMap = this.miniMap = new MapboxMap({
 			attributionControl: false,
 			container,
 			style: blankStyle,
@@ -78,7 +77,7 @@ export class MiniMap {
 		return this.container;
 	}
 
-	onRemove(parentMap: Any) {
+	onRemove(parentMap: MapboxMap) {
 		return;
 	}
 
@@ -93,8 +92,9 @@ export class MiniMap {
 
 		interactions.forEach((i: string) => {
       const key = i as keyof MiniMapOptions;
+      const map = this.miniMap as unknown as {[key: string]: {disable: () => void}};
 			if (opts[key] !== true) {
-				miniMap[i].disable();
+				map[i].disable();
 			}
 		});
 
@@ -108,7 +108,7 @@ export class MiniMap {
 
 		this.convertBoundsToPoints(bounds);
 
-		miniMap.addSource('trackingRect', {
+    this.trackingRectData = {
 			type: 'geojson',
 			data: {
 				type: 'Feature',
@@ -120,7 +120,8 @@ export class MiniMap {
 					coordinates: this.trackingRectCoordinates
 				}
 			}
-		});
+		};
+		miniMap.addSource('trackingRect', this.trackingRectData);
 
 		// Add the geojson layers of our data so the minimap matches the parent map
 		miniMap.addLayer({
@@ -204,7 +205,7 @@ export class MiniMap {
 			}
 		});
 
-		this.trackingRect = this.miniMap.getSource('trackingRect');
+		this.trackingRect = this.miniMap.getSource('trackingRect') as GeoJSONSource;
 
 		this.update();
 
@@ -223,7 +224,7 @@ export class MiniMap {
 		this.miniMapCanvas.addEventListener('mousewheel', this.preventDefault);
 	}
 
-	mouseDown(e: { lngLat: { lng: Any; lat: Any } }) {
+	mouseDown(e: MapMouseEvent) {
 		if (this.isCursorOverFeature) {
 			this.isDragging = true;
 			this.previousPoint = this.currentPoint;
@@ -231,7 +232,7 @@ export class MiniMap {
 		}
 	}
 
-	mouseMove(e: { point: Any; lngLat: { lng: Any; lat: Any } }) {
+	mouseMove(e: MapMouseEvent) {
 		this.ticking = false;
 
 		const miniMap = this.miniMap;
@@ -258,7 +259,7 @@ export class MiniMap {
 
 			this.parentMap.fitBounds(newBounds, {
 				duration: 80,
-				noMoveStart: true
+				// noMoveStart: true
 			});
 		}
 	}
@@ -270,44 +271,39 @@ export class MiniMap {
 
 	moveTrackingRect(offset: number[]) {
 		const source = this.trackingRect;
-		const data = source.data;
-		const bounds = data.properties.bounds;
+		const rectPoints = this.trackingRectCoordinates[0] as [number, number][];
 
-		bounds.ne.lat -= offset[1];
-		bounds.ne.lng -= offset[0];
-		bounds.sw.lat -= offset[1];
-		bounds.sw.lng -= offset[0];
+		const bounds = new LngLatBounds();
+    for (const coord of rectPoints) {
+      bounds.extend(coord);
+    }
+    const ne = bounds.getNorthEast();
+		const sw = bounds.getSouthWest();
+		ne.lat -= offset[1];
+		ne.lng -= offset[0];
+		sw.lat -= offset[1];
+		sw.lng -= offset[0];
 
 		this.convertBoundsToPoints(bounds);
-		source.setData(data);
+		source.setData(this.trackingRectData.data!);
 
 		return bounds;
 	}
 
-	setTrackingRectBounds(bounds: Any) {
+	setTrackingRectBounds(sourceBounds: LngLatBoundsLike) {
+    const bounds = LngLatBounds.convert(sourceBounds);
 		const source = this.trackingRect;
-		const data = source.data;
-
-    if (!data?.properties?.bounds) {
-      console.warn('MiniMap source data blank.', this);
-      return;
-    }
-
-		data.properties.bounds = bounds;
+		const data = this.trackingRectData.data!;
 
 		this.convertBoundsToPoints(bounds);
 		source.setData(data);
 	}
 
-	convertBoundsToPoints(bounds: { ne: Any; sw: Any }) {
-		const ne = bounds.ne;
-		const sw = bounds.sw;
-		const trc: Any = this.trackingRectCoordinates;
-
-    if (!trc[0][0][0]) {
-      console.warn('MiniMap tracking rectangle coordinates blank.', this);
-      return;
-    }
+	convertBoundsToPoints(sourceBounds: LngLatBoundsLike) {
+    const bounds = LngLatBounds.convert(sourceBounds);
+		const ne = bounds.getNorthEast();
+		const sw = bounds.getSouthWest();
+		const trc = this.trackingRectCoordinates;
 
 		trc[0][0][0] = ne.lng;
 		trc[0][0][1] = ne.lat;
@@ -338,12 +334,12 @@ export class MiniMap {
 	zoomAdjust() {
 		const miniMap = this.miniMap;
 		const parentMap = this.parentMap;
-		const miniZoom = parseInt(miniMap.getZoom(), 10);
-		const parentZoom = parseInt(parentMap.getZoom(), 10);
+		const miniZoom = miniMap.getZoom();
+		const parentZoom = parentMap.getZoom();
 		const levels = this.options.zoomLevels;
 		let found = false;
 
-		levels.forEach(function(zoom: Any[]) {
+		levels.forEach(function(zoom) {
 			if (!found && parentZoom >= zoom[0]) {
 				if (miniZoom >= zoom[1]) {
 					miniMap.setZoom(zoom[2]);
@@ -363,7 +359,7 @@ export class MiniMap {
 		}
 	}
 
-	createContainer(parentMap: { getContainer: () => { (): Any; new(): Any; appendChild: { (arg0: HTMLDivElement): void; new(): Any } } }) {
+	createContainer(parentMap: MapboxMap) {
 		const opts = this.options;
 		const container = document.createElement('div');
 
