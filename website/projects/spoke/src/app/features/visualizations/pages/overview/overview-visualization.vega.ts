@@ -181,8 +181,6 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           mark: {
             type: 'circle',
             opacity: 1,
-            stroke: 'red',
-            strokeWidth: 2,
             fill: {
               expr: 'datum.color'
             }
