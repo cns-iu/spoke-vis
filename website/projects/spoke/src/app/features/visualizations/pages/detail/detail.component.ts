@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnD
 import { ActivatedRoute } from '@angular/router';
 import { MapboxGeoJSONFeature } from 'mapbox-gl';
 import { forkJoin, Subscription } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 
 
 const EMPTY_FEATURES = {
@@ -49,15 +49,22 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(
-      this.mapData$.pipe(
-        tap(({edges, nodes, clusters, boundaries}) => {
+      this.mapData$.subscribe({
+        next: ({edges, nodes, clusters, boundaries}) => {
           this.edgeFeatures = edges;
           this.nodeFeatures = nodes;
           this.clusterFeatures = clusters;
           this.boundaryFeatures = boundaries;
           this.cd.detectChanges();
-        }))
-        .subscribe()
+        },
+        error: () => {
+          this.edgeFeatures = EMPTY_FEATURES;
+          this.nodeFeatures = EMPTY_FEATURES;
+          this.clusterFeatures = EMPTY_FEATURES;
+          this.boundaryFeatures = EMPTY_FEATURES;
+          this.cd.detectChanges();
+        }
+      })
     );
   }
 
