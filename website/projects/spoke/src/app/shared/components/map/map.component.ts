@@ -164,7 +164,13 @@ export class MapComponent {
 
     // ShowCompass off to disable rotation.
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
-    map.addControl(new MiniMap({nodes: this.nodeFeatures, clusters: this.clusterFeatures}, this.minimapOptions), 'bottom-right');
+    if (this.nodeFeatures.features.length === 0) {
+      console.log('0 node features.');
+    } else if (this.clusterFeatures.features.length === 0) {
+      console.log('0 cluster features');
+    } else {
+      map.addControl(new MiniMap({nodes: this.nodeFeatures, clusters: this.clusterFeatures}, this.minimapOptions), 'bottom-right');
+    }
 
     this.map.resize();
 
