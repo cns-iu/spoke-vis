@@ -1,0 +1,20 @@
+type,label,weight,a,b
+Compound,Compound,1967305,4,3
+Protein,Protein,196097,3,3
+Gene,Gene,19989,5,3
+Reaction,Reaction,16320,4,4
+Anatomy,Anatomy,14939,6,3
+Disease,Disease,10209,6,5
+Organism,Organism,8109,3,5
+EC,EC,6682,3,4
+SideEffect,Side Effect,6061,4,2
+Pathway,Pathway,2128,2,4
+Food,Food,897,2,2
+PharmacologicClass,Pharmacologic Class,534,3,2
+Symptom,Symptom,386,7,5
+AnatomyCellType,Anatomy Cell Type,102,6,2
+CellType,Cell Type,54,6,1
+Nutrient,Nutrient,38,2,1
+SARSCov2,SARS Cov2,27,1,4
+ProteinFamily,Protein Family,0,1,1
+ProteinDomain,Protein Domain,0,1,2

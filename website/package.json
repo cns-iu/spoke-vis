@@ -35,8 +35,14 @@
     "mapbox-gl": "^2.2.0",
     "ngx-google-analytics": "^11.2.0",
     "ngx-mapbox-gl": "^6.0.4",
+    "array-flat-polyfill": "^1.0.1",
+    "css-element-queries": "^1.2.3",
+    "ngx-vega": "^0.52.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
+    "vega": "^5.20.1",
+    "vega-embed": "^6.17.0",
+    "vega-lite": "^5.1.0",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
