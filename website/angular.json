@@ -35,7 +35,12 @@
             "styles": [
               "projects/spoke/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "@mapbox/mapbox-gl-geocoder",
+              "css-element-queries",
+              "papaparse"
+            ]
           },
           "configurations": {
             "production": {
