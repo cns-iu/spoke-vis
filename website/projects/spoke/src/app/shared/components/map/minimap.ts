@@ -1,6 +1,5 @@
-import {
-  GeoJSONSource, GeoJSONSourceRaw, LngLatBounds, LngLatBoundsLike, Map as MapboxMap, MapMouseEvent, Style
-} from 'mapbox-gl';
+import { Feature, Polygon } from 'geojson';
+import { GeoJSONSource, LngLatBounds, Map as MapboxMap, MapMouseEvent, Style } from 'mapbox-gl';
 import { MapSources, MiniMapOptions } from '../../../core/models/Map';
 
 
@@ -42,7 +41,7 @@ export class MiniMap {
   container?: HTMLDivElement;
   miniMap!: MapboxMap;
   trackingRect!: GeoJSONSource;
-  trackingRectData!: GeoJSONSourceRaw;
+  trackingRectData!: Feature<Polygon>;
   miniMapCanvas!: HTMLElement;
 
 	constructor(sources: MapSources, options: MiniMapOptions) {
@@ -111,19 +110,17 @@ export class MiniMap {
 		this.convertBoundsToPoints(bounds);
 
     this.trackingRectData = {
-			type: 'geojson',
-			data: {
-				type: 'Feature',
-				properties: {
-					name: 'trackingRect'
-				},
-				geometry: {
-					type: 'Polygon',
-					coordinates: this.trackingRectCoordinates
-				}
-			}
+      type: 'Feature',
+      properties: {
+        name: 'trackingRect'
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: this.trackingRectCoordinates
+      }
 		};
-		miniMap.addSource('trackingRect', this.trackingRectData);
+
+		miniMap.addSource('trackingRect', { type: 'geojson', data: this.trackingRectData });
 
 		// Add the geojson layers of our data so the minimap matches the parent map
 		miniMap.addLayer({
@@ -259,10 +256,7 @@ export class MiniMap {
 
 			const newBounds = this.moveTrackingRect(offset);
 
-			this.parentMap.fitBounds(newBounds, {
-				duration: 80,
-				// noMoveStart: true
-			});
+			this.parentMap.fitBounds(newBounds, { duration: 80, linear: true });
 		}
 	}
 
@@ -272,13 +266,10 @@ export class MiniMap {
 	}
 
 	moveTrackingRect(offset: number[]) {
-		const source = this.trackingRect;
 		const rectPoints = this.trackingRectCoordinates[0] as [number, number][];
-
 		const bounds = new LngLatBounds();
-    for (const coord of rectPoints) {
-      bounds.extend(coord);
-    }
+    rectPoints.forEach(coord => bounds.extend(coord));
+
     const ne = bounds.getNorthEast();
 		const sw = bounds.getSouthWest();
 		ne.lat -= offset[1];
@@ -287,22 +278,17 @@ export class MiniMap {
 		sw.lng -= offset[0];
 
 		this.convertBoundsToPoints(bounds);
-		source.setData(this.trackingRectData.data!);
+		this.trackingRect.setData(this.trackingRectData);
 
 		return bounds;
 	}
 
-	setTrackingRectBounds(sourceBounds: LngLatBoundsLike) {
-    const bounds = LngLatBounds.convert(sourceBounds);
-		const source = this.trackingRect;
-		const data = this.trackingRectData.data!;
-
+	setTrackingRectBounds(bounds: LngLatBounds) {
 		this.convertBoundsToPoints(bounds);
-		source.setData(data);
+		this.trackingRect.setData(this.trackingRectData);
 	}
 
-	convertBoundsToPoints(sourceBounds: LngLatBoundsLike) {
-    const bounds = LngLatBounds.convert(sourceBounds);
+	convertBoundsToPoints(bounds: LngLatBounds) {
 		const ne = bounds.getNorthEast();
 		const sw = bounds.getSouthWest();
 		const trc = this.trackingRectCoordinates;
