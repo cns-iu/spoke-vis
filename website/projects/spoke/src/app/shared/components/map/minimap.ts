@@ -1,4 +1,4 @@
-import mapboxgl, { GeoJSONSource, GeoJSONSourceRaw, LngLatBounds, LngLatBoundsLike, Map as MapboxMap, MapboxEvent, MapMouseEvent } from 'mapbox-gl';
+import mapboxgl, { GeoJSONSource, GeoJSONSourceRaw, LngLatBounds, LngLatBoundsLike, Map as MapboxMap, MapMouseEvent } from 'mapbox-gl';
 import { MapSources, MiniMapOptions } from '../../../core/models/Map';
 
 
