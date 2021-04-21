@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MapboxGeoJSONFeature } from 'mapbox-gl';
 import { forkJoin, Subscription } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 
@@ -15,10 +16,10 @@ export class DetailComponent implements OnInit, OnDestroy {
   /** HTML class name */
   @HostBinding('class') readonly clsName = 'spoke-detail';
 
-  edgeFeatures?: mapboxgl.MapboxGeoJSONFeature;
-  nodeFeatures?: mapboxgl.MapboxGeoJSONFeature;
-  clusterFeatures?: mapboxgl.MapboxGeoJSONFeature;
-  boundaryFeatures?: mapboxgl.MapboxGeoJSONFeature;
+  edgeFeatures?: MapboxGeoJSONFeature;
+  nodeFeatures?: MapboxGeoJSONFeature;
+  clusterFeatures?: MapboxGeoJSONFeature;
+  boundaryFeatures?: MapboxGeoJSONFeature;
 
   readonly mapData$ = this.route.paramMap.pipe(
     map(p => {
@@ -30,11 +31,11 @@ export class DetailComponent implements OnInit, OnDestroy {
     switchMap(({disease, food}) => {
       const dataDir = `assets/datasets/${disease}-food-tree`;
       return forkJoin({
-        edges: this.http.get<mapboxgl.MapboxGeoJSONFeature>(`${dataDir}/edges.geojson`),
-        nodes: this.http.get<mapboxgl.MapboxGeoJSONFeature>(`${dataDir}/nodes.geojson`),
-        clusters: this.http.get<mapboxgl.MapboxGeoJSONFeature>(`${dataDir}/cluster.geojson`),
-        boundaries: this.http.get<mapboxgl.MapboxGeoJSONFeature>(`${dataDir}/boundary.geojson`)
-      })
+        edges: this.http.get<MapboxGeoJSONFeature>(`${dataDir}/edges.geojson`),
+        nodes: this.http.get<MapboxGeoJSONFeature>(`${dataDir}/nodes.geojson`),
+        clusters: this.http.get<MapboxGeoJSONFeature>(`${dataDir}/cluster.geojson`),
+        boundaries: this.http.get<MapboxGeoJSONFeature>(`${dataDir}/boundary.geojson`)
+      });
     })
   );
 
@@ -51,7 +52,7 @@ export class DetailComponent implements OnInit, OnDestroy {
         this.boundaryFeatures = boundaries;
         this.cd.detectChanges();
       })
-    )
+    );
   }
 
   ngOnDestroy(): void {
