@@ -1,4 +1,6 @@
-import mapboxgl, { GeoJSONSource, GeoJSONSourceRaw, LngLatBounds, LngLatBoundsLike, Map as MapboxMap, MapMouseEvent } from 'mapbox-gl';
+import {
+  GeoJSONSource, GeoJSONSourceRaw, LngLatBounds, LngLatBoundsLike, Map as MapboxMap, MapMouseEvent, Style
+} from 'mapbox-gl';
 import { MapSources, MiniMapOptions } from '../../../core/models/Map';
 
 
@@ -7,7 +9,7 @@ import { MapSources, MiniMapOptions } from '../../../core/models/Map';
 	https://github.com/brendanmatkin/mapboxgl-minimap
 */
 
-const blankStyle: mapboxgl.Style = {
+const blankStyle: Style = {
 	version: 8,
 	name: 'Blank',
 	center: [0, 0],
