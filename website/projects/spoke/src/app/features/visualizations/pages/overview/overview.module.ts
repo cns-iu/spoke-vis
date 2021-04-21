@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { NgxVegaModule } from 'ngx-vega';
 
 import { OverviewComponent } from './overview.component';
 
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    NgxVegaModule
   ],
   declarations: [OverviewComponent],
   exports: [OverviewComponent]
