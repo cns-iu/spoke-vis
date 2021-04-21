@@ -288,7 +288,13 @@ export class MiniMap {
 		const source = this.trackingRect;
 		const data = source.data;
 
+    if (!data?.properties?.bounds) {
+      console.warn('MiniMap source data blank.', this);
+      return;
+    }
+
 		data.properties.bounds = bounds;
+
 		this.convertBoundsToPoints(bounds);
 		source.setData(data);
 	}
@@ -297,6 +303,11 @@ export class MiniMap {
 		const ne = bounds.ne;
 		const sw = bounds.sw;
 		const trc: Any = this.trackingRectCoordinates;
+
+    if (!trc[0][0][0]) {
+      console.warn('MiniMap tracking rectangle coordinates blank.', this);
+      return;
+    }
 
 		trc[0][0][0] = ne.lng;
 		trc[0][0][1] = ne.lat;
