@@ -48,15 +48,15 @@ export class DetailComponent implements OnInit, OnDestroy {
 
       const dataDir = `assets/datasets/${disease}-food-tree`;
       const nodes = this.http.get<FeatureCollection<Point, {label: string}>>(`${dataDir}/nodes.geojson`);
-      const markers = nodes.pipe(map(n => {
-        return n.features.filter(node => node.properties.label === food || node.properties.label === diseaseLabel)
+      const markers = nodes.pipe(map(n =>
+        n.features.filter(node => node.properties.label === food || node.properties.label === diseaseLabel)
           .map(node => ({
             config: {
               color: node.properties.label === food ? '#D1B445' : '#880E4F'
             },
             coordinates: node.geometry.coordinates
           }) as MapMarker)
-      }));
+      ));
       const mapCenter = nodes.pipe(map(n =>
         n.features.find(node => node.properties.label === diseaseLabel)?.geometry.coordinates as [number, number] ?? [0, -40]
       ));
