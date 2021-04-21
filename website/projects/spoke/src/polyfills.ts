@@ -57,8 +57,9 @@
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
+import { Any } from '@angular-ru/common/typings';
 import 'zone.js/dist/zone';  // Included with Angular CLI.
-
+(window as Any).global = window; // For ngx-mapbox-gl
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
