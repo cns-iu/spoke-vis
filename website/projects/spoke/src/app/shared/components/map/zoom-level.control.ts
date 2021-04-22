@@ -18,7 +18,7 @@ export class ZoomLevelControl implements IControl {
 
   updateText(): void {
     if (this.map && this.container) {
-      this.container.textContent = this.map.getZoom().toFixed(2) + 'x';
+      this.container.textContent = this.map.getZoom().toFixed(0) + 'x';
     }
   }
 
