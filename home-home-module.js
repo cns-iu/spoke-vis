@@ -15,7 +15,7 @@ __webpack_require__.r(__webpack_exports__);
 class HomeComponent {
 }
 HomeComponent.ɵfac = function HomeComponent_Factory(t) { return new (t || HomeComponent)(); };
-HomeComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: HomeComponent, selectors: [["spoke-home"]], decls: 15, vars: 0, consts: [[1, "background-box"], [1, "inner-box"], [1, "content"], [1, "title"], [1, "text"], ["src", "/assets/images/network-image.png", "alt", "An image of an example network"], [1, "logos"], ["src", "/assets/logos/NSF_4-Color_bitmap_Logo-sm.svg", "alt", "NSF logo"], ["src", "/assets/logos/ncats-logo.png", "alt", "NIH logo"], ["src", "/assets/logos/ucsf-logo.svg", "alt", "UCSF logo"], ["src", "/assets/logos/cns-logo.svg", "alt", "CNS logo"]], template: function HomeComponent_Template(rf, ctx) { if (rf & 1) {
+HomeComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: HomeComponent, selectors: [["spoke-home"]], decls: 15, vars: 0, consts: [[1, "background-box"], [1, "inner-box"], [1, "content"], [1, "title"], [1, "text"], ["src", "assets/images/network-image.png", "alt", "An image of an example network"], [1, "logos"], ["src", "assets/logos/NSF_4-Color_bitmap_Logo-sm.svg", "alt", "NSF logo"], ["src", "assets/logos/ncats-logo.png", "alt", "NIH logo"], ["src", "assets/logos/ucsf-logo.svg", "alt", "UCSF logo"], ["src", "assets/logos/cns-logo.svg", "alt", "CNS logo"]], template: function HomeComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "div", 2);

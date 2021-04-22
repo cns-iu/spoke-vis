@@ -13682,7 +13682,7 @@ VisualizationsComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵ
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "INDEX_FILES", function() { return INDEX_FILES; });
 const INDEX_FILES = [
-    '/assets/datasets/index.json'
+    'assets/datasets/index.json'
 ];
 
 
