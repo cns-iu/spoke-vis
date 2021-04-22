@@ -465,12 +465,13 @@ export const vis1Spec: VisualizationSpec =
           },
           strokeWidth: {
             field: 'total_weight',
+            type: 'quantitative',
             scale: {
               range: [1, 10]
             },
             legend: {
               orient: 'bottom',
-              values: [27, 57158, 4241843],
+              values: [100000, 2000000, 4000000],
               title: 'Thickness by count:',
               symbolStrokeColor: 'black',
               symbolSize: 200,
