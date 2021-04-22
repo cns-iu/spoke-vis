@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
+import { SearchModule } from './components/search/search.module';
 import { StateModule } from './state/state.module';
 import { VisualizationsRoutingModule } from './visualizations-routing.module';
 import { VisualizationsComponent } from './visualizations.component';
@@ -20,7 +21,9 @@ import { VisualizationsComponent } from './visualizations.component';
     MatSidenavModule,
 
     StateModule,
-    VisualizationsRoutingModule
+    VisualizationsRoutingModule,
+
+    SearchModule
   ],
   declarations: [VisualizationsComponent],
   providers: []

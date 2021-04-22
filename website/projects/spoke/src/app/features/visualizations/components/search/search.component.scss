@@ -1,0 +1,13 @@
+:host {
+  display: block;
+
+  .search-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    input {
+      margin-top: 1rem;
+    }
+  }
+}
