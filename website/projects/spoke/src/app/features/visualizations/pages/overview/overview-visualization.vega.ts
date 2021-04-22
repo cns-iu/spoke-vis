@@ -18,6 +18,8 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           stroke: 'transparent'
         }
       },
+      width: 'container',
+      height: 'container',
       autosize: {
         type: 'fit',
         contains: 'padding'
@@ -38,12 +40,6 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           mark: {
             type: 'rule'
           },
-          params: [
-            {
-              name: 'highlightEdge',
-              select: {type: 'point', on: 'mouseover'}
-            }
-          ],
           encoding: {
             x: {
               field: 'a1',
@@ -66,30 +62,10 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               },
               legend: null
             },
-            strokeOpacity: {
-              value: 0.15
-            },
             color: {
-              condition: [
-                {
-                  param: 'highlightEdge',
-                  empty: false,
-                  value: 'red'
-                }
-              ],
-              field: 'total_weight',
-              scale: {
-                scheme: 'greys'
-              },
+              value: '#f5f5f5',
               legend: null
-            },
-            tooltip: [
-              {
-                field: 'tooltip',
-                title: 'Link Types (#Links)',
-                type: 'ordinal'
-              }
-            ]
+            }
           }
         },
         {
@@ -143,33 +119,12 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           },
           mark: {
             type: 'circle',
-            stroke: 'red',
-            strokeWidth: 2
-          },
-          params: [
-            {
-              name: 'highlightNode',
-              select: {type: 'point', on: 'mouseover'}
+            opacity: 1,
+            fill: {
+              expr: 'datum.color2'
             }
-          ],
+          },
           encoding: {
-            strokeOpacity: {
-              value: 0,
-              condition: [
-                {
-                  param: 'highlightNode',
-                  empty: false,
-                  value: 100
-                }
-              ]
-            },
-            opacity: {
-              condition: {
-                test: 'datum.label === "Disease"',
-                value: 1
-              },
-              value: 0.15
-            },
             x: {
               field: 'a',
               type: 'quantitative',
@@ -199,21 +154,6 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
                 domain: [0, 6]
               }
             },
-            tooltip: [
-              {
-                field: 'tooltip',
-                title: 'Link Types (#Links)',
-                type: 'ordinal'
-              }
-            ],
-            color: {
-              field: 'id',
-              type: 'quantitative',
-              legend: null,
-              scale: {
-                scheme: 'category20'
-              }
-            },
             size: {
               field: 'weight',
               type: 'quantitative',
@@ -234,7 +174,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               from: {
                 data: {url: 'assets/datasets/overview/nodes-v3.csv'},
                 key: 'type',
-                fields: ['a', 'b', 'id', 'weight']
+                fields: ['a', 'b', 'id', 'weight', 'color']
               }
             },
             {filter: `datum.dest_name == '${destination}'`}
@@ -242,8 +182,9 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           mark: {
             type: 'circle',
             opacity: 1,
-            stroke: 'red',
-            strokeWidth: 2
+            fill: {
+              expr: 'datum.color'
+            }
           },
           encoding: {
             strokeOpacity: {
@@ -276,14 +217,6 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               },
               scale: {
                 domain: [0, 6]
-              }
-            },
-            color: {
-              field: 'id',
-              type: 'quantitative',
-              legend: null,
-              scale: {
-                scheme: 'category20'
               }
             },
             size: {
@@ -483,6 +416,8 @@ export const vis1Spec: VisualizationSpec =
         stroke: 'transparent'
       }
     },
+    width: 'container',
+    height: 'container',
     autosize: {
       type: 'fit',
       contains: 'padding'
@@ -540,12 +475,13 @@ export const vis1Spec: VisualizationSpec =
                 param: 'highlightEdge',
                 empty: false,
                 value: 'red'
+              },
+              {
+                test: 'datum.total_weight > 500000',
+                value: '#000000'
               }
             ],
-            field: 'total_weight',
-            scale: {
-              scheme: 'greys'
-            },
+            value: '#e0e0e0',
             legend: null
           },
           tooltip: [
@@ -562,7 +498,10 @@ export const vis1Spec: VisualizationSpec =
           type: 'circle',
           opacity: 1,
           stroke: 'red',
-          strokeWidth: 2
+          strokeWidth: 2,
+          fill: {
+            expr: 'datum.color'
+          }
         },
         params: [
           {
@@ -617,14 +556,6 @@ export const vis1Spec: VisualizationSpec =
               type: 'ordinal'
             }
           ],
-          color: {
-            field: 'id',
-            type: 'quantitative',
-            legend: null,
-            scale: {
-              scheme: 'category20'
-            }
-          },
           size: {
             field: 'weight',
             type: 'quantitative',
