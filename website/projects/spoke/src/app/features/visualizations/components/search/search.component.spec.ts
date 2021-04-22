@@ -1,0 +1,3 @@
+describe('SearchComponent', () => {
+  // Intentionally blank
+});

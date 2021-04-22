@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { DetailComponent } from './pages/detail/detail.component';
-import { OverviewComponent } from './pages/overview/overview.component';
 import { VisualizationsComponent } from './visualizations.component';
 
 
@@ -16,15 +14,11 @@ const ROUTES: Routes = [
     children: [
       {
         path: 'overview',
-        component: OverviewComponent
+        loadChildren: async () => (await import('./pages/overview/overview.module')).OverviewModule
       },
       {
-        path: 'overview/:disease/:food',
-        component: OverviewComponent
-      },
-      {
-        path: 'details/:disease/:food',
-        component: DetailComponent
+        path: 'details',
+        loadChildren: async () => (await import('./pages/detail/detail.module')).DetailModule
       }
     ]
   }
