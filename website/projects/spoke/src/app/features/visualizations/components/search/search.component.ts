@@ -145,14 +145,17 @@ export class SearchComponent implements OnDestroy {
       takeUntil(destroy$),
       pluck('root', 'queryParams'),
       filter(params => !!(params.disease && params.food)),
-      switchMap(params => datasets.loadDataset<FoodItem[]>(params.disease, params.food).pipe(
+      switchMap(params => datasets.loadDataset<FoodItem[]>(params.disease, 'tree-edges').pipe(
         catchError(() => of([])),
         switchMap(items => from(items).pipe(
           find(item => item.dest_name.toLowerCase() === params.food.toLowerCase())
         ))
       )),
       filter((item): item is FoodItem => !!item),
-      tap(item => foodControl.setValue(item))
+      tap(item => {
+        foodControl.setValue(item);
+        this.switchEnabled = true;
+      })
     );
     const foodChange = (foodControl.valueChanges as Observable<FoodItem | string | null>).pipe(
       takeUntil(destroy$),
