@@ -468,7 +468,14 @@ export const vis1Spec: VisualizationSpec =
             scale: {
               range: [1, 10]
             },
-            legend: null
+            legend: {
+              orient: 'bottom',
+              values: [27, 57158, 4241843],
+              title: 'Thickness by count:',
+              symbolStrokeColor: 'black',
+              symbolSize: 200,
+              padding: 20
+            }
           },
           color: {
             condition: [
@@ -501,7 +508,7 @@ export const vis1Spec: VisualizationSpec =
           stroke: 'red',
           strokeWidth: 2,
           fill: {
-            expr: 'datum.color'
+            expr: 'datum.color || "black"'
           }
         },
         params: [
@@ -563,7 +570,13 @@ export const vis1Spec: VisualizationSpec =
             scale: {
               range: [500, 1000]
             },
-            legend: null
+            legend: {
+              orient: 'bottom',
+              values: [10, 1000000],
+              title: 'Size by count:',
+              symbolStrokeColor: 'black',
+              padding: 20
+            }
           }
         }
       },
