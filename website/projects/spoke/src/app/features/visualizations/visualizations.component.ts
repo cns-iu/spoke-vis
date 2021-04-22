@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './visualizations.component.html',
   styleUrls: ['./visualizations.component.scss']
 })
-export class VisualizationsComponent { }
+export class VisualizationsComponent {
+  drawerOpen = true;
+}

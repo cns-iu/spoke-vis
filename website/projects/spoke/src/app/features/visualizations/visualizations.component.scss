@@ -1,3 +1,23 @@
 :host {
   display: block;
+
+  .drawer {
+    overflow-y: visible;
+
+    .toggle {
+      position: absolute;
+      top: 1rem;
+      left: 100%;
+
+      visibility: visible;
+
+      .icon {
+        transition: transform 400ms; // Same duration as mat-drawer
+
+        &.inverted {
+          transform: rotateY(180deg);
+        }
+      }
+    }
+  }
 }

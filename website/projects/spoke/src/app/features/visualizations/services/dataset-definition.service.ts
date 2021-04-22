@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { VisualizationsModule } from '../visualizations.module';
-
 
 /**
  * Definition with location, type, and parsing required for loading a dataset

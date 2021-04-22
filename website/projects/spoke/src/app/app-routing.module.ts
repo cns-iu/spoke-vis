@@ -32,6 +32,7 @@ export function createFeatureLoader(feature: string, module?: string): () => Pro
     // See: https://webpack.js.org/api/module-methods/#import-1
     const chunk = await import(
       /* webpackInclude: /\/features\/([^/]+)\/\1\.module/ */
+      /* webpackChunkName: "[request]" */
       `./features/${feature}/${feature}.module`
     );
 
