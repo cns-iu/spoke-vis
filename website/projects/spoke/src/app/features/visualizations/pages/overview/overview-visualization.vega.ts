@@ -65,10 +65,12 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
             },
             legend: {
               titleOrient: 'left',
+              titleColor: '#052049',
+              labelColor: '#052049',
               orient: 'bottom',
               values: [100000, 2000000, 4000000],
               title: 'Thickness by count:',
-              symbolStrokeColor: 'black',
+              symbolStrokeColor: '#052049',
               symbolSize: 200,
               padding: 20
             }
@@ -152,7 +154,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           stroke: source || destination ? undefined : 'red',
           strokeWidth: source || destination ? undefined : 2,
           fill: {
-            expr: source || destination ? 'datum.color2 || "black"' : 'datum.color || "black"'
+            expr: source || destination ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
           }
         },
         params: source || destination ? [] : [
@@ -216,10 +218,12 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
             },
             legend: {
               titleOrient: 'left',
+              titleColor: '#052049',
+              labelColor: '#052049',
               orient: 'bottom',
               values: [10, 1000000],
               title: 'Size by count:',
-              symbolStrokeColor: 'black',
+              symbolStrokeColor: '#052049',
               padding: 20
             }
           }
