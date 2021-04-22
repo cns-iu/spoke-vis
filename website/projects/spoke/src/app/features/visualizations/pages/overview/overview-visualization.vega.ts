@@ -19,6 +19,8 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           stroke: 'transparent'
         }
       },
+      width: 'container',
+      height: 'container',
       autosize: {
         type: 'fit',
         contains: 'padding'
@@ -415,6 +417,8 @@ export const vis1Spec: VisualizationSpec =
         stroke: 'transparent'
       }
     },
+    width: 'container',
+    height: 'container',
     autosize: {
       type: 'fit',
       contains: 'padding'
