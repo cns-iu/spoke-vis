@@ -1,5 +1,4 @@
 import { VisualizationSpec } from 'vega-embed';
-import { colorSignalConfig } from 'vega-lite/build/src/config';
 
 
 export interface SpecOptions {
