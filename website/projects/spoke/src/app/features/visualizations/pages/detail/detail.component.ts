@@ -45,13 +45,11 @@ export class DetailComponent implements OnDestroy {
 
   nodeClick(e: MapLayerMouseEvent) {
     const label = e.features?.[0].properties?.label as string ?? 'Unknown Node';
-    console.log('detail_view', 'node_click', label, e, e.features);
     this.ga.event('detail_view', 'node_click', label);
   }
 
   edgeClick(e: MapLayerMouseEvent) {
     const label = e.features?.[0].properties?.label as string ?? 'Unknown Node';
-    console.log('detail_view', 'edge_click', label, e, e.features);
     this.ga.event('detail_view', 'edge_click', label);
   }
 

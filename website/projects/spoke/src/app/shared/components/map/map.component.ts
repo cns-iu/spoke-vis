@@ -126,6 +126,8 @@ export class MapComponent {
   // Outputs
   @Output() nodeClick = new EventEmitter<MapLayerMouseEvent>();
   @Output() edgeClick = new EventEmitter<MapLayerMouseEvent>();
+  @Output() zoomChange = new EventEmitter<number>();
+  @Output() panChange = new EventEmitter<[number, number]>();
 
   map!: Map;
   nodeZoomIndex = 0;
@@ -180,6 +182,8 @@ export class MapComponent {
 
     // When the user zooms the map, this method handles showing and hiding data based on zoom level
     map.on('zoom', () => this.updateFilters());
+    map.on('zoomend', (e) => this.zoomChange.emit(this.map.getZoom()));
+    map.on('moveend', (e) => this.panChange.emit(this.map.getCenter().toArray() as [number, number]));
   }
 
   addMapMarkers(markers: MapMarker[]): void {
