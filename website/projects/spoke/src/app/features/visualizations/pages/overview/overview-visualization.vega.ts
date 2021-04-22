@@ -1,6 +1,4 @@
 import { VisualizationSpec } from 'vega-embed';
-import { colorSignalConfig } from 'vega-lite/build/src/config';
-
 
 export interface SpecOptions {
   source?: string;
@@ -58,10 +56,18 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
             },
             strokeWidth: {
               field: 'total_weight',
+              type: 'quantitative',
               scale: {
                 range: [1, 10]
               },
-              legend: null
+              legend: {
+                orient: 'bottom',
+                values: [100000, 2000000, 4000000],
+                title: 'Thickness by count:',
+                symbolStrokeColor: 'black',
+                symbolSize: 200,
+                padding: 20
+              }
             },
             color: {
               value: '#f5f5f5',
@@ -122,7 +128,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
             type: 'circle',
             opacity: 1,
             fill: {
-              expr: 'datum.color2'
+              expr: 'datum.color2 || "black"'
             }
           },
           encoding: {
@@ -161,7 +167,13 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               scale: {
                 range: [500, 1000]
               },
-              legend: null
+              legend: {
+                orient: 'bottom',
+                values: [10, 1000000],
+                title: 'Size by count:',
+                symbolStrokeColor: 'black',
+                padding: 20
+              }
             }
           }
         },
