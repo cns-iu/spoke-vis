@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { Observable, of, ReplaySubject } from 'rxjs';
 import { map, pluck, takeUntil } from 'rxjs/operators';
 
@@ -29,7 +30,8 @@ export class SearchComponent implements OnDestroy {
   constructor(
     private readonly index: IndexState,
     private readonly datasets: DatasetState,
-    private readonly router: RouterState
+    private readonly router: RouterState,
+    private readonly ga: GoogleAnalyticsService
   ) {
     const id$ = router.state$.pipe(
       pluck('root', 'queryParams', 'disease'),
@@ -39,7 +41,7 @@ export class SearchComponent implements OnDestroy {
     id$.subscribe(id => {
       const item = index.entities[id as string];
       if (item) {
-        this.selectedIndexItem = item;
+        this.setSelectedIndexItem(item);
       }
     });
   }
@@ -56,12 +58,20 @@ export class SearchComponent implements OnDestroy {
   setSelectedIndexItem(item: IndexItem): void {
     this.selectedIndexItem = item;
     this.datasetItems$ = this.datasets.loadDataset(item.id, 'tree-edges');
+    this.ga.event('search_component', 'disease_selected', item.id);
+  }
+
+  setSelectedDatasetItem(item: Record<string, unknown>): void {
+    this.selectedDatasetItem = item;
+    this.ga.event('search_component', 'food_selected', item.dest_name as string);
   }
 
   doSearch(): void {
-    this.router.addQueryParams({
+    const params = {
       disease: this.selectedIndexItem!.id,
       food: this.selectedDatasetItem!.dest_name
-    });
+    };
+    this.router.addQueryParams(params);
+    this.ga.event('search_component', 'search_click', `${params.disease}_${params.food}`);
   }
 }
