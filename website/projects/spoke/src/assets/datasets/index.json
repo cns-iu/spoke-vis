@@ -13,13 +13,13 @@
   },
   {
     "id": "cad",
-    "name": "coronary artery disease",
+    "name": "Coronary artery disease",
     "description": "",
     "dir": "assets/datasets/cad-food-tree"
   },
   {
     "id": "epilepsy",
-    "name": "epilepsy",
+    "name": "Epilepsy",
     "description": "",
     "dir": "assets/datasets/epilepsy-food-tree"
   }

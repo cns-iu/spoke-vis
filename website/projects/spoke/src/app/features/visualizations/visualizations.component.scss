@@ -2,14 +2,24 @@
   display: block;
 
   .drawer {
+    width: 20rem;
     overflow-y: visible;
+
+    background-color: white;
 
     .toggle {
       position: absolute;
-      top: 1rem;
+      top: 2rem;
       left: 100%;
+      width: 1.5rem;
+      min-width: 0;
+      height: 3rem;
+      padding: 0;
+      border: 1px solid #EDEDEE;
 
       visibility: visible;
+      color: #052049;
+      background-color: #F2F4F6;
 
       .icon {
         transition: transform 400ms; // Same duration as mat-drawer

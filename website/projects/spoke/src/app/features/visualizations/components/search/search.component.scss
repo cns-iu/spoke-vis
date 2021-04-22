@@ -1,12 +1,49 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   .search-box {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    width: 100%;
     padding: 1rem;
 
     background-color: #F2F4F6;
+
+    .disease {
+      width: 100%;
+
+      .input {
+        color: #052049;
+      }
+    }
+
+    .food {
+      width: 100%;
+
+      .input {
+        color: #052049;
+      }
+    }
+
+    .search {
+      width: 100%;
+      color: white;
+      background-color: #007cbe;
+    }
+  }
+
+  .switch {
+    width: 10rem;
+    margin-top: 3rem;
+
+    color: white;
+    background-color: #007cbe;
+  }
+
+  *:disabled, .mat-form-field-disabled {
+    opacity: 15%;
   }
 }
