@@ -1,4 +1,4 @@
-import { IControl, Map as MapboxMap } from "mapbox-gl";
+import { IControl, Map as MapboxMap } from 'mapbox-gl';
 
 
 export class ZoomLevelControl implements IControl {
