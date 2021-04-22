@@ -5,12 +5,12 @@ import { DatasetDefinition } from '../services/dataset-definition.service';
 
 export const DATASET_DEFINITIONS: DatasetDefinition[] = [
   {
-    dataset: 'boundary',
+    dataset: 'boundaries',
     file: 'boundary.geojson',
     type: 'json'
   },
   {
-    dataset: 'cluster',
+    dataset: 'clusters',
     file: 'cluster.geojson',
     type: 'json'
   },

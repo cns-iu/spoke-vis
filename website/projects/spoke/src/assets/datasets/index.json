@@ -1,13 +1,13 @@
 [
   {
     "id": "alzheimers-all",
-    "name": "Alzheimers All",
+    "name": "Alzheimers Disease",
     "description": "",
     "dir": "/assets/datasets/alzheimers-all-food-tree"
   },
   {
     "id": "alzheimers",
-    "name": "Alzheimers",
+    "name": "Alzheimers Disease",
     "description": "",
     "dir": "/assets/datasets/alzheimers-food-tree"
   },
