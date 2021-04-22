@@ -2,9 +2,10 @@ import { Any } from '@angular-ru/common/typings';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FeatureCollection } from 'geojson';
 import { FullscreenControl, Map, MapLayerMouseEvent, Marker, NavigationControl, Style } from 'mapbox-gl';
+
 import { Cluster, Edge, MapMarker, MiniMapOptions, Node, ZoomLookup } from '../../../core/models/Map';
 import { MiniMap } from './minimap';
-
+import { ZoomLevelControl } from './zoom-level.control';
 
 
 const blankStyle: Style = {
@@ -174,6 +175,7 @@ export class MapComponent {
     } else {
       map.addControl(new MiniMap({nodes: this.nodeFeatures, clusters: this.clusterFeatures}, this.minimapOptions), 'bottom-right');
     }
+    map.addControl(new ZoomLevelControl(), 'bottom-right');
 
     this.map.resize();
 

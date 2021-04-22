@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component} from '@angular/core';
 
 
 @Component({
@@ -7,6 +7,4 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
   styleUrls: ['./footer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FooterComponent {
-  @Output() termsOfUseClicked = new EventEmitter<void>();
-}
+export class FooterComponent { }
