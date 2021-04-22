@@ -1674,8 +1674,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ "kU1M");
 /* harmony import */ var _services_detail_data_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/detail-data.service */ "OXrC");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ "fXoL");
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/common */ "ofXK");
-/* harmony import */ var _shared_components_map_map_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../shared/components/map/map.component */ "VU8H");
+/* harmony import */ var ngx_google_analytics__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ngx-google-analytics */ "Wdmj");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/common */ "ofXK");
+/* harmony import */ var _shared_components_map_map_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../shared/components/map/map.component */ "VU8H");
+
 
 
 
@@ -1684,13 +1686,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function DetailComponent_spoke_map_0_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](0, "spoke-map", 1);
+    const _r2 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "spoke-map", 1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("nodeClick", function DetailComponent_spoke_map_0_Template_spoke_map_nodeClick_0_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵrestoreView"](_r2); const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"](); return ctx_r1.nodeClick($event); })("edgeClick", function DetailComponent_spoke_map_0_Template_spoke_map_edgeClick_0_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵrestoreView"](_r2); const ctx_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"](); return ctx_r3.edgeClick($event); })("zoomChange", function DetailComponent_spoke_map_0_Template_spoke_map_zoomChange_0_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵrestoreView"](_r2); const ctx_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"](); return ctx_r4.zoomChange($event); })("panChange", function DetailComponent_spoke_map_0_Template_spoke_map_panChange_0_listener($event) { _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵrestoreView"](_r2); const ctx_r5 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"](); return ctx_r5.panChange($event); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
 } if (rf & 2) {
     const ctx_r0 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("edgeFeatures", ctx_r0.edgeFeatures)("nodeFeatures", ctx_r0.nodeFeatures)("clusterFeatures", ctx_r0.clusterFeatures)("boundaryFeatures", ctx_r0.boundaryFeatures)("mapMarkers", ctx_r0.markers)("mapCenter", ctx_r0.center);
 } }
 class DetailComponent {
-    constructor(dataLoader, cdr) {
+    constructor(dataLoader, cdr, ga) {
+        this.ga = ga;
         /** HTML class name */
         this.clsName = 'spoke-detail';
         this.edgeFeatures = _services_detail_data_service__WEBPACK_IMPORTED_MODULE_2__["EMPTY_FEATURES"];
@@ -1706,6 +1712,24 @@ class DetailComponent {
             cdr.markForCheck();
         });
     }
+    nodeClick(e) {
+        var _a, _b, _c;
+        const label = (_c = (_b = (_a = e.features) === null || _a === void 0 ? void 0 : _a[0].properties) === null || _b === void 0 ? void 0 : _b.label) !== null && _c !== void 0 ? _c : 'Unknown Node';
+        this.ga.event('detail_view', 'node_click', label);
+    }
+    edgeClick(e) {
+        var _a, _b, _c;
+        const label = (_c = (_b = (_a = e.features) === null || _a === void 0 ? void 0 : _a[0].properties) === null || _b === void 0 ? void 0 : _b.label) !== null && _c !== void 0 ? _c : 'Unknown Node';
+        this.ga.event('detail_view', 'edge_click', label);
+    }
+    zoomChange(zoomLevel) {
+        this.ga.event('detail_view', 'zoom_change', zoomLevel.toFixed(1), zoomLevel);
+    }
+    panChange(lonLat) {
+        const [lon, lat] = lonLat;
+        const label = `${lon.toFixed(2)}_${lat.toFixed(2)}`;
+        this.ga.event('detail_view', 'pan_change', label);
+    }
     ngOnDestroy() {
         this.destroy$.next();
         this.destroy$.complete();
@@ -1719,14 +1743,14 @@ class DetailComponent {
         this.center = data.center;
     }
 }
-DetailComponent.ɵfac = function DetailComponent_Factory(t) { return new (t || DetailComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_services_detail_data_service__WEBPACK_IMPORTED_MODULE_2__["DetailDataService"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_3__["ChangeDetectorRef"])); };
+DetailComponent.ɵfac = function DetailComponent_Factory(t) { return new (t || DetailComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_services_detail_data_service__WEBPACK_IMPORTED_MODULE_2__["DetailDataService"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_3__["ChangeDetectorRef"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](ngx_google_analytics__WEBPACK_IMPORTED_MODULE_4__["GoogleAnalyticsService"])); };
 DetailComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: DetailComponent, selectors: [["spoke-detail"]], hostVars: 2, hostBindings: function DetailComponent_HostBindings(rf, ctx) { if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵclassMap"](ctx.clsName);
-    } }, decls: 1, vars: 1, consts: [[3, "edgeFeatures", "nodeFeatures", "clusterFeatures", "boundaryFeatures", "mapMarkers", "mapCenter", 4, "ngIf"], [3, "edgeFeatures", "nodeFeatures", "clusterFeatures", "boundaryFeatures", "mapMarkers", "mapCenter"]], template: function DetailComponent_Template(rf, ctx) { if (rf & 1) {
+    } }, decls: 1, vars: 1, consts: [[3, "edgeFeatures", "nodeFeatures", "clusterFeatures", "boundaryFeatures", "mapMarkers", "mapCenter", "nodeClick", "edgeClick", "zoomChange", "panChange", 4, "ngIf"], [3, "edgeFeatures", "nodeFeatures", "clusterFeatures", "boundaryFeatures", "mapMarkers", "mapCenter", "nodeClick", "edgeClick", "zoomChange", "panChange"]], template: function DetailComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](0, DetailComponent_spoke_map_0_Template, 1, 6, "spoke-map", 0);
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("ngIf", ctx.nodeFeatures.features.length > 0);
-    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_4__["NgIf"], _shared_components_map_map_component__WEBPACK_IMPORTED_MODULE_5__["MapComponent"]], styles: ["[_nghost-%COMP%] {\n  display: block;\n  width: 100vw;\n  height: calc(100vh - 5rem);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uLy4uL2RldGFpbC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLGNBQUE7RUFDQSxZQUFBO0VBQ0EsMEJBQUE7QUFDRiIsImZpbGUiOiJkZXRhaWwuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyI6aG9zdCB7XG4gIGRpc3BsYXk6IGJsb2NrO1xuICB3aWR0aDogMTAwdnc7XG4gIGhlaWdodDogY2FsYygxMDB2aCAtIDVyZW0pO1xufVxuIl19 */"], changeDetection: 0 });
+    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_5__["NgIf"], _shared_components_map_map_component__WEBPACK_IMPORTED_MODULE_6__["MapComponent"]], styles: ["[_nghost-%COMP%] {\n  display: block;\n  width: 100vw;\n  height: calc(100vh - 5rem);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uLy4uL2RldGFpbC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLGNBQUE7RUFDQSxZQUFBO0VBQ0EsMEJBQUE7QUFDRiIsImZpbGUiOiJkZXRhaWwuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyI6aG9zdCB7XG4gIGRpc3BsYXk6IGJsb2NrO1xuICB3aWR0aDogMTAwdnc7XG4gIGhlaWdodDogY2FsYygxMDB2aCAtIDVyZW0pO1xufVxuIl19 */"], changeDetection: 0 });
 
 
 /***/ }),
@@ -7077,6 +7101,8 @@ class MapComponent {
         // Outputs
         this.nodeClick = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.edgeClick = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
+        this.zoomChange = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
+        this.panChange = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.nodeZoomIndex = 0;
         this.edgeZoomIndex = 0;
         this.textOverlapEnabledZoom = defaultTextOverlapEnabledZoom;
@@ -7106,7 +7132,7 @@ class MapComponent {
             this.minimapOptions.center = this.mapCenter;
         }
         // ShowCompass off to disable rotation.
-        map.addControl(new mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default.a.NavigationControl({ showCompass: false }), 'top-right');
+        map.addControl(new mapbox_gl__WEBPACK_IMPORTED_MODULE_1__["NavigationControl"]({ showCompass: false }), 'top-right');
         if (this.nodeFeatures.features.length === 0) {
             console.log('0 node features.');
         }
@@ -7122,10 +7148,12 @@ class MapComponent {
         }
         // When the user zooms the map, this method handles showing and hiding data based on zoom level
         map.on('zoom', () => this.updateFilters());
+        map.on('zoomend', (e) => this.zoomChange.emit(this.map.getZoom()));
+        map.on('moveend', (e) => this.panChange.emit(this.map.getCenter().toArray()));
     }
     addMapMarkers(markers) {
         markers.forEach(marker => {
-            new mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default.a.Marker(marker.config || {})
+            new mapbox_gl__WEBPACK_IMPORTED_MODULE_1__["Marker"](marker.config || {})
                 .setLngLat(marker.coordinates)
                 .addTo(this.map);
         });
@@ -7193,7 +7221,7 @@ class MapComponent {
     }
 }
 MapComponent.ɵfac = function MapComponent_Factory(t) { return new (t || MapComponent)(); };
-MapComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: MapComponent, selectors: [["spoke-map"]], inputs: { mapStyle: "mapStyle", edgeFeatures: "edgeFeatures", nodeFeatures: "nodeFeatures", clusterFeatures: "clusterFeatures", boundaryFeatures: "boundaryFeatures", currentZoom: "currentZoom", mapCenter: "mapCenter", minimapOptions: "minimapOptions", mapMarkers: "mapMarkers" }, outputs: { nodeClick: "nodeClick", edgeClick: "edgeClick" }, decls: 11, vars: 91, consts: [[3, "zoom", "center", "renderWorldCopies", "mapLoad"], ["id", "edges", 3, "data"], ["id", "nodes", 3, "data"], ["id", "clusters", 3, "data"], ["id", "boundaries", 3, "data"], ["id", "clusters", "source", "clusters", "type", "fill", 3, "paint"], ["id", "boundaries", "source", "boundaries", "type", "line", "minZoom", "2", 3, "paint"], ["id", "edges", "source", "edges", "type", "line", 3, "paint", "filter", "layerClick"], ["id", "edges_border", "source", "edges", "type", "line", 3, "paint", "filter"], ["id", "nodes", "source", "nodes", "type", "circle", 3, "paint", "filter", "layerClick"], ["id", "node_labels", "source", "nodes", "type", "symbol", 3, "layout", "filter"]], template: function MapComponent_Template(rf, ctx) { if (rf & 1) {
+MapComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: MapComponent, selectors: [["spoke-map"]], inputs: { mapStyle: "mapStyle", edgeFeatures: "edgeFeatures", nodeFeatures: "nodeFeatures", clusterFeatures: "clusterFeatures", boundaryFeatures: "boundaryFeatures", currentZoom: "currentZoom", mapCenter: "mapCenter", minimapOptions: "minimapOptions", mapMarkers: "mapMarkers" }, outputs: { nodeClick: "nodeClick", edgeClick: "edgeClick", zoomChange: "zoomChange", panChange: "panChange" }, decls: 11, vars: 91, consts: [[3, "zoom", "center", "renderWorldCopies", "mapLoad"], ["id", "edges", 3, "data"], ["id", "nodes", 3, "data"], ["id", "clusters", 3, "data"], ["id", "boundaries", 3, "data"], ["id", "clusters", "source", "clusters", "type", "fill", 3, "paint"], ["id", "boundaries", "source", "boundaries", "type", "line", "minZoom", "2", 3, "paint"], ["id", "edges", "source", "edges", "type", "line", 3, "paint", "filter", "layerClick"], ["id", "edges_border", "source", "edges", "type", "line", 3, "paint", "filter"], ["id", "nodes", "source", "nodes", "type", "circle", 3, "paint", "filter", "layerClick"], ["id", "node_labels", "source", "nodes", "type", "symbol", 3, "layout", "filter"]], template: function MapComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "mgl-map", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("mapLoad", function MapComponent_Template_mgl_map_mapLoad_0_listener($event) { return ctx.onMapLoad($event); });
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](1, "mgl-geojson-source", 1);

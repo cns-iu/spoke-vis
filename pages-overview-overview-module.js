@@ -25831,8 +25831,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _overview_visualization_vega__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./overview-visualization.vega */ "95nG");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "fXoL");
 /* harmony import */ var _core_state_router_state__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../core/state/router.state */ "s7H+");
-/* harmony import */ var ngx_vega__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ngx-vega */ "NNEg");
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/common */ "ofXK");
+/* harmony import */ var ngx_google_analytics__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ngx-google-analytics */ "Wdmj");
+/* harmony import */ var ngx_vega__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ngx-vega */ "NNEg");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/common */ "ofXK");
+
 
 
 
@@ -25848,7 +25850,8 @@ class OverviewComponent {
      *
      * @param router Router state used to lookup query parameters
      */
-    constructor(router) {
+    constructor(router, ga) {
+        this.ga = ga;
         this.spec$ = router.state$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_0__["filter"])((value) => !!value), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_0__["pluck"])('root', 'queryParams'), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_0__["map"])(({ disease, food }) => this.createSpec({ source: disease, destination: food })), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_0__["startWith"])({}));
     }
     /**
@@ -25862,14 +25865,36 @@ class OverviewComponent {
     createSpec(options) {
         return Object(_overview_visualization_vega__WEBPACK_IMPORTED_MODULE_1__["createSpec"])(options);
     }
+    /** Set the current vega-embed view and subscribe to events */
+    setView(view) {
+        this.view = view;
+        view.addEventListener('click', (event, item) => {
+            if (item === null || item === void 0 ? void 0 : item.datum) {
+                const data = item.datum;
+                const type = data.edge_type ? 'edge_click' : 'node_click';
+                const label = data.edge_type ? data.edge_type : data.type;
+                this.ga.event('overview_view', type, label);
+            }
+        });
+        view.addEventListener('mouseover', (event, item) => {
+            if (item === null || item === void 0 ? void 0 : item.datum) {
+                const data = item.datum;
+                const type = data.edge_type ? 'edge_hover' : 'node_hover';
+                const label = data.edge_type ? data.edge_type : data.type;
+                this.ga.event('overview_view', type, label);
+            }
+        });
+    }
 }
-OverviewComponent.ɵfac = function OverviewComponent_Factory(t) { return new (t || OverviewComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_core_state_router_state__WEBPACK_IMPORTED_MODULE_3__["RouterState"])); };
-OverviewComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({ type: OverviewComponent, selectors: [["spoke-overview"]], decls: 2, vars: 3, consts: [[3, "spec"]], template: function OverviewComponent_Template(rf, ctx) { if (rf & 1) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](0, "ngx-vega", 0);
+OverviewComponent.ɵfac = function OverviewComponent_Factory(t) { return new (t || OverviewComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_core_state_router_state__WEBPACK_IMPORTED_MODULE_3__["RouterState"]), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](ngx_google_analytics__WEBPACK_IMPORTED_MODULE_4__["GoogleAnalyticsService"])); };
+OverviewComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({ type: OverviewComponent, selectors: [["spoke-overview"]], decls: 2, vars: 3, consts: [[3, "spec", "viewChange"]], template: function OverviewComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "ngx-vega", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("viewChange", function OverviewComponent_Template_ngx_vega_viewChange_0_listener($event) { return ctx.setView($event); });
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵpipe"](1, "async");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("spec", _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵpipeBind1"](1, 1, ctx.spec$));
-    } }, directives: [ngx_vega__WEBPACK_IMPORTED_MODULE_4__["VegaComponent"]], pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_5__["AsyncPipe"]], styles: ["[_nghost-%COMP%] {\n  display: block;\n  width: 100vw;\n  height: calc(100vh - 5rem);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uLy4uL292ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsY0FBQTtFQUNBLFlBQUE7RUFDQSwwQkFBQTtBQUNGIiwiZmlsZSI6Im92ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuICBkaXNwbGF5OiBibG9jaztcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IGNhbGMoMTAwdmggLSA1cmVtKTtcbn1cbiJdfQ== */"], changeDetection: 0 });
+    } }, directives: [ngx_vega__WEBPACK_IMPORTED_MODULE_5__["VegaComponent"]], pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_6__["AsyncPipe"]], styles: ["[_nghost-%COMP%] {\n  display: block;\n  width: 100vw;\n  height: calc(100vh - 5rem);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uLy4uL292ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsY0FBQTtFQUNBLFlBQUE7RUFDQSwwQkFBQTtBQUNGIiwiZmlsZSI6Im92ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuICBkaXNwbGF5OiBibG9jaztcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IGNhbGMoMTAwdmggLSA1cmVtKTtcbn1cbiJdfQ== */"], changeDetection: 0 });
 
 
 /***/ }),
