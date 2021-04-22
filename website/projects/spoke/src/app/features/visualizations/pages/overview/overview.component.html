@@ -1,1 +1,1 @@
-<ngx-vega [spec]="spec$ | async"></ngx-vega>
+<ngx-vega [spec]="(spec$ | async) || { }"></ngx-vega>
