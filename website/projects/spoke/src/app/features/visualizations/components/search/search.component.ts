@@ -81,7 +81,10 @@ export class SearchComponent implements OnDestroy {
     return this.index.entities$.pipe(
       takeUntil(this.destroy$),
       map(o => Object.values(o)),
-      map(items => items.sort(compare))
+      map(items => {
+        items.sort(compare);
+        return items;
+      })
     );
   }
 
@@ -104,7 +107,10 @@ export class SearchComponent implements OnDestroy {
         distinct(item => item.dest_name),
         toArray()
       )),
-      map(items => items.sort(compare))
+      map(items => {
+        items.sort(compare);
+        return items;
+      })
     );
 
     return combineLatest([options, food.valueChanges as Observable<string | FoodItem>]).pipe(
