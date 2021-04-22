@@ -1,4 +1,4 @@
 
 export const INDEX_FILES: string[] = [
-  '/assets/datasets/index.json'
+  'assets/datasets/index.json'
 ];
