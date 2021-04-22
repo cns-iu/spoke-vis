@@ -16,7 +16,7 @@ export interface FoodItem {
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   dest_name: string;
-};
+}
 
 
 @Component({
