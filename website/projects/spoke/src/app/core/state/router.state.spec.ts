@@ -1,4 +1,4 @@
-import { RouterStateSnapshot } from '@angular/router';
+import { ActivatedRoute, Params, RouterStateSnapshot } from '@angular/router';
 import { Navigate } from '@ngxs/router-plugin';
 import { ActionType, Store } from '@ngxs/store';
 import { isObservable, of } from 'rxjs';
@@ -7,12 +7,14 @@ import { RouterState } from './router.state';
 
 
 describe('RouterState', () => {
+  let route: jasmine.SpyObj<ActivatedRoute>;
   let store: jasmine.SpyObj<Store>;
   let state: RouterState;
 
   beforeEach(() => {
+    route = jasmine.createSpyObj<ActivatedRoute>(['toString']);
     store = jasmine.createSpyObj<Store>(['select', 'selectSnapshot', 'dispatch']);
-    state = new RouterState(store);
+    state = new RouterState(route, store);
 
     store.select.and.returnValue(of());
   });
@@ -80,6 +82,24 @@ describe('RouterState', () => {
     it('dispatches a Navigate action', () => {
       state.navigate([]);
       expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(Navigate));
+    });
+
+    it('automatically injects the active route for relativeTo when set to "current"', () => {
+      state.navigate([], undefined, { relativeTo: 'current' });
+
+      const action = store.dispatch.calls.first().args[0] as Navigate;
+      const relativeTo = action.extras?.relativeTo;
+
+      expect(relativeTo).toBe(route);
+    });
+  });
+
+  describe('addQueryParams(params)', () => {
+    it('navigates with new query parameters', () => {
+      const params: Params = { test: 1 };
+      spyOn(state, 'navigate');
+      state.addQueryParams(params);
+      expect(state.navigate).toHaveBeenCalledWith([], params, jasmine.anything());
     });
   });
 });
