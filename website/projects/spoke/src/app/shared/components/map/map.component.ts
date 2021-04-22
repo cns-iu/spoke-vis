@@ -1,10 +1,11 @@
 import { Any } from '@angular-ru/common/typings';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FeatureCollection } from 'geojson';
-import mapboxgl, { Map, MapMouseEvent, Style } from 'mapbox-gl';
+import { FullscreenControl, Map, MapLayerMouseEvent, Marker, NavigationControl, Style } from 'mapbox-gl';
 
 import { Cluster, Edge, MapMarker, MiniMapOptions, Node, ZoomLookup } from '../../../core/models/Map';
 import { MiniMap } from './minimap';
+import { ZoomLevelControl } from './zoom-level.control';
 
 
 const blankStyle: Style = {
@@ -124,8 +125,10 @@ export class MapComponent {
   @Input() mapMarkers: MapMarker[] = [];
 
   // Outputs
-  @Output() nodeClick = new EventEmitter<MapMouseEvent>();
-  @Output() edgeClick = new EventEmitter<MapMouseEvent>();
+  @Output() nodeClick = new EventEmitter<MapLayerMouseEvent>();
+  @Output() edgeClick = new EventEmitter<MapLayerMouseEvent>();
+  @Output() zoomChange = new EventEmitter<number>();
+  @Output() panChange = new EventEmitter<[number, number]>();
 
   map!: Map;
   nodeZoomIndex = 0;
@@ -145,11 +148,11 @@ export class MapComponent {
     return input.charAt(0).toUpperCase() + input.slice(1);
   }
 
-  nodeClicked(event: MapMouseEvent): void {
+  nodeClicked(event: MapLayerMouseEvent): void {
     this.nodeClick.emit(event);
   }
 
-  edgeClicked(event: MapMouseEvent): void {
+  edgeClicked(event: MapLayerMouseEvent): void {
     this.edgeClick.emit(event);
   }
 
@@ -163,7 +166,8 @@ export class MapComponent {
     }
 
     // ShowCompass off to disable rotation.
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+    map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
+    map.addControl(new FullscreenControl({}), 'top-right');
     if (this.nodeFeatures.features.length === 0) {
       console.log('0 node features.');
     } else if (this.clusterFeatures.features.length === 0) {
@@ -171,6 +175,7 @@ export class MapComponent {
     } else {
       map.addControl(new MiniMap({nodes: this.nodeFeatures, clusters: this.clusterFeatures}, this.minimapOptions), 'bottom-right');
     }
+    map.addControl(new ZoomLevelControl(), 'bottom-right');
 
     this.map.resize();
 
@@ -180,11 +185,13 @@ export class MapComponent {
 
     // When the user zooms the map, this method handles showing and hiding data based on zoom level
     map.on('zoom', () => this.updateFilters());
+    map.on('zoomend', (e) => this.zoomChange.emit(this.map.getZoom()));
+    map.on('moveend', (e) => this.panChange.emit(this.map.getCenter().toArray() as [number, number]));
   }
 
   addMapMarkers(markers: MapMarker[]): void {
     markers.forEach(marker => {
-      new mapboxgl.Marker(marker.config || {})
+      new Marker(marker.config || {})
         .setLngLat(marker.coordinates)
         .addTo(this.map);
     });
