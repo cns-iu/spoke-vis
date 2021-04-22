@@ -11,7 +11,7 @@
   <mat-form-field>
     <input matInput type="search" placeholder="Search for food ..." [matAutocomplete]="auto"
            [disabled]="!selectedIndexItem">
-    <mat-autocomplete [displayWith]="datasetItemDisplay" (optionSelected)="selectedDatasetItem = $event.option.value"
+    <mat-autocomplete [displayWith]="datasetItemDisplay" (optionSelected)="setSelectedDatasetItem($event.option.value)"
                       #auto="matAutocomplete">
       <mat-option *ngFor="let item of datasetItems$ | async" [value]="item">
         {{ item.dest_name }}
