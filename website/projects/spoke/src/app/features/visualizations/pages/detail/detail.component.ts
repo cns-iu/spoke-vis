@@ -43,14 +43,24 @@ export class DetailComponent implements OnDestroy {
     });
   }
 
-  nodeClick(e: MapLayerMouseEvent) {
+  nodeClick(e: MapLayerMouseEvent): void {
     const label = e.features?.[0].properties?.label as string ?? 'Unknown Node';
     this.ga.event('detail_view', 'node_click', label);
   }
 
-  edgeClick(e: MapLayerMouseEvent) {
+  edgeClick(e: MapLayerMouseEvent): void {
     const label = e.features?.[0].properties?.label as string ?? 'Unknown Node';
     this.ga.event('detail_view', 'edge_click', label);
+  }
+
+  zoomChange(zoomLevel: number): void {
+    this.ga.event('detail_view', 'zoom_change', zoomLevel.toFixed(1), zoomLevel);
+  }
+
+  panChange(lonLat: [number, number]): void {
+    const [lon, lat] = lonLat;
+    const label = `${lon.toFixed(2)}_${lat.toFixed(2)}`;
+    this.ga.event('detail_view', 'pan_change', label);
   }
 
   ngOnDestroy(): void {
