@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { StateModule } from './state/state.module';
 import { VisualizationsRoutingModule } from './visualizations-routing.module';
@@ -11,6 +14,10 @@ import { VisualizationsComponent } from './visualizations.component';
   imports: [
     CommonModule,
     HttpClientModule,
+
+    MatButtonModule,
+    MatIconModule,
+    MatSidenavModule,
 
     StateModule,
     VisualizationsRoutingModule

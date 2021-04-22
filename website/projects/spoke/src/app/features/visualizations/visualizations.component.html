@@ -1,1 +1,13 @@
-<router-outlet></router-outlet>
+<mat-drawer-container>
+  <mat-drawer class="drawer" mode="side" disableClose [opened]="drawerOpen" #drawer>
+    <!-- Search -->
+
+    <button mat-flat-button class="toggle" disableRipple (click)="drawerOpen = !drawerOpen">
+      <mat-icon class="icon" [class.inverted]="!drawerOpen">arrow_right</mat-icon>
+    </button>
+  </mat-drawer>
+
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>
