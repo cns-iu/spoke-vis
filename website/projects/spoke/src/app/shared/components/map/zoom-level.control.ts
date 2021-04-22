@@ -24,5 +24,6 @@ export class ZoomLevelControl implements IControl {
 
   onRemove(map: MapboxMap): void {
     map.off('zoom', this.zoomCallback!);
+    this.container?.parentNode?.removeChild(this.container);
   }
 }
