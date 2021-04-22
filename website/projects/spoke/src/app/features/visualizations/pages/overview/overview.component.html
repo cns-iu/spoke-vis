@@ -1,1 +1,4 @@
-<ngx-vega [spec]="(spec$ | async)!"></ngx-vega>
+<ngx-vega
+  [spec]="(spec$ | async)!"
+  (viewChange)="setView($event)">
+</ngx-vega>
