@@ -2,23 +2,26 @@
   display: block;
   width: 100%;
   height: 100%;
-  padding-top: 2.5rem;
+  margin-top: 2.5rem;
+  background-color: #F2F4F6;
 
   .background-box {
     width: 100%;
     max-width: 90rem;
-    height: 100%;
     margin-left: auto;
     margin-right: auto;
+    padding-top: 9rem;
+    background-image: url('../../../assets/images/img-banner-network.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top center;
 
     .inner-box {
-      width: 100%;
       max-width: 66rem;
       height: 100%;
       margin-left: auto;
       margin-right: auto;
-      padding-top: 7.125rem;
-      padding-bottom: 5rem;
+      background-color: white;
 
       .content {
         width: 100%;
@@ -26,16 +29,20 @@
         padding: 7.125rem;
 
         .title {
-          padding-bottom: 3.75rem;
+          font-size: 3.5rem;
+          line-height: 4rem;
+          margin-bottom: 3.75rem;
         }
 
         .text {
           height: 100%;
           padding-bottom: 5rem;
+          font-size: 1rem;
+          line-height: 1.875rem;
+          
 
           img {
-            height: 100%;
-            float: right;
+            
           }
         }
 
@@ -43,7 +50,7 @@
           display: flex;
           align-items: center;
           justify-content: space-between;
-
+          padding-top: 5rem;
           width: 100%;
           height: 2.5rem;
 
