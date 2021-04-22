@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MapModule } from 'projects/spoke/src/app/shared/components/map/map.module';
 
+import { MapModule } from '../../../../shared/components/map/map.module';
+import { DetailRoutingModule } from './detail-routing.module';
 import { DetailComponent } from './detail.component';
 
 
 @NgModule({
   imports: [
     CommonModule,
+
+    DetailRoutingModule,
     MapModule
   ],
   declarations: [DetailComponent],

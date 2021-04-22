@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { DetailComponent } from './pages/detail/detail.component';
 import { VisualizationsComponent } from './visualizations.component';
 
 
@@ -19,7 +18,7 @@ const ROUTES: Routes = [
       },
       {
         path: 'details',
-        component: DetailComponent
+        loadChildren: async () => (await import('./pages/detail/detail.module')).DetailModule
       }
     ]
   }
