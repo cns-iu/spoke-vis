@@ -1,7 +1,7 @@
 import { Any } from '@angular-ru/common/typings';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FeatureCollection } from 'geojson';
-import { Map, MapLayerMouseEvent, Marker, NavigationControl, Style } from 'mapbox-gl';
+import { FullscreenControl, Map, MapLayerMouseEvent, Marker, NavigationControl, Style } from 'mapbox-gl';
 import { Cluster, Edge, MapMarker, MiniMapOptions, Node, ZoomLookup } from '../../../core/models/Map';
 import { MiniMap } from './minimap';
 
@@ -166,6 +166,7 @@ export class MapComponent {
 
     // ShowCompass off to disable rotation.
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
+    map.addControl(new FullscreenControl({}), 'top-right');
     if (this.nodeFeatures.features.length === 0) {
       console.log('0 node features.');
     } else if (this.clusterFeatures.features.length === 0) {
