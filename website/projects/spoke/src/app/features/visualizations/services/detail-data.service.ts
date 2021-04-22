@@ -82,7 +82,7 @@ export class DetailDataService implements OnDestroy {
     return nodes$.pipe(
       pluck('features'),
       switchMap(features => from(features).pipe(
-        filter(feature => feature.properties.label in labels),
+        filter(feature => labels.includes(feature.properties.label)),
         map(feature => ({
           coordinates: feature.geometry.coordinates,
           config: { color: feature.properties.label === label ? '#D1B445' : '#880E4F' }

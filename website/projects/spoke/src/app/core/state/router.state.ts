@@ -82,7 +82,9 @@ export class RouterState {
   /**
    * Resets the router state
    */
-  reset(): void { }
+  reset(): void {
+    // Intentionally blank
+  }
 
   /**
    * Navigate to a new url

@@ -16,7 +16,7 @@ import { IndexItem, IndexState } from '../../state/index.state';
 export class SearchComponent implements OnDestroy {
   readonly indexItems$ = this.index.entities$.pipe(
     map(entities => Object.values(entities)),
-    map(items => items.sort((a, b) => a.name.localeCompare(b.name)))
+    map(items => [ ...items].sort((a, b) => a.name.localeCompare(b.name)))
   );
 
   datasetItems$: Observable<Record<string, unknown>[]> = of();
