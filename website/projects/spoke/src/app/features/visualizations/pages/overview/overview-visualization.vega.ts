@@ -7,7 +7,6 @@ export interface SpecOptions {
 
 export function createSpec(options: SpecOptions = {}): VisualizationSpec {
   const { source, destination } = options;
-  const isNotOverview = source || destination;
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     config: {
@@ -37,7 +36,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         mark: {
           type: 'rule'
         },
-        params: isNotOverview ? [] : [
+        params: source || destination ? [] : [
           {
             name: 'highlightEdge',
             select: {type: 'point', on: 'mouseover'}
@@ -75,7 +74,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
             }
           },
           color: {
-            condition: isNotOverview ? [] : [
+            condition: source || destination ? [] : [
               {
                 param: 'highlightEdge',
                 empty: false,
@@ -86,10 +85,10 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
                 value: '#000000'
               }
             ],
-            value: isNotOverview ? '#f5f5f5' : '#e0e0e0',
+            value: source || destination ? '#f5f5f5' : '#e0e0e0',
             legend: null
           },
-          tooltip: isNotOverview ? [] : [
+          tooltip: source || destination ? [] : [
             {
               field: 'tooltip',
               title: 'Link Types (#Links)',
@@ -99,10 +98,10 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         }
       },
       {
-        data: isNotOverview ? {
+        data: source || destination ? {
           url:  `assets/datasets/${source}-food-tree/tree-edges.csv`
         } : undefined,
-        transform: isNotOverview ? [
+        transform: source || destination ? [
           {
             lookup: 'source_type',
             from: {
@@ -126,7 +125,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         mark: {
           type: 'rule'
         },
-        encoding: isNotOverview ? {
+        encoding: source || destination ? {
           x: {
             field: 'a1',
             type: 'quantitative'
@@ -150,20 +149,20 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         mark: {
           type: 'circle',
           opacity: 1,
-          stroke: isNotOverview ? undefined : 'red',
-          strokeWidth: isNotOverview ? undefined : 2,
+          stroke: source || destination ? undefined : 'red',
+          strokeWidth: source || destination ? undefined : 2,
           fill: {
-            expr: isNotOverview ? 'datum.color2 || "black"' : 'datum.color || "black"'
+            expr: source || destination ? 'datum.color2 || "black"' : 'datum.color || "black"'
           }
         },
-        params: isNotOverview ? [] : [
+        params: source || destination ? [] : [
           {
             name: 'highlightNode',
             select: {type: 'point', on: 'mouseover'}
           }
         ],
         encoding: {
-          strokeOpacity: isNotOverview ? {} : {
+          strokeOpacity: source || destination ? {} : {
             value: 0,
             condition: [
               {
@@ -202,7 +201,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               domain: [0, 6]
             }
           },
-          tooltip: isNotOverview ? [] : [
+          tooltip: source || destination ? [] : [
             {
               field: 'tooltip',
               title: 'Link Types (#Links)',
@@ -227,10 +226,10 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         }
       },
       {
-        data: isNotOverview ? {
+        data: source || destination ? {
           url:  `assets/datasets/${source}-food-tree/tree-edges.csv`
         } : undefined,
-        transform: isNotOverview ? [
+        transform: source || destination ? [
           {
             lookup: 'target_type',
             from: {
@@ -248,7 +247,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
             expr: 'datum.color'
           }
         },
-        encoding: isNotOverview ? {
+        encoding: source || destination ? {
           strokeOpacity: {
             value: 0
           },
@@ -313,7 +312,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
             field: 'b',
             type: 'quantitative'
           },
-          opacity: isNotOverview ? {
+          opacity: source || destination ? {
             condition: {
               test: 'datum.label === "Disease"',
               value: 1
@@ -323,10 +322,10 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         }
       },
       {
-        data: isNotOverview ? {
+        data: source || destination ? {
           url:  `assets/datasets/${source}-food-tree/tree-edges.csv`
         } : undefined,
-        transform: isNotOverview ? [
+        transform: source || destination ? [
           {
             lookup: 'target_type',
             from: {
@@ -343,7 +342,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           fontSize: 12,
           opacity: 1
         },
-        encoding: isNotOverview ? {
+        encoding: source || destination ? {
           text: {
             field: 'label',
             type: 'nominal'
