@@ -1,11 +1,13 @@
 import { NgModule, Type } from '@angular/core';
 import { NgxsDataPluginModule } from '@ngxs-labs/data';
+import { NgxsDataExtension } from '@ngxs-labs/data/typings';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 
 import { environment } from '../../../environments/environment';
+import { RouterState } from './router.state';
 
 
 /**
@@ -14,13 +16,17 @@ import { environment } from '../../../environments/environment';
 const ROOT_STATES: Type<unknown>[] = [
 ];
 
+const EXTENSIONS: NgxsDataExtension[] = [
+  RouterState // Not a true state class - only a wrapper around the router plugin
+];
+
 
 @NgModule({
   imports: [
     NgxsModule.forRoot(ROOT_STATES, {
       developmentMode: !environment.production
     }),
-    NgxsDataPluginModule.forRoot(),
+    NgxsDataPluginModule.forRoot(EXTENSIONS),
     NgxsRouterPluginModule.forRoot(),
 
     /**

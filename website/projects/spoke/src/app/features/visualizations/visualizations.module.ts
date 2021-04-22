@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
-import { DetailModule } from './pages/detail/detail.module';
-import { OverviewModule } from './pages/overview/overview.module';
-import { DatasetDefinitionService } from './services/dataset-definition.service';
+import { SearchModule } from './components/search/search.module';
 import { StateModule } from './state/state.module';
 import { VisualizationsRoutingModule } from './visualizations-routing.module';
 import { VisualizationsComponent } from './visualizations.component';
@@ -15,13 +16,16 @@ import { VisualizationsComponent } from './visualizations.component';
     CommonModule,
     HttpClientModule,
 
+    MatButtonModule,
+    MatIconModule,
+    MatSidenavModule,
+
     StateModule,
     VisualizationsRoutingModule,
 
-    OverviewModule,
-    DetailModule
+    SearchModule
   ],
   declarations: [VisualizationsComponent],
-  providers: [DatasetDefinitionService]
+  providers: []
 })
 export class VisualizationsModule { }

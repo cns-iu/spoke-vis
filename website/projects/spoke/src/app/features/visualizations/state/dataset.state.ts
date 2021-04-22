@@ -78,14 +78,14 @@ export class DatasetState extends NgxsDataEntityCollectionsRepository<DatasetIte
    * @param dataset The dataset definition id
    * @returns An observable emitting the data
    */
-  loadDataset(id: string, dataset: string): Observable<unknown> {
+  loadDataset<T>(id: string, dataset: string): Observable<T> {
     const identity = (value: unknown) => value;
     const key = this.makeKey(id, dataset);
     const { dir } = this.index.entities[id] ?? {};
     const { file, type = 'text', parser = identity } = this.definitions.getDefinition(dataset) ?? {};
 
     if (key in this.entities) {
-      return of(this.entities[key].data);
+      return of(this.entities[key].data as T);
     } else if (dir === undefined) {
       return throwError(new Error(`No index entry for '${id}'`));
     } else if (file === undefined) {
@@ -93,11 +93,11 @@ export class DatasetState extends NgxsDataEntityCollectionsRepository<DatasetIte
     }
 
     const url = `${dir}/${file}`;
-    const result = new Subject<unknown>();
+    const result = new Subject<T>();
     // Note: The cast of type to 'json' is needed because of poor angular typings...
     const query = this.http.get(url, { responseType: type as 'json' }).pipe(
       takeUntil(this.destroy$),
-      map(data => parser(data)),
+      map(data => parser(data) as T),
       tap(data => this.addOne({ id, dataset, data }))
     );
 

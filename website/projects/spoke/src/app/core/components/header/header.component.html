@@ -1,5 +1,5 @@
 <div class="content">
-  <img class="logo" src="/assets/logos/logo-spoke-white-text.svg" alt="Spoke logo">
+  <img class="logo" src="assets/logos/logo-spoke-white-text.svg" alt="Spoke logo">
 
   <div class="filler"></div>
 
@@ -13,8 +13,10 @@
     <mat-divider></mat-divider>
     <a mat-menu-item routerLink="/visualization/overview">Overview Visualization</a>
     <mat-divider></mat-divider>
-    <a mat-menu-item routerLink="/visualization/overview/cad/Sake">Overview Visualization with Selection</a>
-    <a mat-menu-item routerLink="/visualization/details/cad/Sake">Detail Visualization</a>
+    <a mat-menu-item routerLink="/visualization/overview" [queryParams]="{ disease: 'cad', food: 'Sake' }">Overview
+      Visualization with Selection</a>
+    <a mat-menu-item routerLink="/visualization/details" [queryParams]="{ disease: 'cad', food: 'Sake' }">Detail
+      Visualization</a>
     <mat-divider></mat-divider>
   </mat-menu>
 </div>
