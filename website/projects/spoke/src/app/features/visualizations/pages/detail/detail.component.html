@@ -6,4 +6,6 @@
   [boundaryFeatures]="boundaryFeatures"
   [mapMarkers]="markers"
   [mapCenter]="mapCenter"
+  (nodeClick)="nodeClick($event)"
+  (edgeClick)="edgeClick($event)"
 ></spoke-map>

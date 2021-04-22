@@ -1,10 +1,10 @@
 import { Any } from '@angular-ru/common/typings';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FeatureCollection } from 'geojson';
-import mapboxgl, { Map, MapMouseEvent, Style } from 'mapbox-gl';
-
+import { Map, MapLayerMouseEvent, Marker, NavigationControl, Style } from 'mapbox-gl';
 import { Cluster, Edge, MapMarker, MiniMapOptions, Node, ZoomLookup } from '../../../core/models/Map';
 import { MiniMap } from './minimap';
+
 
 
 const blankStyle: Style = {
@@ -124,8 +124,8 @@ export class MapComponent {
   @Input() mapMarkers: MapMarker[] = [];
 
   // Outputs
-  @Output() nodeClick = new EventEmitter<MapMouseEvent>();
-  @Output() edgeClick = new EventEmitter<MapMouseEvent>();
+  @Output() nodeClick = new EventEmitter<MapLayerMouseEvent>();
+  @Output() edgeClick = new EventEmitter<MapLayerMouseEvent>();
 
   map!: Map;
   nodeZoomIndex = 0;
@@ -145,11 +145,11 @@ export class MapComponent {
     return input.charAt(0).toUpperCase() + input.slice(1);
   }
 
-  nodeClicked(event: MapMouseEvent): void {
+  nodeClicked(event: MapLayerMouseEvent): void {
     this.nodeClick.emit(event);
   }
 
-  edgeClicked(event: MapMouseEvent): void {
+  edgeClicked(event: MapLayerMouseEvent): void {
     this.edgeClick.emit(event);
   }
 
@@ -163,7 +163,7 @@ export class MapComponent {
     }
 
     // ShowCompass off to disable rotation.
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+    map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
     if (this.nodeFeatures.features.length === 0) {
       console.log('0 node features.');
     } else if (this.clusterFeatures.features.length === 0) {
@@ -184,7 +184,7 @@ export class MapComponent {
 
   addMapMarkers(markers: MapMarker[]): void {
     markers.forEach(marker => {
-      new mapboxgl.Marker(marker.config || {})
+      new Marker(marker.config || {})
         .setLngLat(marker.coordinates)
         .addTo(this.map);
     });

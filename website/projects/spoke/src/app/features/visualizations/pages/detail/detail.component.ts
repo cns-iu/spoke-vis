@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureCollection, Point } from 'geojson';
+import { MapLayerMouseEvent } from 'mapbox-gl';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { forkJoin, Subscription } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 
@@ -74,7 +76,7 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   private readonly subscriptions = new Subscription();
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, private cd: ChangeDetectorRef) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient, private cd: ChangeDetectorRef, private ga: GoogleAnalyticsService) { }
 
   ngOnInit(): void {
     this.subscriptions.add(
@@ -101,6 +103,18 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.markers = [];
     this.mapCenter = [0, -40];
     this.cd.detectChanges();
+  }
+
+  nodeClick(e: MapLayerMouseEvent) {
+    const label = e.features?.[0].properties?.label as string ?? 'Unknown Node';
+    console.log('detail_view', 'node_click', label, e, e.features);
+    this.ga.event('detail_view', 'node_click', label);
+  }
+
+  edgeClick(e: MapLayerMouseEvent) {
+    const label = e.features?.[0].properties?.label as string ?? 'Unknown Node';
+    console.log('detail_view', 'edge_click', label, e, e.features);
+    this.ga.event('detail_view', 'edge_click', label);
   }
 
   ngOnDestroy(): void {
