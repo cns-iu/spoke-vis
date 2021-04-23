@@ -6970,7 +6970,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! mapbox-gl */ "4ZJM");
 /* harmony import */ var mapbox_gl__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(mapbox_gl__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _minimap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./minimap */ "gaza");
-/* harmony import */ var ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ngx-mapbox-gl */ "Q2BN");
+/* harmony import */ var _zoom_level_control__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./zoom-level.control */ "YUeq");
+/* harmony import */ var ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ngx-mapbox-gl */ "Q2BN");
+
 
 
 
@@ -7133,6 +7135,7 @@ class MapComponent {
         }
         // ShowCompass off to disable rotation.
         map.addControl(new mapbox_gl__WEBPACK_IMPORTED_MODULE_1__["NavigationControl"]({ showCompass: false }), 'top-right');
+        map.addControl(new mapbox_gl__WEBPACK_IMPORTED_MODULE_1__["FullscreenControl"]({}), 'top-right');
         if (this.nodeFeatures.features.length === 0) {
             console.log('0 node features.');
         }
@@ -7142,6 +7145,7 @@ class MapComponent {
         else {
             map.addControl(new _minimap__WEBPACK_IMPORTED_MODULE_2__["MiniMap"]({ nodes: this.nodeFeatures, clusters: this.clusterFeatures }, this.minimapOptions), 'bottom-right');
         }
+        map.addControl(new _zoom_level_control__WEBPACK_IMPORTED_MODULE_3__["ZoomLevelControl"](), 'bottom-right');
         this.map.resize();
         if (this.mapMarkers.length) {
             this.addMapMarkers(this.mapMarkers);
@@ -7262,7 +7266,7 @@ MapComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCompo
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("paint", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](73, _c19, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](71, _c18, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](69, _c6, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction0"](68, _c5)))))("filter", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](75, _c13, ctx.currentZoom, ctx.currentEdgeFormula));
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("layout", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction3"](82, _c23, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction0"](78, _c20), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](79, _c21, ctx.currentNodeFormula), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction0"](81, _c22)))("filter", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](88, _c13, ctx.currentZoom, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](86, _c12, ctx.currentNodeFormula)));
-    } }, directives: [ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_3__["MapComponent"], ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_3__["GeoJSONSourceComponent"], ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_3__["ɵb"]], styles: ["mgl-map[_ngcontent-%COMP%] {\n  height: 100%;\n  width: 100%;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL21hcC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLFlBQUE7RUFDQSxXQUFBO0FBQ0YiLCJmaWxlIjoibWFwLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsibWdsLW1hcCB7XG4gIGhlaWdodDogMTAwJTtcbiAgd2lkdGg6IDEwMCU7XG59Il19 */"] });
+    } }, directives: [ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_4__["MapComponent"], ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_4__["GeoJSONSourceComponent"], ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_4__["ɵb"]], styles: ["[_nghost-%COMP%]     .mapboxgl-zoom-level-display {\n  text-align: right;\n  margin-right: 0.875rem;\n  font-size: 0.875rem;\n}\n[_nghost-%COMP%]   mgl-map[_ngcontent-%COMP%] {\n  height: 100%;\n  width: 100%;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL21hcC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFDRTtFQUNFLGlCQUFBO0VBQ0Esc0JBQUE7RUFDQSxtQkFBQTtBQUFKO0FBR0U7RUFDRSxZQUFBO0VBQ0EsV0FBQTtBQURKIiwiZmlsZSI6Im1hcC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIjpob3N0IHtcbiAgOjpuZy1kZWVwIC5tYXBib3hnbC16b29tLWxldmVsLWRpc3BsYXkge1xuICAgIHRleHQtYWxpZ246IHJpZ2h0O1xuICAgIG1hcmdpbi1yaWdodDogMC44NzVyZW07XG4gICAgZm9udC1zaXplOiAwLjg3NXJlbTtcbiAgfVxuXG4gIG1nbC1tYXAge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICB3aWR0aDogMTAwJTtcbiAgfVxufVxuIl19 */"] });
 
 
 /***/ }),
@@ -7647,6 +7651,41 @@ function has(obj, key) {
 }
 
 module.exports = parseToken;
+
+
+/***/ }),
+
+/***/ "YUeq":
+/*!****************************************************************************!*\
+  !*** ./projects/spoke/src/app/shared/components/map/zoom-level.control.ts ***!
+  \****************************************************************************/
+/*! exports provided: ZoomLevelControl */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ZoomLevelControl", function() { return ZoomLevelControl; });
+class ZoomLevelControl {
+    onAdd(map) {
+        this.map = map;
+        this.container = document.createElement('div');
+        this.container.className = 'mapboxgl-zoom-level-display';
+        this.updateText();
+        this.zoomCallback = () => this.updateText();
+        map.on('zoom', this.zoomCallback);
+        return this.container;
+    }
+    updateText() {
+        if (this.map && this.container) {
+            this.container.textContent = this.map.getZoom().toFixed(2) + 'x';
+        }
+    }
+    onRemove(map) {
+        var _a, _b;
+        map.off('zoom', this.zoomCallback);
+        (_b = (_a = this.container) === null || _a === void 0 ? void 0 : _a.parentNode) === null || _b === void 0 ? void 0 : _b.removeChild(this.container);
+    }
+}
 
 
 /***/ }),

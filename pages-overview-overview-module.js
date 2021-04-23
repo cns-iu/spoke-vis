@@ -12978,702 +12978,478 @@ naturalEarth1Raw.invert = function(x, y) {
 /*!******************************************************************************************************!*\
   !*** ./projects/spoke/src/app/features/visualizations/pages/overview/overview-visualization.vega.ts ***!
   \******************************************************************************************************/
-/*! exports provided: createSpec, vis1Spec */
+/*! exports provided: createSpec */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSpec", function() { return createSpec; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "vis1Spec", function() { return vis1Spec; });
 function createSpec(options = {}) {
     const { source, destination } = options;
-    if (!source || !destination) {
-        return vis1Spec;
-    }
-    else {
-        return {
-            $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-            config: {
-                view: {
-                    stroke: 'transparent'
-                }
-            },
-            width: 'container',
-            height: 'container',
-            autosize: {
-                type: 'fit',
-                contains: 'padding'
-            },
-            layer: [
-                {
-                    data: {
-                        url: 'assets/datasets/overview/edges-v3.csv'
-                    },
-                    transform: [{
-                            joinaggregate: [{
-                                    op: 'sum',
-                                    field: 'weight',
-                                    as: 'total_weight'
-                                }],
-                            groupby: ['source_type', 'target_type']
-                        }],
-                    mark: {
-                        type: 'rule'
-                    },
-                    encoding: {
-                        x: {
-                            field: 'a1',
-                            type: 'quantitative'
-                        },
-                        y: {
-                            field: 'b1',
-                            type: 'quantitative'
-                        },
-                        x2: {
-                            field: 'a2'
-                        },
-                        y2: {
-                            field: 'b2'
-                        },
-                        strokeWidth: {
-                            field: 'total_weight',
-                            scale: {
-                                range: [1, 10]
-                            },
-                            legend: null
-                        },
-                        color: {
-                            value: '#f5f5f5',
-                            legend: null
-                        }
-                    }
-                },
-                {
-                    data: {
-                        url: `assets/datasets/${source}-food-tree/tree-edges.csv`
-                    },
-                    transform: [
-                        {
-                            lookup: 'source_type',
-                            from: {
-                                data: { url: 'assets/datasets/overview/nodes-v3.csv' },
-                                key: 'type',
-                                fields: ['a', 'b']
-                            },
-                            as: ['a1', 'b1']
-                        },
-                        {
-                            lookup: 'target_type',
-                            from: {
-                                data: { url: 'assets/datasets/overview/nodes-v3.csv' },
-                                key: 'type',
-                                fields: ['a', 'b']
-                            },
-                            as: ['a2', 'b2']
-                        },
-                        { filter: `datum.dest_name == '${destination}'` }
-                    ],
-                    mark: {
-                        type: 'rule'
-                    },
-                    encoding: {
-                        x: {
-                            field: 'a1',
-                            type: 'quantitative'
-                        },
-                        y: {
-                            field: 'b1',
-                            type: 'quantitative'
-                        },
-                        x2: {
-                            field: 'a2'
-                        },
-                        y2: {
-                            field: 'b2'
-                        }
-                    }
-                },
-                {
-                    data: {
-                        url: 'assets/datasets/overview/nodes-v3.csv'
-                    },
-                    mark: {
-                        type: 'circle',
-                        opacity: 1,
-                        fill: {
-                            expr: 'datum.color2'
-                        }
-                    },
-                    encoding: {
-                        x: {
-                            field: 'a',
-                            type: 'quantitative',
-                            axis: {
-                                tickCount: 12,
-                                domain: false,
-                                labels: false,
-                                ticks: false,
-                                title: null
-                            },
-                            scale: {
-                                domain: [0, 11]
-                            }
-                        },
-                        y: {
-                            field: 'b',
-                            type: 'quantitative',
-                            axis: {
-                                tickCount: 5,
-                                domain: false,
-                                labels: false,
-                                ticks: false,
-                                title: null,
-                                gridOpacity: 0.5
-                            },
-                            scale: {
-                                domain: [0, 6]
-                            }
-                        },
-                        size: {
-                            field: 'weight',
-                            type: 'quantitative',
-                            scale: {
-                                range: [500, 1000]
-                            },
-                            legend: null
-                        }
-                    }
-                },
-                {
-                    data: {
-                        url: `assets/datasets/${source}-food-tree/tree-edges.csv`
-                    },
-                    transform: [
-                        {
-                            lookup: 'target_type',
-                            from: {
-                                data: { url: 'assets/datasets/overview/nodes-v3.csv' },
-                                key: 'type',
-                                fields: ['a', 'b', 'id', 'weight', 'color']
-                            }
-                        },
-                        { filter: `datum.dest_name == '${destination}'` }
-                    ],
-                    mark: {
-                        type: 'circle',
-                        opacity: 1,
-                        fill: {
-                            expr: 'datum.color'
-                        }
-                    },
-                    encoding: {
-                        strokeOpacity: {
-                            value: 0
-                        },
-                        x: {
-                            field: 'a',
-                            type: 'quantitative',
-                            axis: {
-                                tickCount: 12,
-                                domain: false,
-                                labels: false,
-                                ticks: false,
-                                title: null
-                            },
-                            scale: {
-                                domain: [0, 11]
-                            }
-                        },
-                        y: {
-                            field: 'b',
-                            type: 'quantitative',
-                            axis: {
-                                tickCount: 5,
-                                domain: false,
-                                labels: false,
-                                ticks: false,
-                                title: null,
-                                gridOpacity: 0.5
-                            },
-                            scale: {
-                                domain: [0, 6]
-                            }
-                        },
-                        size: {
-                            field: 'weight',
-                            type: 'quantitative',
-                            scale: {
-                                range: [500, 1000]
-                            },
-                            legend: null
-                        }
-                    }
-                },
-                {
-                    data: {
-                        url: 'assets/datasets/overview/nodes-v3.csv'
-                    },
-                    mark: {
-                        type: 'text',
-                        dy: -30,
-                        fontSize: 12
-                    },
-                    encoding: {
-                        text: {
-                            field: 'label',
-                            type: 'nominal'
-                        },
-                        x: {
-                            field: 'a',
-                            type: 'quantitative'
-                        },
-                        y: {
-                            field: 'b',
-                            type: 'quantitative'
-                        },
-                        opacity: {
-                            condition: {
-                                test: 'datum.label === "Disease"',
-                                value: 1
-                            },
-                            value: 0.15
-                        }
-                    }
-                },
-                {
-                    data: {
-                        url: `assets/datasets/${source}-food-tree/tree-edges.csv`
-                    },
-                    transform: [
-                        {
-                            lookup: 'target_type',
-                            from: {
-                                data: { url: 'assets/datasets/overview/nodes-v3.csv' },
-                                key: 'type',
-                                fields: ['a', 'b', 'label']
-                            }
-                        },
-                        { filter: `datum.dest_name == '${destination}'` }
-                    ],
-                    mark: {
-                        type: 'text',
-                        dy: -30,
-                        fontSize: 12,
-                        opacity: 1
-                    },
-                    encoding: {
-                        text: {
-                            field: 'label',
-                            type: 'nominal'
-                        },
-                        x: {
-                            field: 'a',
-                            type: 'quantitative'
-                        },
-                        y: {
-                            field: 'b',
-                            type: 'quantitative'
-                        }
-                    }
-                },
-                {
-                    data: {
-                        values: [
-                            { x: 11, y: 5, label: 'B' },
-                            { x: 11, y: 4, label: 'C' },
-                            { x: 11, y: 3, label: 'D' },
-                            { x: 11, y: 2, label: 'E' },
-                            { x: 11, y: 1, label: 'F' }
-                        ]
-                    },
-                    mark: {
-                        type: 'text',
-                        fontSize: 12,
-                        dx: 10,
-                        opacity: 0.5
-                    },
-                    encoding: {
-                        text: {
-                            field: 'label',
-                            type: 'nominal'
-                        },
-                        x: {
-                            field: 'x',
-                            type: 'quantitative'
-                        },
-                        y: {
-                            field: 'y',
-                            type: 'quantitative'
-                        }
-                    }
-                },
-                {
-                    data: {
-                        values: [
-                            { x: 0, y: 0, label: '1' },
-                            { x: 1, y: 0, label: '2' },
-                            { x: 2, y: 0, label: '3' },
-                            { x: 3, y: 0, label: '4' },
-                            { x: 4, y: 0, label: '5' },
-                            { x: 5, y: 0, label: '6' },
-                            { x: 6, y: 0, label: '7' },
-                            { x: 7, y: 0, label: '8' },
-                            { x: 8, y: 0, label: '9' },
-                            { x: 9, y: 0, label: '10' },
-                            { x: 10, y: 0, label: '11' },
-                            { x: 11, y: 0, label: '12:G' }
-                        ]
-                    },
-                    mark: {
-                        type: 'text',
-                        fontSize: 12,
-                        dy: 10,
-                        opacity: 0.5
-                    },
-                    encoding: {
-                        text: {
-                            field: 'label',
-                            type: 'nominal'
-                        },
-                        x: {
-                            field: 'x',
-                            type: 'quantitative'
-                        },
-                        y: {
-                            field: 'y',
-                            type: 'quantitative'
-                        }
-                    }
-                },
-                {
-                    data: {
-                        values: [
-                            { x: 0, y: 6, label: '1' },
-                            { x: 1, y: 6, label: '2' },
-                            { x: 2, y: 6, label: '3' },
-                            { x: 3, y: 6, label: '4' },
-                            { x: 4, y: 6, label: '5' },
-                            { x: 5, y: 6, label: '6' },
-                            { x: 6, y: 6, label: '7' },
-                            { x: 7, y: 6, label: '8' },
-                            { x: 8, y: 6, label: '9' },
-                            { x: 9, y: 6, label: '10' },
-                            { x: 10, y: 6, label: '11' },
-                            { x: 11, y: 6, label: '12:A' }
-                        ]
-                    },
-                    mark: {
-                        type: 'text',
-                        fontSize: 12,
-                        dy: -10,
-                        opacity: 0.5
-                    },
-                    encoding: {
-                        text: {
-                            field: 'label',
-                            type: 'nominal'
-                        },
-                        x: {
-                            field: 'x',
-                            type: 'quantitative'
-                        },
-                        y: {
-                            field: 'y',
-                            type: 'quantitative'
-                        }
-                    }
-                }
-            ]
-        };
-    }
-}
-const vis1Spec = {
-    $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-    config: {
-        view: {
-            stroke: 'transparent'
-        }
-    },
-    width: 'container',
-    height: 'container',
-    autosize: {
-        type: 'fit',
-        contains: 'padding'
-    },
-    data: {
-        url: 'assets/datasets/overview/nodes-v3.csv'
-    },
-    layer: [
-        {
-            data: {
-                url: 'assets/datasets/overview/edges-v3.csv'
-            },
-            transform: [{
-                    joinaggregate: [{
-                            op: 'sum',
-                            field: 'weight',
-                            as: 'total_weight'
-                        }],
-                    groupby: ['source_type', 'target_type']
-                }],
-            mark: {
-                type: 'rule'
-            },
-            params: [
-                {
-                    name: 'highlightEdge',
-                    select: { type: 'point', on: 'mouseover' }
-                }
-            ],
-            encoding: {
-                x: {
-                    field: 'a1',
-                    type: 'quantitative'
-                },
-                y: {
-                    field: 'b1',
-                    type: 'quantitative'
-                },
-                x2: {
-                    field: 'a2'
-                },
-                y2: {
-                    field: 'b2'
-                },
-                strokeWidth: {
-                    field: 'total_weight',
-                    scale: {
-                        range: [1, 10]
-                    },
-                    legend: null
-                },
-                color: {
-                    condition: [
-                        {
-                            param: 'highlightEdge',
-                            empty: false,
-                            value: 'red'
-                        },
-                        {
-                            test: 'datum.total_weight > 500000',
-                            value: '#000000'
-                        }
-                    ],
-                    value: '#e0e0e0',
-                    legend: null
-                },
-                tooltip: [
-                    {
-                        field: 'tooltip',
-                        title: 'Link Types (#Links)',
-                        type: 'ordinal'
-                    }
-                ]
+    return {
+        $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+        config: {
+            view: {
+                stroke: 'transparent'
             }
         },
-        {
-            mark: {
-                type: 'circle',
-                opacity: 1,
-                stroke: 'red',
-                strokeWidth: 2,
-                fill: {
-                    expr: 'datum.color'
-                }
-            },
-            params: [
-                {
-                    name: 'highlightNode',
-                    select: { type: 'point', on: 'mouseover' }
-                }
-            ],
-            encoding: {
-                strokeOpacity: {
-                    value: 0,
-                    condition: [
-                        {
-                            param: 'highlightNode',
-                            empty: false,
-                            value: 100
-                        }
-                    ]
+        width: 'container',
+        height: 'container',
+        autosize: {
+            type: 'fit',
+            contains: 'padding'
+        },
+        layer: [
+            {
+                data: {
+                    url: 'assets/datasets/overview/edges-v3.csv'
                 },
-                x: {
-                    field: 'a',
-                    type: 'quantitative',
-                    axis: {
-                        tickCount: 12,
-                        domain: false,
-                        labels: false,
-                        ticks: false,
-                        title: null
-                    },
-                    scale: {
-                        domain: [0, 11]
-                    }
+                transform: [{
+                        joinaggregate: [{
+                                op: 'sum',
+                                field: 'weight',
+                                as: 'total_weight'
+                            }],
+                        groupby: ['source_type', 'target_type']
+                    }],
+                mark: {
+                    type: 'rule'
                 },
-                y: {
-                    field: 'b',
-                    type: 'quantitative',
-                    axis: {
-                        tickCount: 5,
-                        domain: false,
-                        labels: false,
-                        ticks: false,
-                        title: null,
-                        gridOpacity: 0.5
-                    },
-                    scale: {
-                        domain: [0, 6]
-                    }
-                },
-                tooltip: [
+                params: source || destination ? [] : [
                     {
-                        field: 'tooltip',
-                        title: 'Link Types (#Links)',
-                        type: 'ordinal'
+                        name: 'highlightEdge',
+                        select: { type: 'point', on: 'mouseover' }
                     }
                 ],
-                size: {
-                    field: 'weight',
-                    type: 'quantitative',
-                    scale: {
-                        range: [500, 1000]
+                encoding: {
+                    x: {
+                        field: 'a1',
+                        type: 'quantitative'
                     },
-                    legend: null
+                    y: {
+                        field: 'b1',
+                        type: 'quantitative'
+                    },
+                    x2: {
+                        field: 'a2'
+                    },
+                    y2: {
+                        field: 'b2'
+                    },
+                    strokeWidth: {
+                        field: 'total_weight',
+                        type: 'quantitative',
+                        scale: {
+                            range: [1, 10]
+                        },
+                        legend: {
+                            titleOrient: 'left',
+                            titleColor: '#052049',
+                            labelColor: '#052049',
+                            orient: 'bottom',
+                            values: [100000, 2000000, 4000000],
+                            title: 'Thickness by count:',
+                            symbolStrokeColor: '#052049',
+                            symbolSize: 200,
+                            padding: 20
+                        }
+                    },
+                    color: {
+                        condition: source || destination ? [] : [
+                            {
+                                param: 'highlightEdge',
+                                empty: false,
+                                value: 'red'
+                            },
+                            {
+                                test: 'datum.total_weight > 500000',
+                                value: '#000000'
+                            }
+                        ],
+                        value: source || destination ? '#f5f5f5' : '#e0e0e0',
+                        legend: null
+                    },
+                    tooltip: source || destination ? [] : [
+                        {
+                            field: 'tooltip',
+                            title: 'Link Types (#Links)',
+                            type: 'ordinal'
+                        }
+                    ]
+                }
+            },
+            {
+                data: source || destination ? {
+                    url: `assets/datasets/${source}-food-tree/tree-edges.csv`
+                } : undefined,
+                transform: source || destination ? [
+                    {
+                        lookup: 'source_type',
+                        from: {
+                            data: { url: 'assets/datasets/overview/nodes-v3.csv' },
+                            key: 'type',
+                            fields: ['a', 'b']
+                        },
+                        as: ['a1', 'b1']
+                    },
+                    {
+                        lookup: 'target_type',
+                        from: {
+                            data: { url: 'assets/datasets/overview/nodes-v3.csv' },
+                            key: 'type',
+                            fields: ['a', 'b']
+                        },
+                        as: ['a2', 'b2']
+                    },
+                    { filter: `datum.dest_name == '${destination}'` }
+                ] : [],
+                mark: {
+                    type: 'rule'
+                },
+                encoding: source || destination ? {
+                    x: {
+                        field: 'a1',
+                        type: 'quantitative'
+                    },
+                    y: {
+                        field: 'b1',
+                        type: 'quantitative'
+                    },
+                    x2: {
+                        field: 'a2'
+                    },
+                    y2: {
+                        field: 'b2'
+                    }
+                } : {}
+            },
+            {
+                data: {
+                    url: 'assets/datasets/overview/nodes-v3.csv'
+                },
+                mark: {
+                    type: 'circle',
+                    opacity: 1,
+                    stroke: source || destination ? undefined : 'red',
+                    strokeWidth: source || destination ? undefined : 2,
+                    fill: {
+                        expr: source || destination ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
+                    }
+                },
+                params: source || destination ? [] : [
+                    {
+                        name: 'highlightNode',
+                        select: { type: 'point', on: 'mouseover' }
+                    }
+                ],
+                encoding: {
+                    strokeOpacity: source || destination ? {} : {
+                        value: 0,
+                        condition: [
+                            {
+                                param: 'highlightNode',
+                                empty: false,
+                                value: 100
+                            }
+                        ]
+                    },
+                    x: {
+                        field: 'a',
+                        type: 'quantitative',
+                        axis: {
+                            tickCount: 12,
+                            domain: false,
+                            labels: false,
+                            ticks: false,
+                            title: null
+                        },
+                        scale: {
+                            domain: [0, 11]
+                        }
+                    },
+                    y: {
+                        field: 'b',
+                        type: 'quantitative',
+                        axis: {
+                            tickCount: 5,
+                            domain: false,
+                            labels: false,
+                            ticks: false,
+                            title: null,
+                            gridOpacity: 0.5
+                        },
+                        scale: {
+                            domain: [0, 6]
+                        }
+                    },
+                    tooltip: source || destination ? [] : [
+                        {
+                            field: 'tooltip',
+                            title: 'Link Types (#Links)',
+                            type: 'ordinal'
+                        }
+                    ],
+                    size: {
+                        field: 'weight',
+                        type: 'quantitative',
+                        scale: {
+                            range: [500, 1000]
+                        },
+                        legend: {
+                            titleOrient: 'left',
+                            titleColor: '#052049',
+                            labelColor: '#052049',
+                            orient: 'bottom',
+                            values: [10, 1000000],
+                            title: 'Size by count:',
+                            symbolStrokeColor: '#052049',
+                            padding: 20
+                        }
+                    }
+                }
+            },
+            {
+                data: source || destination ? {
+                    url: `assets/datasets/${source}-food-tree/tree-edges.csv`
+                } : undefined,
+                transform: source || destination ? [
+                    {
+                        lookup: 'target_type',
+                        from: {
+                            data: { url: 'assets/datasets/overview/nodes-v3.csv' },
+                            key: 'type',
+                            fields: ['a', 'b', 'id', 'weight', 'color']
+                        }
+                    },
+                    { filter: `datum.dest_name == '${destination}'` }
+                ] : [],
+                mark: {
+                    type: 'circle',
+                    opacity: 1,
+                    fill: {
+                        expr: 'datum.color'
+                    }
+                },
+                encoding: source || destination ? {
+                    strokeOpacity: {
+                        value: 0
+                    },
+                    x: {
+                        field: 'a',
+                        type: 'quantitative',
+                        axis: {
+                            tickCount: 12,
+                            domain: false,
+                            labels: false,
+                            ticks: false,
+                            title: null
+                        },
+                        scale: {
+                            domain: [0, 11]
+                        }
+                    },
+                    y: {
+                        field: 'b',
+                        type: 'quantitative',
+                        axis: {
+                            tickCount: 5,
+                            domain: false,
+                            labels: false,
+                            ticks: false,
+                            title: null,
+                            gridOpacity: 0.5
+                        },
+                        scale: {
+                            domain: [0, 6]
+                        }
+                    },
+                    size: {
+                        field: 'weight',
+                        type: 'quantitative',
+                        scale: {
+                            range: [500, 1000]
+                        },
+                        legend: null
+                    }
+                } : {}
+            },
+            {
+                data: {
+                    url: 'assets/datasets/overview/nodes-v3.csv'
+                },
+                mark: {
+                    type: 'text',
+                    dy: -30,
+                    fontSize: 12
+                },
+                encoding: {
+                    text: {
+                        field: 'label',
+                        type: 'nominal'
+                    },
+                    x: {
+                        field: 'a',
+                        type: 'quantitative'
+                    },
+                    y: {
+                        field: 'b',
+                        type: 'quantitative'
+                    },
+                    opacity: source || destination ? {
+                        condition: {
+                            test: 'datum.label === "Disease"',
+                            value: 1
+                        },
+                        value: 0.15
+                    } : {}
+                }
+            },
+            {
+                data: source || destination ? {
+                    url: `assets/datasets/${source}-food-tree/tree-edges.csv`
+                } : undefined,
+                transform: source || destination ? [
+                    {
+                        lookup: 'target_type',
+                        from: {
+                            data: { url: 'assets/datasets/overview/nodes-v3.csv' },
+                            key: 'type',
+                            fields: ['a', 'b', 'label']
+                        }
+                    },
+                    { filter: `datum.dest_name == '${destination}'` }
+                ] : undefined,
+                mark: {
+                    type: 'text',
+                    dy: -30,
+                    fontSize: 12,
+                    opacity: 1
+                },
+                encoding: source || destination ? {
+                    text: {
+                        field: 'label',
+                        type: 'nominal'
+                    },
+                    x: {
+                        field: 'a',
+                        type: 'quantitative'
+                    },
+                    y: {
+                        field: 'b',
+                        type: 'quantitative'
+                    }
+                } : {}
+            },
+            {
+                data: {
+                    values: [
+                        { x: 11, y: 5, label: 'B' },
+                        { x: 11, y: 4, label: 'C' },
+                        { x: 11, y: 3, label: 'D' },
+                        { x: 11, y: 2, label: 'E' },
+                        { x: 11, y: 1, label: 'F' }
+                    ]
+                },
+                mark: {
+                    type: 'text',
+                    fontSize: 12,
+                    dx: 10,
+                    opacity: 0.5
+                },
+                encoding: {
+                    text: {
+                        field: 'label',
+                        type: 'nominal'
+                    },
+                    x: {
+                        field: 'x',
+                        type: 'quantitative'
+                    },
+                    y: {
+                        field: 'y',
+                        type: 'quantitative'
+                    }
+                }
+            },
+            {
+                data: {
+                    values: [
+                        { x: 0, y: 0, label: '1' },
+                        { x: 1, y: 0, label: '2' },
+                        { x: 2, y: 0, label: '3' },
+                        { x: 3, y: 0, label: '4' },
+                        { x: 4, y: 0, label: '5' },
+                        { x: 5, y: 0, label: '6' },
+                        { x: 6, y: 0, label: '7' },
+                        { x: 7, y: 0, label: '8' },
+                        { x: 8, y: 0, label: '9' },
+                        { x: 9, y: 0, label: '10' },
+                        { x: 10, y: 0, label: '11' },
+                        { x: 11, y: 0, label: '12:G' }
+                    ]
+                },
+                mark: {
+                    type: 'text',
+                    fontSize: 12,
+                    dy: 10,
+                    opacity: 0.5
+                },
+                encoding: {
+                    text: {
+                        field: 'label',
+                        type: 'nominal'
+                    },
+                    x: {
+                        field: 'x',
+                        type: 'quantitative'
+                    },
+                    y: {
+                        field: 'y',
+                        type: 'quantitative'
+                    }
+                }
+            },
+            {
+                data: {
+                    values: [
+                        { x: 0, y: 6, label: '1' },
+                        { x: 1, y: 6, label: '2' },
+                        { x: 2, y: 6, label: '3' },
+                        { x: 3, y: 6, label: '4' },
+                        { x: 4, y: 6, label: '5' },
+                        { x: 5, y: 6, label: '6' },
+                        { x: 6, y: 6, label: '7' },
+                        { x: 7, y: 6, label: '8' },
+                        { x: 8, y: 6, label: '9' },
+                        { x: 9, y: 6, label: '10' },
+                        { x: 10, y: 6, label: '11' },
+                        { x: 11, y: 6, label: '12:A' }
+                    ]
+                },
+                mark: {
+                    type: 'text',
+                    fontSize: 12,
+                    dy: -10,
+                    opacity: 0.5
+                },
+                encoding: {
+                    text: {
+                        field: 'label',
+                        type: 'nominal'
+                    },
+                    x: {
+                        field: 'x',
+                        type: 'quantitative'
+                    },
+                    y: {
+                        field: 'y',
+                        type: 'quantitative'
+                    }
                 }
             }
-        },
-        {
-            mark: {
-                type: 'text',
-                dy: -30,
-                fontSize: 12
-            },
-            encoding: {
-                text: {
-                    field: 'label',
-                    type: 'nominal'
-                },
-                x: {
-                    field: 'a',
-                    type: 'quantitative'
-                },
-                y: {
-                    field: 'b',
-                    type: 'quantitative'
-                }
-            }
-        },
-        {
-            data: {
-                values: [
-                    { x: 11, y: 5, label: 'B' },
-                    { x: 11, y: 4, label: 'C' },
-                    { x: 11, y: 3, label: 'D' },
-                    { x: 11, y: 2, label: 'E' },
-                    { x: 11, y: 1, label: 'F' }
-                ]
-            },
-            mark: {
-                type: 'text',
-                fontSize: 12,
-                dx: 10,
-                opacity: 0.5
-            },
-            encoding: {
-                text: {
-                    field: 'label',
-                    type: 'nominal'
-                },
-                x: {
-                    field: 'x',
-                    type: 'quantitative'
-                },
-                y: {
-                    field: 'y',
-                    type: 'quantitative'
-                }
-            }
-        },
-        {
-            data: {
-                values: [
-                    { x: 0, y: 0, label: '1' },
-                    { x: 1, y: 0, label: '2' },
-                    { x: 2, y: 0, label: '3' },
-                    { x: 3, y: 0, label: '4' },
-                    { x: 4, y: 0, label: '5' },
-                    { x: 5, y: 0, label: '6' },
-                    { x: 6, y: 0, label: '7' },
-                    { x: 7, y: 0, label: '8' },
-                    { x: 8, y: 0, label: '9' },
-                    { x: 9, y: 0, label: '10' },
-                    { x: 10, y: 0, label: '11' },
-                    { x: 11, y: 0, label: '12:G' }
-                ]
-            },
-            mark: {
-                type: 'text',
-                fontSize: 12,
-                dy: 10,
-                opacity: 0.5
-            },
-            encoding: {
-                text: {
-                    field: 'label',
-                    type: 'nominal'
-                },
-                x: {
-                    field: 'x',
-                    type: 'quantitative'
-                },
-                y: {
-                    field: 'y',
-                    type: 'quantitative'
-                }
-            }
-        },
-        {
-            data: {
-                values: [
-                    { x: 0, y: 6, label: '1' },
-                    { x: 1, y: 6, label: '2' },
-                    { x: 2, y: 6, label: '3' },
-                    { x: 3, y: 6, label: '4' },
-                    { x: 4, y: 6, label: '5' },
-                    { x: 5, y: 6, label: '6' },
-                    { x: 6, y: 6, label: '7' },
-                    { x: 7, y: 6, label: '8' },
-                    { x: 8, y: 6, label: '9' },
-                    { x: 9, y: 6, label: '10' },
-                    { x: 10, y: 6, label: '11' },
-                    { x: 11, y: 6, label: '12:A' }
-                ]
-            },
-            mark: {
-                type: 'text',
-                fontSize: 12,
-                dy: -10,
-                opacity: 0.5
-            },
-            encoding: {
-                text: {
-                    field: 'label',
-                    type: 'nominal'
-                },
-                x: {
-                    field: 'x',
-                    type: 'quantitative'
-                },
-                y: {
-                    field: 'y',
-                    type: 'quantitative'
-                }
-            }
-        }
-    ]
-};
+        ]
+    };
+}
 
 
 /***/ }),
@@ -25887,14 +25663,15 @@ class OverviewComponent {
     }
 }
 OverviewComponent.ɵfac = function OverviewComponent_Factory(t) { return new (t || OverviewComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_core_state_router_state__WEBPACK_IMPORTED_MODULE_3__["RouterState"]), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](ngx_google_analytics__WEBPACK_IMPORTED_MODULE_4__["GoogleAnalyticsService"])); };
-OverviewComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({ type: OverviewComponent, selectors: [["spoke-overview"]], decls: 2, vars: 3, consts: [[3, "spec", "viewChange"]], template: function OverviewComponent_Template(rf, ctx) { if (rf & 1) {
+OverviewComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({ type: OverviewComponent, selectors: [["spoke-overview"]], decls: 3, vars: 3, consts: [[3, "spec", "viewChange"], [1, "legend-area"]], template: function OverviewComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "ngx-vega", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("viewChange", function OverviewComponent_Template_ngx_vega_viewChange_0_listener($event) { return ctx.setView($event); });
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵpipe"](1, "async");
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](2, "div", 1);
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("spec", _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵpipeBind1"](1, 1, ctx.spec$));
-    } }, directives: [ngx_vega__WEBPACK_IMPORTED_MODULE_5__["VegaComponent"]], pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_6__["AsyncPipe"]], styles: ["[_nghost-%COMP%] {\n  display: block;\n  width: 100vw;\n  height: calc(100vh - 5rem);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uLy4uL292ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsY0FBQTtFQUNBLFlBQUE7RUFDQSwwQkFBQTtBQUNGIiwiZmlsZSI6Im92ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuICBkaXNwbGF5OiBibG9jaztcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IGNhbGMoMTAwdmggLSA1cmVtKTtcbn1cbiJdfQ== */"], changeDetection: 0 });
+    } }, directives: [ngx_vega__WEBPACK_IMPORTED_MODULE_5__["VegaComponent"]], pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_6__["AsyncPipe"]], styles: ["[_nghost-%COMP%] {\n  display: block;\n  width: 100vw;\n  height: calc(100vh - 5rem);\n}\n[_nghost-%COMP%]   .legend-area[_ngcontent-%COMP%] {\n  width: 100%;\n  background-color: #DFE0E0;\n  opacity: 0.25;\n  position: relative;\n  bottom: 4.5rem;\n  height: 3.5rem;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uLy4uL292ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsY0FBQTtFQUNBLFlBQUE7RUFDQSwwQkFBQTtBQUNGO0FBQ0U7RUFDRSxXQUFBO0VBQ0EseUJBQUE7RUFDQSxhQUFBO0VBQ0Esa0JBQUE7RUFDQSxjQUFBO0VBQ0EsY0FBQTtBQUNKIiwiZmlsZSI6Im92ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuICBkaXNwbGF5OiBibG9jaztcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IGNhbGMoMTAwdmggLSA1cmVtKTtcblxuICAubGVnZW5kLWFyZWEge1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGJhY2tncm91bmQtY29sb3I6ICNERkUwRTA7XG4gICAgb3BhY2l0eTogMC4yNTtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgYm90dG9tOiA0LjVyZW07XG4gICAgaGVpZ2h0OiAzLjVyZW07XG4gIH1cbn1cbiJdfQ== */"], changeDetection: 0 });
 
 
 /***/ }),
