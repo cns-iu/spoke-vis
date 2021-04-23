@@ -18,17 +18,4 @@ describe('OverviewComponent', () => {
         state$: routerState as Subject<RouterStateSnapshot>
       });
   });
-
-  describe('spec$', () => {
-    it('creates specs with the current disease and food', async () => {
-      const disease = 'flu';
-      const food = 'pasta';
-      const { instance } = await shallow.render();
-
-      spyOn(instance, 'createSpec');
-      routerState.next({ root: { queryParams: { disease, food } } });
-
-      expect(instance.createSpec).toHaveBeenCalledWith({ source: disease, destination: food });
-    });
-  });
 });

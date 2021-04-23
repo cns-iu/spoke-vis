@@ -3,7 +3,28 @@ import { parse } from 'papaparse';
 import { DatasetDefinition } from '../services/dataset-definition.service';
 
 
+function defaultCsvParser(raw: unknown): unknown {
+  return parse(raw as string, {
+    header: true,
+    skipEmptyLines: 'greedy',
+    dynamicTyping: true
+  }).data;
+}
+
+
 export const DATASET_DEFINITIONS: DatasetDefinition[] = [
+  {
+    dataset: 'overview-nodes',
+    file: 'nodes.csv',
+    type: 'text',
+    parser: defaultCsvParser
+  },
+  {
+    dataset: 'overview-edges',
+    file: 'edges.csv',
+    type: 'text',
+    parser: defaultCsvParser
+  },
   {
     dataset: 'boundaries',
     file: 'boundary.geojson',
@@ -28,9 +49,6 @@ export const DATASET_DEFINITIONS: DatasetDefinition[] = [
     dataset: 'tree-edges',
     file: 'tree-edges.csv',
     type: 'text',
-    parser: raw => parse(raw as string, {
-      header: true,
-      skipEmptyLines: 'greedy',
-    }).data
+    parser: defaultCsvParser
   }
 ];
