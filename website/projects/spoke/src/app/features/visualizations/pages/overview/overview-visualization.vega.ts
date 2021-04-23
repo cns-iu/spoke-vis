@@ -152,10 +152,7 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
           type: 'circle',
           opacity: 1,
           stroke: source || destination ? undefined : 'red',
-          strokeWidth: source || destination ? undefined : 2,
-          fill: {
-            expr: source || destination && 'datum.label !== "Disease"' ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
-          }
+          strokeWidth: source || destination ? undefined : 2
         },
         params: source || destination ? [] : [
           {
@@ -229,6 +226,17 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
               symbolStrokeColor: '#052049',
               padding: 20,
               direction: 'horizontal'
+            }
+          },
+          fill: {
+            condition: {
+              test: 'datum.label === "Disease"',
+              value: {
+                expr: 'datum.color'
+              }
+            },
+            value: {
+              expr: source || destination ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
             }
           }
         }
@@ -365,6 +373,37 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
       {
         data: {
           values: [
+            {x: 0, y: 5, label: 'B'},
+            {x: 0, y: 4, label: 'C'},
+            {x: 0, y: 3, label: 'D'},
+            {x: 0, y: 2, label: 'E'},
+            {x: 0, y: 1, label: 'F'}
+          ]
+        },
+        mark: {
+          type: 'text',
+          fontSize: 12,
+          dx: -10,
+          opacity: 0.5
+        },
+        encoding: {
+          text: {
+            field: 'label',
+            type: 'nominal'
+          },
+          x: {
+            field: 'x',
+            type: 'quantitative'
+          },
+          y: {
+            field: 'y',
+            type: 'quantitative'
+          }
+        }
+      },
+      {
+        data: {
+          values: [
             {x: 11, y: 5, label: 'B'},
             {x: 11, y: 4, label: 'C'},
             {x: 11, y: 3, label: 'D'},
@@ -396,7 +435,7 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
       {
         data: {
           values: [
-            {x: 0, y: 0, label: '1'},
+            {x: 0, y: 0, label: '1:G'},
             {x: 1, y: 0, label: '2'},
             {x: 2, y: 0, label: '3'},
             {x: 3, y: 0, label: '4'},
@@ -434,7 +473,7 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
       {
         data: {
           values: [
-            {x: 0, y: 6, label: '1'},
+            {x: 0, y: 6, label: '1:A'},
             {x: 1, y: 6, label: '2'},
             {x: 2, y: 6, label: '3'},
             {x: 3, y: 6, label: '4'},
