@@ -1,4 +1,12 @@
 :host {
+  ::ng-deep .mat-drawer-backdrop {
+    display: none;
+  }
+
+  ::ng-deep .mat-drawer-container {
+    width: 100%;
+  }
+
   display: block;
 
   .drawer {
