@@ -13,7 +13,7 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
   const nodes = options.nodes.map(node => ({ ...node }));
   const edges = options.edges.map(edge => ({ ...edge }));
   const destination = options.destination;
-  let source: Record<string, unknown>[] | undefined = undefined;
+  let source: Record<string, unknown>[] | undefined;
   if (options.source && destination) {
     source = options.source.filter(item => item.dest_name === destination).map(item => ({ ...item }));
   }
