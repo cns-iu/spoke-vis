@@ -9001,6 +9001,7 @@ class SearchComponent {
         const collator = new Intl.Collator();
         const compare = (a, b) => collator.compare(a.name, b.name);
         return this.index.entities$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["takeUntil"])(this.destroy$), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["map"])(o => Object.values(o)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["map"])(items => {
+            items = items.filter(item => item.selectable);
             items.sort(compare);
             return items;
         }));
@@ -9022,7 +9023,7 @@ class SearchComponent {
     }
     setupDiseaseListeners() {
         const { diseaseControl, foodControl, index, router, ga, destroy$ } = this;
-        const activeParamItem = router.state$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["takeUntil"])(destroy$), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["pluck"])('root', 'queryParams', 'disease'), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["map"])((id) => index.entities[id]), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["filter"])(item => !!item), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(item => diseaseControl.setValue(item)));
+        const activeParamItem = router.state$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["takeUntil"])(destroy$), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["pluck"])('root', 'queryParams', 'disease'), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["map"])((id) => index.entities[id]), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["filter"])(item => !!item && item.selectable), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(item => diseaseControl.setValue(item)));
         const diseaseChange = diseaseControl.valueChanges.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["takeUntil"])(destroy$), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(item => ga.event('search_component', 'disease_selected', item.id)));
         activeParamItem.subscribe();
         diseaseChange.subscribe(() => foodControl.enable());
@@ -9137,7 +9138,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! papaparse */ "NpuA");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(papaparse__WEBPACK_IMPORTED_MODULE_0__);
 
+function defaultCsvParser(raw) {
+    return Object(papaparse__WEBPACK_IMPORTED_MODULE_0__["parse"])(raw, {
+        header: true,
+        skipEmptyLines: 'greedy',
+        dynamicTyping: true
+    }).data;
+}
 const DATASET_DEFINITIONS = [
+    {
+        dataset: 'overview-nodes',
+        file: 'nodes.csv',
+        type: 'text',
+        parser: defaultCsvParser
+    },
+    {
+        dataset: 'overview-edges',
+        file: 'edges.csv',
+        type: 'text',
+        parser: defaultCsvParser
+    },
     {
         dataset: 'boundaries',
         file: 'boundary.geojson',
@@ -9162,10 +9182,7 @@ const DATASET_DEFINITIONS = [
         dataset: 'tree-edges',
         file: 'tree-edges.csv',
         type: 'text',
-        parser: raw => Object(papaparse__WEBPACK_IMPORTED_MODULE_0__["parse"])(raw, {
-            header: true,
-            skipEmptyLines: 'greedy',
-        }).data
+        parser: defaultCsvParser
     }
 ];
 
@@ -9247,7 +9264,7 @@ let IndexState = class IndexState extends _ngxs_labs_data_repositories__WEBPACK_
      * @returns An observable that completes when loading has finished or errors in case of invalid data
      */
     loadIndexFile(url) {
-        const normalizeItem = (item) => (Object.assign({ description: '' }, item));
+        const normalizeItem = (item) => (Object.assign({ description: '', selectable: false }, item));
         const result = new rxjs__WEBPACK_IMPORTED_MODULE_5__["Subject"]();
         const query = this.http.get(url, { responseType: 'json' }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["takeUntil"])(this.destroy$), Object(_shared_rxjs_operators_validate__WEBPACK_IMPORTED_MODULE_7__["validate"])(Array.isArray, 'Expected response to be an array'), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["concatMap"])(data => Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["from"])(data).pipe(Object(_shared_rxjs_operators_validate__WEBPACK_IMPORTED_MODULE_7__["validate"])(isPartialIndexItem, 'Expected response items to be IndexItems'), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(normalizeItem), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["toArray"])())), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["tap"])(items => this.addMany(items)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["ignoreElements"])());
         query.subscribe(result);
@@ -13734,7 +13751,7 @@ class VisualizationsComponent {
     }
 }
 VisualizationsComponent.ɵfac = function VisualizationsComponent_Factory(t) { return new (t || VisualizationsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](ngx_google_analytics__WEBPACK_IMPORTED_MODULE_1__["GoogleAnalyticsService"])); };
-VisualizationsComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: VisualizationsComponent, selectors: [["spoke-visualizations"]], decls: 9, vars: 3, consts: [["mode", "side", "disableClose", "", 1, "drawer", 3, "opened"], ["drawer", ""], ["mat-flat-button", "", "disableRipple", "", 1, "toggle", 3, "click"], [1, "icon"]], template: function VisualizationsComponent_Template(rf, ctx) { if (rf & 1) {
+VisualizationsComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: VisualizationsComponent, selectors: [["spoke-visualizations"]], decls: 9, vars: 3, consts: [["mode", "over", "disableClose", "", 1, "drawer", 3, "opened"], ["drawer", ""], ["mat-flat-button", "", "disableRipple", "", 1, "toggle", 3, "click"], [1, "icon"]], template: function VisualizationsComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "mat-drawer-container");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "mat-drawer", 0, 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](3, "spoke-search");
@@ -13754,7 +13771,7 @@ VisualizationsComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵ
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("opened", ctx.drawerOpen);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵclassProp"]("inverted", !ctx.drawerOpen);
-    } }, directives: [_angular_material_sidenav__WEBPACK_IMPORTED_MODULE_2__["MatDrawerContainer"], _angular_material_sidenav__WEBPACK_IMPORTED_MODULE_2__["MatDrawer"], _components_search_search_component__WEBPACK_IMPORTED_MODULE_3__["SearchComponent"], _angular_material_button__WEBPACK_IMPORTED_MODULE_4__["MatButton"], _angular_material_icon__WEBPACK_IMPORTED_MODULE_5__["MatIcon"], _angular_material_sidenav__WEBPACK_IMPORTED_MODULE_2__["MatDrawerContent"], _angular_router__WEBPACK_IMPORTED_MODULE_6__["RouterOutlet"]], styles: ["[_nghost-%COMP%] {\n  display: block;\n}\n[_nghost-%COMP%]   .drawer[_ngcontent-%COMP%] {\n  width: 20rem;\n  overflow-y: visible;\n  background-color: white;\n}\n[_nghost-%COMP%]   .drawer[_ngcontent-%COMP%]   .toggle[_ngcontent-%COMP%] {\n  position: absolute;\n  top: 2rem;\n  left: 100%;\n  width: 1.5rem;\n  min-width: 0;\n  height: 3rem;\n  padding: 0;\n  border: 1px solid #EDEDEE;\n  visibility: visible;\n  color: #052049;\n  background-color: #F2F4F6;\n}\n[_nghost-%COMP%]   .drawer[_ngcontent-%COMP%]   .toggle[_ngcontent-%COMP%]   .icon[_ngcontent-%COMP%] {\n  transition: transform 400ms;\n}\n[_nghost-%COMP%]   .drawer[_ngcontent-%COMP%]   .toggle[_ngcontent-%COMP%]   .icon.inverted[_ngcontent-%COMP%] {\n  transform: rotateY(180deg);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uL3Zpc3VhbGl6YXRpb25zLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsY0FBQTtBQUNGO0FBQ0U7RUFDRSxZQUFBO0VBQ0EsbUJBQUE7RUFFQSx1QkFBQTtBQUFKO0FBRUk7RUFDRSxrQkFBQTtFQUNBLFNBQUE7RUFDQSxVQUFBO0VBQ0EsYUFBQTtFQUNBLFlBQUE7RUFDQSxZQUFBO0VBQ0EsVUFBQTtFQUNBLHlCQUFBO0VBRUEsbUJBQUE7RUFDQSxjQUFBO0VBQ0EseUJBQUE7QUFETjtBQUdNO0VBQ0UsMkJBQUE7QUFEUjtBQUdRO0VBQ0UsMEJBQUE7QUFEViIsImZpbGUiOiJ2aXN1YWxpemF0aW9ucy5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIjpob3N0IHtcbiAgZGlzcGxheTogYmxvY2s7XG5cbiAgLmRyYXdlciB7XG4gICAgd2lkdGg6IDIwcmVtO1xuICAgIG92ZXJmbG93LXk6IHZpc2libGU7XG5cbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB3aGl0ZTtcblxuICAgIC50b2dnbGUge1xuICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgdG9wOiAycmVtO1xuICAgICAgbGVmdDogMTAwJTtcbiAgICAgIHdpZHRoOiAxLjVyZW07XG4gICAgICBtaW4td2lkdGg6IDA7XG4gICAgICBoZWlnaHQ6IDNyZW07XG4gICAgICBwYWRkaW5nOiAwO1xuICAgICAgYm9yZGVyOiAxcHggc29saWQgI0VERURFRTtcblxuICAgICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbiAgICAgIGNvbG9yOiAjMDUyMDQ5O1xuICAgICAgYmFja2dyb3VuZC1jb2xvcjogI0YyRjRGNjtcblxuICAgICAgLmljb24ge1xuICAgICAgICB0cmFuc2l0aW9uOiB0cmFuc2Zvcm0gNDAwbXM7IC8vIFNhbWUgZHVyYXRpb24gYXMgbWF0LWRyYXdlclxuXG4gICAgICAgICYuaW52ZXJ0ZWQge1xuICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlWSgxODBkZWcpO1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICB9XG59XG4iXX0= */"] });
+    } }, directives: [_angular_material_sidenav__WEBPACK_IMPORTED_MODULE_2__["MatDrawerContainer"], _angular_material_sidenav__WEBPACK_IMPORTED_MODULE_2__["MatDrawer"], _components_search_search_component__WEBPACK_IMPORTED_MODULE_3__["SearchComponent"], _angular_material_button__WEBPACK_IMPORTED_MODULE_4__["MatButton"], _angular_material_icon__WEBPACK_IMPORTED_MODULE_5__["MatIcon"], _angular_material_sidenav__WEBPACK_IMPORTED_MODULE_2__["MatDrawerContent"], _angular_router__WEBPACK_IMPORTED_MODULE_6__["RouterOutlet"]], styles: ["[_nghost-%COMP%] {\n  display: block;\n}\n[_nghost-%COMP%]     .mat-drawer-backdrop {\n  display: none;\n}\n[_nghost-%COMP%]     .mat-drawer-container {\n  width: 100%;\n}\n[_nghost-%COMP%]   .drawer[_ngcontent-%COMP%] {\n  width: 20rem;\n  overflow-y: visible;\n  background-color: white;\n}\n[_nghost-%COMP%]   .drawer[_ngcontent-%COMP%]   .toggle[_ngcontent-%COMP%] {\n  position: absolute;\n  top: 2rem;\n  left: 100%;\n  width: 1.5rem;\n  min-width: 0;\n  height: 3rem;\n  padding: 0;\n  border: 1px solid #EDEDEE;\n  visibility: visible;\n  color: #052049;\n  background-color: #F2F4F6;\n}\n[_nghost-%COMP%]   .drawer[_ngcontent-%COMP%]   .toggle[_ngcontent-%COMP%]   .icon[_ngcontent-%COMP%] {\n  transition: transform 400ms;\n}\n[_nghost-%COMP%]   .drawer[_ngcontent-%COMP%]   .toggle[_ngcontent-%COMP%]   .icon.inverted[_ngcontent-%COMP%] {\n  transform: rotateY(180deg);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uL3Zpc3VhbGl6YXRpb25zLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBU0UsY0FBQTtBQVBGO0FBREU7RUFDRSxhQUFBO0FBR0o7QUFBRTtFQUNFLFdBQUE7QUFFSjtBQUdFO0VBQ0UsWUFBQTtFQUNBLG1CQUFBO0VBRUEsdUJBQUE7QUFGSjtBQUlJO0VBQ0Usa0JBQUE7RUFDQSxTQUFBO0VBQ0EsVUFBQTtFQUNBLGFBQUE7RUFDQSxZQUFBO0VBQ0EsWUFBQTtFQUNBLFVBQUE7RUFDQSx5QkFBQTtFQUVBLG1CQUFBO0VBQ0EsY0FBQTtFQUNBLHlCQUFBO0FBSE47QUFLTTtFQUNFLDJCQUFBO0FBSFI7QUFLUTtFQUNFLDBCQUFBO0FBSFYiLCJmaWxlIjoidmlzdWFsaXphdGlvbnMuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyI6aG9zdCB7XG4gIDo6bmctZGVlcCAubWF0LWRyYXdlci1iYWNrZHJvcCB7XG4gICAgZGlzcGxheTogbm9uZTtcbiAgfVxuXG4gIDo6bmctZGVlcCAubWF0LWRyYXdlci1jb250YWluZXIge1xuICAgIHdpZHRoOiAxMDAlO1xuICB9XG5cbiAgZGlzcGxheTogYmxvY2s7XG5cbiAgLmRyYXdlciB7XG4gICAgd2lkdGg6IDIwcmVtO1xuICAgIG92ZXJmbG93LXk6IHZpc2libGU7XG5cbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB3aGl0ZTtcblxuICAgIC50b2dnbGUge1xuICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgdG9wOiAycmVtO1xuICAgICAgbGVmdDogMTAwJTtcbiAgICAgIHdpZHRoOiAxLjVyZW07XG4gICAgICBtaW4td2lkdGg6IDA7XG4gICAgICBoZWlnaHQ6IDNyZW07XG4gICAgICBwYWRkaW5nOiAwO1xuICAgICAgYm9yZGVyOiAxcHggc29saWQgI0VERURFRTtcblxuICAgICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbiAgICAgIGNvbG9yOiAjMDUyMDQ5O1xuICAgICAgYmFja2dyb3VuZC1jb2xvcjogI0YyRjRGNjtcblxuICAgICAgLmljb24ge1xuICAgICAgICB0cmFuc2l0aW9uOiB0cmFuc2Zvcm0gNDAwbXM7IC8vIFNhbWUgZHVyYXRpb24gYXMgbWF0LWRyYXdlclxuXG4gICAgICAgICYuaW52ZXJ0ZWQge1xuICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlWSgxODBkZWcpO1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICB9XG59XG4iXX0= */"] });
 
 
 /***/ }),

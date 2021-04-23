@@ -12984,8 +12984,13 @@ naturalEarth1Raw.invert = function(x, y) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSpec", function() { return createSpec; });
-function createSpec(options = {}) {
-    const { source, destination } = options;
+function createSpec(options) {
+    var _a;
+    // Clone values as vega modifies them
+    const nodes = options.nodes.map(node => (Object.assign({}, node)));
+    const edges = options.edges.map(edge => (Object.assign({}, edge)));
+    const source = (_a = options.source) === null || _a === void 0 ? void 0 : _a.map(item => (Object.assign({}, item)));
+    const destination = options.destination;
     return {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
         config: {
@@ -13001,9 +13006,7 @@ function createSpec(options = {}) {
         },
         layer: [
             {
-                data: {
-                    url: 'assets/datasets/overview/edges-v3.csv'
-                },
+                data: { name: 'edges' },
                 transform: [{
                         joinaggregate: [{
                                 op: 'sum',
@@ -13051,7 +13054,8 @@ function createSpec(options = {}) {
                             title: 'Thickness by count:',
                             symbolStrokeColor: '#052049',
                             symbolSize: 200,
-                            padding: 20
+                            padding: 20,
+                            direction: 'horizontal'
                         }
                     },
                     color: {
@@ -13060,13 +13064,9 @@ function createSpec(options = {}) {
                                 param: 'highlightEdge',
                                 empty: false,
                                 value: 'red'
-                            },
-                            {
-                                test: 'datum.total_weight > 500000',
-                                value: '#000000'
                             }
                         ],
-                        value: source || destination ? '#f5f5f5' : '#e0e0e0',
+                        value: source || destination ? '#EEEEEE' : '#bdbdbd',
                         legend: null
                     },
                     tooltip: source || destination ? [] : [
@@ -13079,14 +13079,12 @@ function createSpec(options = {}) {
                 }
             },
             {
-                data: source || destination ? {
-                    url: `assets/datasets/${source}-food-tree/tree-edges.csv`
-                } : undefined,
+                data: source ? { name: 'source' } : undefined,
                 transform: source || destination ? [
                     {
                         lookup: 'source_type',
                         from: {
-                            data: { url: 'assets/datasets/overview/nodes-v3.csv' },
+                            data: { name: 'nodes' },
                             key: 'type',
                             fields: ['a', 'b']
                         },
@@ -13095,7 +13093,7 @@ function createSpec(options = {}) {
                     {
                         lookup: 'target_type',
                         from: {
-                            data: { url: 'assets/datasets/overview/nodes-v3.csv' },
+                            data: { name: 'nodes' },
                             key: 'type',
                             fields: ['a', 'b']
                         },
@@ -13104,7 +13102,8 @@ function createSpec(options = {}) {
                     { filter: `datum.dest_name == '${destination}'` }
                 ] : [],
                 mark: {
-                    type: 'rule'
+                    type: 'rule',
+                    color: '#9E9E9E'
                 },
                 encoding: source || destination ? {
                     x: {
@@ -13124,16 +13123,14 @@ function createSpec(options = {}) {
                 } : {}
             },
             {
-                data: {
-                    url: 'assets/datasets/overview/nodes-v3.csv'
-                },
+                data: { name: 'nodes' },
                 mark: {
                     type: 'circle',
                     opacity: 1,
                     stroke: source || destination ? undefined : 'red',
                     strokeWidth: source || destination ? undefined : 2,
                     fill: {
-                        expr: source || destination ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
+                        expr: source || destination && 'datum.label !== "Disease"' ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
                     }
                 },
                 params: source || destination ? [] : [
@@ -13161,7 +13158,9 @@ function createSpec(options = {}) {
                             domain: false,
                             labels: false,
                             ticks: false,
-                            title: null
+                            title: null,
+                            gridOpacity: 0.5,
+                            gridColor: '#eeeeee'
                         },
                         scale: {
                             domain: [0, 11]
@@ -13176,7 +13175,8 @@ function createSpec(options = {}) {
                             labels: false,
                             ticks: false,
                             title: null,
-                            gridOpacity: 0.5
+                            gridOpacity: 0.5,
+                            gridColor: '#eeeeee'
                         },
                         scale: {
                             domain: [0, 6]
@@ -13203,20 +13203,19 @@ function createSpec(options = {}) {
                             values: [10, 1000000],
                             title: 'Size by count:',
                             symbolStrokeColor: '#052049',
-                            padding: 20
+                            padding: 20,
+                            direction: 'horizontal'
                         }
                     }
                 }
             },
             {
-                data: source || destination ? {
-                    url: `assets/datasets/${source}-food-tree/tree-edges.csv`
-                } : undefined,
+                data: source ? { name: 'source' } : undefined,
                 transform: source || destination ? [
                     {
                         lookup: 'target_type',
                         from: {
-                            data: { url: 'assets/datasets/overview/nodes-v3.csv' },
+                            data: { name: 'nodes' },
                             key: 'type',
                             fields: ['a', 'b', 'id', 'weight', 'color']
                         }
@@ -13242,7 +13241,9 @@ function createSpec(options = {}) {
                             domain: false,
                             labels: false,
                             ticks: false,
-                            title: null
+                            title: null,
+                            gridOpacity: 0.5,
+                            gridColor: '#eeeeee'
                         },
                         scale: {
                             domain: [0, 11]
@@ -13257,7 +13258,8 @@ function createSpec(options = {}) {
                             labels: false,
                             ticks: false,
                             title: null,
-                            gridOpacity: 0.5
+                            gridOpacity: 0.5,
+                            gridColor: '#eeeeee'
                         },
                         scale: {
                             domain: [0, 6]
@@ -13274,9 +13276,7 @@ function createSpec(options = {}) {
                 } : {}
             },
             {
-                data: {
-                    url: 'assets/datasets/overview/nodes-v3.csv'
-                },
+                data: { name: 'nodes' },
                 mark: {
                     type: 'text',
                     dy: -30,
@@ -13305,14 +13305,12 @@ function createSpec(options = {}) {
                 }
             },
             {
-                data: source || destination ? {
-                    url: `assets/datasets/${source}-food-tree/tree-edges.csv`
-                } : undefined,
+                data: source ? { name: 'source' } : undefined,
                 transform: source || destination ? [
                     {
                         lookup: 'target_type',
                         from: {
-                            data: { url: 'assets/datasets/overview/nodes-v3.csv' },
+                            data: { name: 'nodes' },
                             key: 'type',
                             fields: ['a', 'b', 'label']
                         }
@@ -13447,7 +13445,12 @@ function createSpec(options = {}) {
                     }
                 }
             }
-        ]
+        ],
+        datasets: {
+            nodes,
+            edges,
+            source: source
+        }
     };
 }
 
@@ -25603,13 +25606,17 @@ function curveRadial(curve) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OverviewComponent", function() { return OverviewComponent; });
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs/operators */ "kU1M");
-/* harmony import */ var _overview_visualization_vega__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./overview-visualization.vega */ "95nG");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "fXoL");
-/* harmony import */ var _core_state_router_state__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../core/state/router.state */ "s7H+");
-/* harmony import */ var ngx_google_analytics__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ngx-google-analytics */ "Wdmj");
-/* harmony import */ var ngx_vega__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ngx-vega */ "NNEg");
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/common */ "ofXK");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ "qCKp");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ "kU1M");
+/* harmony import */ var _overview_visualization_vega__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./overview-visualization.vega */ "95nG");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _state_dataset_state__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../state/dataset.state */ "6vO6");
+/* harmony import */ var _core_state_router_state__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../core/state/router.state */ "s7H+");
+/* harmony import */ var ngx_google_analytics__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ngx-google-analytics */ "Wdmj");
+/* harmony import */ var ngx_vega__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ngx-vega */ "NNEg");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common */ "ofXK");
+
+
 
 
 
@@ -25626,9 +25633,14 @@ class OverviewComponent {
      *
      * @param router Router state used to lookup query parameters
      */
-    constructor(router, ga) {
+    constructor(datasets, router, ga) {
         this.ga = ga;
-        this.spec$ = router.state$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_0__["filter"])((value) => !!value), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_0__["pluck"])('root', 'queryParams'), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_0__["map"])(({ disease, food }) => this.createSpec({ source: disease, destination: food })), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_0__["startWith"])({}));
+        this.spec$ = router.state$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["pluck"])('root', 'queryParams'), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["switchMap"])(({ disease, food }) => Object(rxjs__WEBPACK_IMPORTED_MODULE_0__["forkJoin"])({
+            nodes: datasets.loadDataset('overview', 'overview-nodes'),
+            edges: datasets.loadDataset('overview', 'overview-edges'),
+            source: disease ? datasets.loadDataset(disease, 'tree-edges') : Object(rxjs__WEBPACK_IMPORTED_MODULE_0__["of"])(undefined),
+            destination: Object(rxjs__WEBPACK_IMPORTED_MODULE_0__["of"])(food)
+        })), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["map"])(options => this.createSpec(options)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["startWith"])({}));
     }
     /**
      * Creates a spec with the provided options
@@ -25639,7 +25651,7 @@ class OverviewComponent {
      */
     /* istanbul ignore next */
     createSpec(options) {
-        return Object(_overview_visualization_vega__WEBPACK_IMPORTED_MODULE_1__["createSpec"])(options);
+        return Object(_overview_visualization_vega__WEBPACK_IMPORTED_MODULE_2__["createSpec"])(options);
     }
     /** Set the current vega-embed view and subscribe to events */
     setView(view) {
@@ -25662,16 +25674,16 @@ class OverviewComponent {
         });
     }
 }
-OverviewComponent.ɵfac = function OverviewComponent_Factory(t) { return new (t || OverviewComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_core_state_router_state__WEBPACK_IMPORTED_MODULE_3__["RouterState"]), _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](ngx_google_analytics__WEBPACK_IMPORTED_MODULE_4__["GoogleAnalyticsService"])); };
-OverviewComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({ type: OverviewComponent, selectors: [["spoke-overview"]], decls: 3, vars: 3, consts: [[3, "spec", "viewChange"], [1, "legend-area"]], template: function OverviewComponent_Template(rf, ctx) { if (rf & 1) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "ngx-vega", 0);
-        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("viewChange", function OverviewComponent_Template_ngx_vega_viewChange_0_listener($event) { return ctx.setView($event); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵpipe"](1, "async");
-        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](2, "div", 1);
+OverviewComponent.ɵfac = function OverviewComponent_Factory(t) { return new (t || OverviewComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_state_dataset_state__WEBPACK_IMPORTED_MODULE_4__["DatasetState"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_core_state_router_state__WEBPACK_IMPORTED_MODULE_5__["RouterState"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](ngx_google_analytics__WEBPACK_IMPORTED_MODULE_6__["GoogleAnalyticsService"])); };
+OverviewComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: OverviewComponent, selectors: [["spoke-overview"]], decls: 3, vars: 3, consts: [[3, "spec", "viewChange"], [1, "legend-area"]], template: function OverviewComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "ngx-vega", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("viewChange", function OverviewComponent_Template_ngx_vega_viewChange_0_listener($event) { return ctx.setView($event); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵpipe"](1, "async");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](2, "div", 1);
     } if (rf & 2) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("spec", _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵpipeBind1"](1, 1, ctx.spec$));
-    } }, directives: [ngx_vega__WEBPACK_IMPORTED_MODULE_5__["VegaComponent"]], pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_6__["AsyncPipe"]], styles: ["[_nghost-%COMP%] {\n  display: block;\n  width: 100vw;\n  height: calc(100vh - 5rem);\n}\n[_nghost-%COMP%]   .legend-area[_ngcontent-%COMP%] {\n  width: 100%;\n  background-color: #DFE0E0;\n  opacity: 0.25;\n  position: relative;\n  bottom: 4.5rem;\n  height: 3.5rem;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uLy4uL292ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsY0FBQTtFQUNBLFlBQUE7RUFDQSwwQkFBQTtBQUNGO0FBQ0U7RUFDRSxXQUFBO0VBQ0EseUJBQUE7RUFDQSxhQUFBO0VBQ0Esa0JBQUE7RUFDQSxjQUFBO0VBQ0EsY0FBQTtBQUNKIiwiZmlsZSI6Im92ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuICBkaXNwbGF5OiBibG9jaztcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IGNhbGMoMTAwdmggLSA1cmVtKTtcblxuICAubGVnZW5kLWFyZWEge1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGJhY2tncm91bmQtY29sb3I6ICNERkUwRTA7XG4gICAgb3BhY2l0eTogMC4yNTtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgYm90dG9tOiA0LjVyZW07XG4gICAgaGVpZ2h0OiAzLjVyZW07XG4gIH1cbn1cbiJdfQ== */"], changeDetection: 0 });
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("spec", _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵpipeBind1"](1, 1, ctx.spec$));
+    } }, directives: [ngx_vega__WEBPACK_IMPORTED_MODULE_7__["VegaComponent"]], pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_8__["AsyncPipe"]], styles: ["[_nghost-%COMP%] {\n  display: block;\n  width: 100vw;\n  height: calc(100vh - 5rem);\n  overflow: hidden;\n}\n[_nghost-%COMP%]   .legend-area[_ngcontent-%COMP%] {\n  width: 100%;\n  background-color: #DFE0E0;\n  opacity: 0.25;\n  position: relative;\n  bottom: 4.5rem;\n  height: 3.5rem;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uLy4uL292ZXJ2aWV3LmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsY0FBQTtFQUNBLFlBQUE7RUFDQSwwQkFBQTtFQUNBLGdCQUFBO0FBQ0Y7QUFDRTtFQUNFLFdBQUE7RUFDQSx5QkFBQTtFQUNBLGFBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxjQUFBO0FBQ0oiLCJmaWxlIjoib3ZlcnZpZXcuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyI6aG9zdCB7XG4gIGRpc3BsYXk6IGJsb2NrO1xuICB3aWR0aDogMTAwdnc7XG4gIGhlaWdodDogY2FsYygxMDB2aCAtIDVyZW0pO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gIC5sZWdlbmQtYXJlYSB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogI0RGRTBFMDtcbiAgICBvcGFjaXR5OiAwLjI1O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBib3R0b206IDQuNXJlbTtcbiAgICBoZWlnaHQ6IDMuNXJlbTtcbiAgfVxufVxuIl19 */"], changeDetection: 0 });
 
 
 /***/ }),

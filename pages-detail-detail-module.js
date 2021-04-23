@@ -2174,7 +2174,8 @@ class DetailDataService {
         const labels = [indexLabel, label];
         return nodes$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["pluck"])('features'), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["switchMap"])(features => Object(rxjs__WEBPACK_IMPORTED_MODULE_0__["from"])(features).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["filter"])(feature => labels.includes(feature.properties.label)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["map"])(feature => ({
             coordinates: feature.geometry.coordinates,
-            config: { color: feature.properties.label === label ? '#D1B445' : '#880E4F' }
+            config: { color: feature.properties.label === label ? '#D1B445' : '#880E4F' },
+            title: feature.properties.label
         })), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["toArray"])())));
     }
     getCenter(nodes$, indexLabel) {
@@ -7111,11 +7112,44 @@ class MapComponent {
         this.textOverlapEnabled = defaultTextOverlapEnabled;
         this.edges = defaultEdges;
         this.nodes = defaultNodes;
-        // Work these variables back into the layer tags.
+        // These allow the layer tags to be much more readable.
         this.currentNodeFormula = ['at', ['get', 'level'], ['literal', this.nodes]];
         this.currentEdgeFormula = ['get', 'zoom', ['at', ['get', 'level'], ['literal', this.edges]]];
         this.edgeFormula = ['at', ['get', 'level'], ['literal', this.edges]];
         this.lastEdgeFormula = ['at', this.edges.length - 1, ['literal', this.edges]];
+        /*
+          Popup content needs to follow specific pattern to function properly.
+          Property names will be used to look up data from the geoJson sources.
+          Pass in format ['<anyHTML>and text</anyHTML><p>', 'propertyName', '</p>more html or text']
+      
+          You can pass in as many as you like but they need to alternate between raw html, and property names.
+          You can also pass in a formatter with the property name in format ['propertyName', formatterMethod]
+        */
+        this.popups = [
+            {
+                layer: 'edges',
+                content: [
+                    '<p class="popup-label">Edge</p><p>',
+                    ['label', this.capitalizeFirstLetter],
+                    '</p>'
+                ]
+            },
+            {
+                layer: 'nodes',
+                content: [
+                    '<p class="popup-label">Node</p><p>',
+                    'label',
+                    '</p>'
+                ]
+            }
+        ];
+        this.containerStyles = `
+      border: 1px solid lightgray;
+      border-radius: 5px;
+      -webkit-box-shadow: 3px 3px 5px 4px #00000021;
+      -moz-box-shadow: 3px 3px 5px 4px #00000021;
+      box-shadow: 3px 3px 5px 4px #00000021;
+  `;
     }
     capitalizeFirstLetter(input) {
         return input.charAt(0).toUpperCase() + input.slice(1);
@@ -7147,18 +7181,29 @@ class MapComponent {
         }
         map.addControl(new _zoom_level_control__WEBPACK_IMPORTED_MODULE_3__["ZoomLevelControl"](), 'bottom-right');
         this.map.resize();
-        if (this.mapMarkers.length) {
-            this.addMapMarkers(this.mapMarkers);
-        }
+        this.addMapMarkers(this.mapMarkers);
+        this.addEdgeHover(map);
+        this.addNodeHover(map);
+        this.addPopups();
         // When the user zooms the map, this method handles showing and hiding data based on zoom level
         map.on('zoom', () => this.updateFilters());
         map.on('zoomend', (e) => this.zoomChange.emit(this.map.getZoom()));
         map.on('moveend', (e) => this.panChange.emit(this.map.getCenter().toArray()));
     }
     addMapMarkers(markers) {
+        if (!markers.length) {
+            return;
+        }
         markers.forEach(marker => {
+            const popup = new mapbox_gl__WEBPACK_IMPORTED_MODULE_1__["Popup"]({
+                closeOnClick: true,
+                closeOnMove: true,
+                closeButton: false,
+                className: 'map-marker-popup'
+            }).setHTML(`<h3>${marker.title}</h3>`);
             new mapbox_gl__WEBPACK_IMPORTED_MODULE_1__["Marker"](marker.config || {})
                 .setLngLat(marker.coordinates)
+                .setPopup(popup)
                 .addTo(this.map);
         });
     }
@@ -7208,6 +7253,105 @@ class MapComponent {
         this.edgeZoomIndex = currentIndex;
         return true;
     }
+    addEdgeHover(map) {
+        map.on('mousemove', 'edges', (e) => {
+            // When the mouse moves, check if the mouse is on top of a feature from the edges source.
+            if (e.features.length > 0) {
+                // If there was already an edge with the hover status, turn that hover status off first
+                if (this.hoverEdgeID) {
+                    map.setFeatureState({ source: 'edges', id: this.hoverEdgeID }, { hover: false });
+                }
+                // Set the hover status of the new edge to true, and save the ID to the object so we can compare
+                // later, when the mouse moves again.
+                this.hoverEdgeID = e.features[0].id;
+                map.setFeatureState({ source: 'edges', id: this.hoverEdgeID }, { hover: true });
+            }
+        });
+        map.on('mouseleave', 'edges', () => {
+            // When the mouse leaves the edge source features, turn the hover status off
+            if (this.hoverEdgeID) {
+                map.setFeatureState({ source: 'edges', id: this.hoverEdgeID }, { hover: false });
+            }
+            this.hoverEdgeID = undefined;
+        });
+    }
+    addNodeHover(map) {
+        map.on('mousemove', 'nodes', (e) => {
+            // When the mouse moves, check if the mouse is on top of a feature from the nodes source.
+            if (e.features.length > 0) {
+                // If there was already an node with the hover status, turn that hover status off first
+                if (this.hoverNodeID) {
+                    map.setFeatureState({ source: 'nodes', id: this.hoverNodeID }, { hover: false });
+                }
+                // Set the hover status of the new node to true, and save the ID to the object so we can compare
+                // later, when the mouse moves again.
+                this.hoverNodeID = e.features[0].id;
+                map.setFeatureState({ source: 'nodes', id: this.hoverNodeID }, { hover: true });
+            }
+        });
+        map.on('mouseleave', 'nodes', () => {
+            // When the mouse leaves the edge source features, turn the hover status off
+            if (this.hoverNodeID) {
+                map.setFeatureState({ source: 'nodes', id: this.hoverNodeID }, { hover: false });
+            }
+            this.hoverNodeID = undefined;
+        });
+    }
+    addPopups() {
+        this.popups.forEach(popup => {
+            this.addPopupOnClick(popup.layer, popup.content);
+        });
+    }
+    addPopupOnClick(layer, content) {
+        const { map } = this;
+        // When a click event occurs on a feature in the places layer, open a popup at the
+        // location of the feature, with description HTML from its properties.
+        map.on('click', layer, (e) => {
+            const descriptionHTML = this.createPopupHTML(e.features[0].properties, content);
+            new mapbox_gl__WEBPACK_IMPORTED_MODULE_1__["Popup"]({
+                closeOnClick: true,
+                closeOnMove: true,
+                closeButton: false,
+                className: 'map-marker-popup'
+            })
+                .setLngLat(e.lngLat)
+                .setHTML(descriptionHTML)
+                .addTo(map);
+        });
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.on('mouseenter', layer, () => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', layer, () => {
+            map.getCanvas().style.cursor = '';
+        });
+    }
+    // Takes the description field of the element, and uses it with the popup content defined in the config object
+    // to return the concatenated html string.
+    createPopupHTML(description, content) {
+        let html = '';
+        content.forEach((element, index) => {
+            if (!element) {
+                return;
+            }
+            // The config object for popups is structued like ['<html>', 'propertyName', '</html>]
+            // so on even indexes, we just concatenate the html string, on odd indexes we use the string to lookup the property value.
+            if (this.isEven(index)) {
+                html += element;
+            }
+            // Along with property values, you can pass along a formatting function in form of ['propertyName', function]
+            // This checks if there is one, if there is it uses that function to format the value of the property before
+            // concatenating it.
+            else if (typeof (element) === 'string') {
+                html += description[element];
+            }
+            else {
+                html += element[1](description[element[0]]);
+            }
+        });
+        return html;
+    }
     // Converts the current zoom number, to the index number of the object with the same .zoom property in the lookup array passed in.
     // Used because getZoom() will return very precise values, and the nodes / edges config objects will not match up exactly.
     getZoomIndex(zoomLookup) {
@@ -7222,6 +7366,9 @@ class MapComponent {
         }
         console.error('No Zoom index found.  Zoom lookup: ', zoomLookup);
         return 0;
+    }
+    isEven(index) {
+        return index % 2 === 0;
     }
 }
 MapComponent.ɵfac = function MapComponent_Factory(t) { return new (t || MapComponent)(); };
@@ -7266,7 +7413,7 @@ MapComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCompo
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("paint", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](73, _c19, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](71, _c18, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](69, _c6, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction0"](68, _c5)))))("filter", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](75, _c13, ctx.currentZoom, ctx.currentEdgeFormula));
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("layout", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction3"](82, _c23, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction0"](78, _c20), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](79, _c21, ctx.currentNodeFormula), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction0"](81, _c22)))("filter", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](88, _c13, ctx.currentZoom, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](86, _c12, ctx.currentNodeFormula)));
-    } }, directives: [ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_4__["MapComponent"], ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_4__["GeoJSONSourceComponent"], ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_4__["ɵb"]], styles: ["[_nghost-%COMP%]     .mapboxgl-zoom-level-display {\n  text-align: right;\n  margin-right: 0.875rem;\n  font-size: 0.875rem;\n}\n[_nghost-%COMP%]   mgl-map[_ngcontent-%COMP%] {\n  height: 100%;\n  width: 100%;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL21hcC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFDRTtFQUNFLGlCQUFBO0VBQ0Esc0JBQUE7RUFDQSxtQkFBQTtBQUFKO0FBR0U7RUFDRSxZQUFBO0VBQ0EsV0FBQTtBQURKIiwiZmlsZSI6Im1hcC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIjpob3N0IHtcbiAgOjpuZy1kZWVwIC5tYXBib3hnbC16b29tLWxldmVsLWRpc3BsYXkge1xuICAgIHRleHQtYWxpZ246IHJpZ2h0O1xuICAgIG1hcmdpbi1yaWdodDogMC44NzVyZW07XG4gICAgZm9udC1zaXplOiAwLjg3NXJlbTtcbiAgfVxuXG4gIG1nbC1tYXAge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICB3aWR0aDogMTAwJTtcbiAgfVxufVxuIl19 */"] });
+    } }, directives: [ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_4__["MapComponent"], ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_4__["GeoJSONSourceComponent"], ngx_mapbox_gl__WEBPACK_IMPORTED_MODULE_4__["ɵb"]], styles: ["@charset \"UTF-8\";\n[_nghost-%COMP%]     .mapboxgl-zoom-level-display {\n  margin-right: 0.875rem;\n  font-size: 0.875rem;\n  border-radius: 50%;\n  width: 3rem;\n  height: 3rem;\n  background-color: white;\n  align-items: center;\n  text-align: center;\n  float: right;\n  padding-top: 0.9rem;\n  box-shadow: 1px 1px 3px grey;\n  margin-bottom: 0.5rem;\n  font-family: \u2018Roboto\u2019, sans-serif;\n}\n[_nghost-%COMP%]     .mapboxgl-popup-content {\n  padding-bottom: 0rem;\n}\n[_nghost-%COMP%]   mgl-map[_ngcontent-%COMP%] {\n  height: 100%;\n  width: 100%;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL21hcC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxnQkFBZ0I7QUFDZDtFQUNFLHNCQUFBO0VBQ0EsbUJBQUE7RUFDQSxrQkFBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0VBQ0EsdUJBQUE7RUFDQSxtQkFBQTtFQUNBLGtCQUFBO0VBQ0EsWUFBQTtFQUNBLG1CQUFBO0VBQ0EsNEJBQUE7RUFDQSxxQkFBQTtFQUNBLGlDQUFBO0FBQ0o7QUFFRTtFQUNFLG9CQUFBO0FBQUo7QUFHRTtFQUNFLFlBQUE7RUFDQSxXQUFBO0FBREoiLCJmaWxlIjoibWFwLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuICA6Om5nLWRlZXAgLm1hcGJveGdsLXpvb20tbGV2ZWwtZGlzcGxheSB7XG4gICAgbWFyZ2luLXJpZ2h0OiAwLjg3NXJlbTtcbiAgICBmb250LXNpemU6IC44NzVyZW07XG4gICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICAgIHdpZHRoOiAzcmVtO1xuICAgIGhlaWdodDogM3JlbTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB3aGl0ZTtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICBmbG9hdDogcmlnaHQ7XG4gICAgcGFkZGluZy10b3A6IC45cmVtO1xuICAgIGJveC1zaGFkb3c6IDFweCAxcHggM3B4IGdyZXk7XG4gICAgbWFyZ2luLWJvdHRvbTogLjVyZW07XG4gICAgZm9udC1mYW1pbHk6IOKAmFJvYm90b+KAmSwgc2Fucy1zZXJpZjtcbiAgfVxuXG4gIDo6bmctZGVlcCAubWFwYm94Z2wtcG9wdXAtY29udGVudCB7XG4gICAgcGFkZGluZy1ib3R0b206IDByZW07XG4gIH1cblxuICBtZ2wtbWFwIHtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgd2lkdGg6IDEwMCU7XG4gIH1cbn1cbiJdfQ== */"] });
 
 
 /***/ }),
