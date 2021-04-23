@@ -68,9 +68,10 @@ export class SearchComponent implements OnDestroy {
     const { diseaseControl, foodControl, router, ga } = this;
     const disease = diseaseControl.value as IndexItem;
     const food = foodControl.value as FoodItem;
+    const enabled = this.switchEnabled ? 'enabled' : 'disabled';
 
     router.addQueryParams({ disease: disease.id, food: food.dest_name });
-    ga.event('search_component', 'search_click', `${disease.id}_${food.dest_name}`);
+    ga.event('search_component', 'search_click', `${disease.id}_${food.dest_name}_${enabled}`);
     this.switchEnabled = true;
   }
 
@@ -177,6 +178,12 @@ export class SearchComponent implements OnDestroy {
       this.searchEnabled = typeof item === 'object' && item !== null;
       cdr.markForCheck();
     });
+  }
+
+  logShowToggle(): void {
+    const category = this.inOverview ? 'show_details_clicked' : 'show_overview_clicked';
+    const label = this.switchEnabled ? 'was_enabled' : 'was_disabled';
+    this.ga.event('search_component', category, label);
   }
 
   private setupUrlListener(): void {
