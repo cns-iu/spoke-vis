@@ -1,7 +1,7 @@
 import { Any } from '@angular-ru/common/typings';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FeatureCollection } from 'geojson';
-import { FullscreenControl, Map, MapLayerMouseEvent, Marker, NavigationControl, Style } from 'mapbox-gl';
+import { FullscreenControl, Map, MapLayerMouseEvent, Marker, NavigationControl, Popup, Style } from 'mapbox-gl';
 
 import { Cluster, Edge, MapMarker, MiniMapOptions, Node, ZoomLookup } from '../../../core/models/Map';
 import { MiniMap } from './minimap';
@@ -179,9 +179,7 @@ export class MapComponent {
 
     this.map.resize();
 
-    if (this.mapMarkers.length) {
-      this.addMapMarkers(this.mapMarkers);
-    }
+    this.addMapMarkers(this.mapMarkers);
 
     // When the user zooms the map, this method handles showing and hiding data based on zoom level
     map.on('zoom', () => this.updateFilters());
@@ -190,9 +188,21 @@ export class MapComponent {
   }
 
   addMapMarkers(markers: MapMarker[]): void {
+    if (!markers.length) {
+      return;
+    }
+
     markers.forEach(marker => {
+      const popup = new Popup({
+        closeOnClick: true,
+        closeOnMove: true,
+        closeButton: false,
+        className: 'map-marker-popup'
+      }).setHTML(`<h3>${marker.title}</h3>`);
+
       new Marker(marker.config || {})
         .setLngLat(marker.coordinates)
+        .setPopup(popup)
         .addTo(this.map);
     });
   }

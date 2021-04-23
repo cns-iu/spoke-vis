@@ -73,6 +73,7 @@ export interface MapMarkerConfig {
 export interface MapMarker {
   config?: MapMarkerConfig;
   coordinates: [number, number];
+  title: string;
 }
 
 export interface ZoomLookupItem {
