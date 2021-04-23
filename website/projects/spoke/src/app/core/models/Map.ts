@@ -59,9 +59,9 @@ export interface MiniMapOptions {
   bounds?: Any;
 }
 
-export type PopupContent = (string | [string, (() => unknown)])[];
+export type PopupContent = (string | [string, ((input: Any) => string)])[];
 
-export interface Popup {
+export interface PopupLayer {
   layer: string;
   content: PopupContent;
 }
