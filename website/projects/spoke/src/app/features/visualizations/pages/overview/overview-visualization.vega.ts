@@ -1,5 +1,4 @@
 import { VisualizationSpec } from 'vega-embed';
-import { colorSignalConfig } from 'vega-lite/build/src/config';
 
 export interface SpecOptions {
   source?: string;
@@ -68,12 +67,14 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               titleOrient: 'left',
               titleColor: '#052049',
               labelColor: '#052049',
-              orient: 'bottom',
+              orient: 'bottom-right',
               values: [100000, 2000000, 4000000],
               title: 'Thickness by count:',
               symbolStrokeColor: '#052049',
               symbolSize: 200,
-              padding: 20
+              padding: 20,
+              direction: 'horizontal',
+              offset: -15
             }
           },
           color: {
@@ -82,13 +83,9 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
                 param: 'highlightEdge',
                 empty: false,
                 value: 'red'
-              },
-              {
-                test: 'datum.total_weight > 500000',
-                value: '#000000'
               }
             ],
-            value: source || destination ? '#f5f5f5' : '#e0e0e0',
+            value: source || destination ? '#EEEEEE' : '#bdbdbd',
             legend: null
           },
           tooltip: source || destination ? [] : [
@@ -126,7 +123,8 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           {filter: `datum.dest_name == '${destination}'`}
         ] : [],
         mark: {
-          type: 'rule'
+          type: 'rule',
+          color: '#9E9E9E'
         },
         encoding: source || destination ? {
           x: {
@@ -183,7 +181,9 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               domain: false,
               labels: false,
               ticks: false,
-              title: null
+              title: null,
+              gridOpacity: 0.5,
+              gridColor: '#eeeeee'
             },
             scale: {
               domain: [0, 11]
@@ -198,7 +198,8 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               labels: false,
               ticks: false,
               title: null,
-              gridOpacity: 0.5
+              gridOpacity: 0.5,
+              gridColor: '#eeeeee'
             },
             scale: {
               domain: [0, 6]
@@ -221,11 +222,12 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               titleOrient: 'left',
               titleColor: '#052049',
               labelColor: '#052049',
-              orient: 'bottom',
+              orient: 'bottom-right',
               values: [10, 1000000],
               title: 'Size by count:',
               symbolStrokeColor: '#052049',
-              padding: 20
+              padding: 20,
+              direction: 'horizontal'
             }
           }
         }
@@ -264,7 +266,9 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               domain: false,
               labels: false,
               ticks: false,
-              title: null
+              title: null,
+              gridOpacity: 0.5,
+              gridColor: '#eeeeee'
             },
             scale: {
               domain: [0, 11]
@@ -279,7 +283,8 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               labels: false,
               ticks: false,
               title: null,
-              gridOpacity: 0.5
+              gridOpacity: 0.5,
+              gridColor: '#eeeeee'
             },
             scale: {
               domain: [0, 6]
