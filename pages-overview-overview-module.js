@@ -12985,12 +12985,14 @@ naturalEarth1Raw.invert = function(x, y) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSpec", function() { return createSpec; });
 function createSpec(options) {
-    var _a;
     // Clone values as vega modifies them
     const nodes = options.nodes.map(node => (Object.assign({}, node)));
     const edges = options.edges.map(edge => (Object.assign({}, edge)));
-    const source = (_a = options.source) === null || _a === void 0 ? void 0 : _a.map(item => (Object.assign({}, item)));
     const destination = options.destination;
+    let source;
+    if (options.source && destination) {
+        source = options.source.filter(item => item.dest_name === destination).map(item => (Object.assign({}, item)));
+    }
     return {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
         config: {
@@ -13102,9 +13104,14 @@ function createSpec(options) {
                     { filter: `datum.dest_name == '${destination}'` }
                 ] : [],
                 mark: {
-                    type: 'rule',
-                    color: '#9E9E9E'
+                    type: 'rule'
                 },
+                params: [
+                    {
+                        name: 'highlightSelectedEdge',
+                        select: { type: 'point', on: 'mouseover' }
+                    }
+                ],
                 encoding: source || destination ? {
                     x: {
                         field: 'a1',
@@ -13119,7 +13126,35 @@ function createSpec(options) {
                     },
                     y2: {
                         field: 'b2'
-                    }
+                    },
+                    color: {
+                        condition: [
+                            {
+                                param: 'highlightSelectedEdge',
+                                empty: false,
+                                value: 'red'
+                            }
+                        ],
+                        value: '#9E9E9E',
+                        legend: null
+                    },
+                    tooltip: [
+                        {
+                            field: 'source_name',
+                            title: 'Source',
+                            type: 'nominal'
+                        },
+                        {
+                            field: 'target_name',
+                            title: 'Target',
+                            type: 'nominal'
+                        },
+                        {
+                            field: 'edge_type',
+                            title: 'Edge Type',
+                            type: 'nominal'
+                        }
+                    ]
                 } : {}
             },
             {
@@ -13128,10 +13163,7 @@ function createSpec(options) {
                     type: 'circle',
                     opacity: 1,
                     stroke: source || destination ? undefined : 'red',
-                    strokeWidth: source || destination ? undefined : 2,
-                    fill: {
-                        expr: source || destination && 'datum.label !== "Disease"' ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
-                    }
+                    strokeWidth: source || destination ? undefined : 2
                 },
                 params: source || destination ? [] : [
                     {
@@ -13206,6 +13238,17 @@ function createSpec(options) {
                             padding: 20,
                             direction: 'horizontal'
                         }
+                    },
+                    fill: {
+                        condition: {
+                            test: 'datum.label === "Disease"',
+                            value: {
+                                expr: 'datum.color'
+                            }
+                        },
+                        value: {
+                            expr: source || destination ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
+                        }
                     }
                 }
             },
@@ -13219,8 +13262,7 @@ function createSpec(options) {
                             key: 'type',
                             fields: ['a', 'b', 'id', 'weight', 'color']
                         }
-                    },
-                    { filter: `datum.dest_name == '${destination}'` }
+                    }
                 ] : [],
                 mark: {
                     type: 'circle',
@@ -13341,6 +13383,37 @@ function createSpec(options) {
             {
                 data: {
                     values: [
+                        { x: 0, y: 5, label: 'B' },
+                        { x: 0, y: 4, label: 'C' },
+                        { x: 0, y: 3, label: 'D' },
+                        { x: 0, y: 2, label: 'E' },
+                        { x: 0, y: 1, label: 'F' }
+                    ]
+                },
+                mark: {
+                    type: 'text',
+                    fontSize: 12,
+                    dx: -10,
+                    opacity: 0.5
+                },
+                encoding: {
+                    text: {
+                        field: 'label',
+                        type: 'nominal'
+                    },
+                    x: {
+                        field: 'x',
+                        type: 'quantitative'
+                    },
+                    y: {
+                        field: 'y',
+                        type: 'quantitative'
+                    }
+                }
+            },
+            {
+                data: {
+                    values: [
                         { x: 11, y: 5, label: 'B' },
                         { x: 11, y: 4, label: 'C' },
                         { x: 11, y: 3, label: 'D' },
@@ -13372,7 +13445,7 @@ function createSpec(options) {
             {
                 data: {
                     values: [
-                        { x: 0, y: 0, label: '1' },
+                        { x: 0, y: 0, label: '1:G' },
                         { x: 1, y: 0, label: '2' },
                         { x: 2, y: 0, label: '3' },
                         { x: 3, y: 0, label: '4' },
@@ -13410,7 +13483,7 @@ function createSpec(options) {
             {
                 data: {
                     values: [
-                        { x: 0, y: 6, label: '1' },
+                        { x: 0, y: 6, label: '1:A' },
                         { x: 1, y: 6, label: '2' },
                         { x: 2, y: 6, label: '3' },
                         { x: 3, y: 6, label: '4' },
