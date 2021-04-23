@@ -24,6 +24,7 @@
 </div>
 
 <button mat-button class="switch" [routerLink]="['/visualization', inOverview ? 'details' : 'overview']"
-        queryParamsHandling="preserve" [disabled]="!switchEnabled">
+        queryParamsHandling="preserve" [disabled]="!switchEnabled"
+        (click)="logShowToggle()">
   Show {{ inOverview ? 'Details' : 'Overview' }}
 </button>

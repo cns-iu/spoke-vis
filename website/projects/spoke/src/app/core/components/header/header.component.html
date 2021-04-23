@@ -1,17 +1,17 @@
 <div class="content">
-  <img class="logo" src="assets/logos/logo-spoke-white-text.svg" alt="Spoke logo">
+  <img class="logo" src="assets/logos/logo-spoke-white-text.svg" alt="Spoke logo" routerLink="/home" (click)="logClick('home_logo')">
 
   <div class="filler"></div>
 
   <button mat-flat-button class="menu-button" [class.menu-open]="menuOpen" [matMenuTriggerFor]="menu"
-          (menuOpened)="menuOpen = true" (menuClosed)="menuOpen = false" disableRipple>
+          (menuOpened)="setMenuOpen(true)" (menuClosed)="setMenuOpen(false)" disableRipple>
     <mat-icon>menu</mat-icon>
   </button>
 
   <mat-menu xPosition="before" #menu="matMenu">
-    <a class="text-blue" mat-menu-item routerLink="/home">Introduction</a>
+    <a class="text-blue" mat-menu-item routerLink="/home" (click)="logClick('home')">Introduction</a>
     <mat-divider></mat-divider>
-    <a class="text-blue" mat-menu-item routerLink="/visualization/overview">Overview Visualization</a>
+    <a class="text-blue" mat-menu-item routerLink="/visualization/overview" (click)="logClick('overview')">Overview Visualization</a>
     <mat-divider></mat-divider>
     <!-- Last two links for testing purposes. Remove later. -->
     <a class="text-blue" mat-menu-item routerLink="/visualization/overview" [queryParams]="{ disease: 'cad', food: 'Sake' }">Overview
