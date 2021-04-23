@@ -1,13 +1,12 @@
-import { Immutable } from '@angular-ru/common/typings';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterStateSnapshot } from '@angular/router';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
-import { Observable } from 'rxjs';
-import { filter, map, pluck, startWith } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, pluck, startWith, switchMap } from 'rxjs/operators';
 import { View } from 'vega';
 import { VisualizationSpec } from 'vega-embed';
 
 import { RouterState } from '../../../../core/state/router.state';
+import { DatasetState } from '../../state/dataset.state';
 import { createSpec, SpecOptions } from './overview-visualization.vega';
 
 
@@ -32,11 +31,20 @@ export class OverviewComponent {
    *
    * @param router Router state used to lookup query parameters
    */
-  constructor(router: RouterState, private ga: GoogleAnalyticsService) {
+  constructor(
+    datasets: DatasetState,
+    router: RouterState,
+    private readonly ga: GoogleAnalyticsService
+  ) {
     this.spec$ = router.state$.pipe(
-      filter((value): value is Immutable<RouterStateSnapshot> => !!value),
       pluck('root', 'queryParams'),
-      map(({ disease, food }) => this.createSpec({ source: disease, destination: food })),
+      switchMap(({ disease, food }) => forkJoin({
+        nodes: datasets.loadDataset<Record<string, unknown>[]>('overview', 'overview-nodes'),
+        edges: datasets.loadDataset<Record<string, unknown>[]>('overview', 'overview-edges'),
+        source: disease ? datasets.loadDataset<Record<string, unknown>[]>(disease, 'tree-edges') : of(undefined),
+        destination: of(food as string | undefined)
+      })),
+      map(options => this.createSpec(options)),
       startWith({})
     );
   }

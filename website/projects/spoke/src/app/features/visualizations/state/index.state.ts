@@ -23,6 +23,9 @@ export interface IndexItem {
 
   /** Directory of data */
   dir: string;
+
+  /** Whether this can be selected by the user in searches, etc. */
+  selectable: boolean;
 }
 
 
@@ -87,6 +90,7 @@ export class IndexState extends NgxsDataEntityCollectionsRepository<IndexItem> i
   loadIndexFile(url: string): Observable<void> {
     const normalizeItem = (item: Partial<IndexItem>) => ({
       description: '',
+      selectable: false,
       ...item
     } as IndexItem);
 

@@ -85,7 +85,8 @@ export class DetailDataService implements OnDestroy {
         filter(feature => labels.includes(feature.properties.label)),
         map(feature => ({
           coordinates: feature.geometry.coordinates,
-          config: { color: feature.properties.label === label ? '#D1B445' : '#880E4F' }
+          config: { color: feature.properties.label === label ? '#D1B445' : '#880E4F' },
+          title: feature.properties.label
         } as MapMarker)),
         toArray()
       ))

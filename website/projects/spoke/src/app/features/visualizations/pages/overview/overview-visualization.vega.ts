@@ -1,13 +1,21 @@
 import { VisualizationSpec } from 'vega-embed';
 import { colorSignalConfig } from 'vega-lite/build/src/config';
 
+
 export interface SpecOptions {
-  source?: string;
+  nodes: Record<string, unknown>[];
+  edges: Record<string, unknown>[];
+  source?: Record<string, unknown>[];
   destination?: string;
 }
 
-export function createSpec(options: SpecOptions = {}): VisualizationSpec {
-  const { source, destination } = options;
+export function createSpec(options: SpecOptions): VisualizationSpec {
+  // Clone values as vega modifies them
+  const nodes = options.nodes.map(node => ({ ...node }));
+  const edges = options.edges.map(edge => ({ ...edge }));
+  const source = options.source?.map(item => ({ ...item }));
+  const destination = options.destination;
+
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     config: {
@@ -23,9 +31,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
     },
     layer: [
       {
-        data: {
-          url: 'assets/datasets/overview/edges-v3.csv'
-        },
+        data: { name: 'edges' },
         transform: [{
           joinaggregate: [{
             op: 'sum',
@@ -73,7 +79,8 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               title: 'Thickness by count:',
               symbolStrokeColor: '#052049',
               symbolSize: 200,
-              padding: 20
+              padding: 20,
+              direction: 'horizontal'
             }
           },
           color: {
@@ -82,13 +89,9 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
                 param: 'highlightEdge',
                 empty: false,
                 value: 'red'
-              },
-              {
-                test: 'datum.total_weight > 500000',
-                value: '#000000'
               }
             ],
-            value: source || destination ? '#f5f5f5' : '#e0e0e0',
+            value: source || destination ? '#EEEEEE' : '#bdbdbd',
             legend: null
           },
           tooltip: source || destination ? [] : [
@@ -101,14 +104,12 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         }
       },
       {
-        data: source || destination ? {
-          url:  `assets/datasets/${source}-food-tree/tree-edges.csv`
-        } : undefined,
+        data: source ? { name: 'source' } : undefined,
         transform: source || destination ? [
           {
             lookup: 'source_type',
             from: {
-              data: {url: 'assets/datasets/overview/nodes-v3.csv'},
+              data: { name: 'nodes' },
               key: 'type',
               fields: ['a', 'b']
             },
@@ -117,7 +118,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           {
             lookup: 'target_type',
             from: {
-              data: {url: 'assets/datasets/overview/nodes-v3.csv'},
+              data: { name: 'nodes' },
               key: 'type',
               fields: ['a', 'b']
             },
@@ -126,7 +127,8 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           {filter: `datum.dest_name == '${destination}'`}
         ] : [],
         mark: {
-          type: 'rule'
+          type: 'rule',
+          color: '#9E9E9E'
         },
         encoding: source || destination ? {
           x: {
@@ -146,16 +148,14 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         } : {}
       },
       {
-        data: {
-          url: 'assets/datasets/overview/nodes-v3.csv'
-        },
+        data: { name: 'nodes' },
         mark: {
           type: 'circle',
           opacity: 1,
           stroke: source || destination ? undefined : 'red',
           strokeWidth: source || destination ? undefined : 2,
           fill: {
-            expr: source || destination ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
+            expr: source || destination && 'datum.label !== "Disease"' ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
           }
         },
         params: source || destination ? [] : [
@@ -183,7 +183,9 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               domain: false,
               labels: false,
               ticks: false,
-              title: null
+              title: null,
+              gridOpacity: 0.5,
+              gridColor: '#eeeeee'
             },
             scale: {
               domain: [0, 11]
@@ -198,7 +200,8 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               labels: false,
               ticks: false,
               title: null,
-              gridOpacity: 0.5
+              gridOpacity: 0.5,
+              gridColor: '#eeeeee'
             },
             scale: {
               domain: [0, 6]
@@ -225,20 +228,19 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               values: [10, 1000000],
               title: 'Size by count:',
               symbolStrokeColor: '#052049',
-              padding: 20
+              padding: 20,
+              direction: 'horizontal'
             }
           }
         }
       },
       {
-        data: source || destination ? {
-          url:  `assets/datasets/${source}-food-tree/tree-edges.csv`
-        } : undefined,
+        data: source ? { name: 'source' } : undefined,
         transform: source || destination ? [
           {
             lookup: 'target_type',
             from: {
-              data: {url: 'assets/datasets/overview/nodes-v3.csv'},
+              data: { name: 'nodes' },
               key: 'type',
               fields: ['a', 'b', 'id', 'weight', 'color']
             }
@@ -264,7 +266,9 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               domain: false,
               labels: false,
               ticks: false,
-              title: null
+              title: null,
+              gridOpacity: 0.5,
+              gridColor: '#eeeeee'
             },
             scale: {
               domain: [0, 11]
@@ -279,7 +283,8 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
               labels: false,
               ticks: false,
               title: null,
-              gridOpacity: 0.5
+              gridOpacity: 0.5,
+              gridColor: '#eeeeee'
             },
             scale: {
               domain: [0, 6]
@@ -296,9 +301,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         } : {}
       },
       {
-        data: {
-          url: 'assets/datasets/overview/nodes-v3.csv'
-        },
+        data: { name: 'nodes' },
         mark: {
           type: 'text',
           dy: -30,
@@ -327,14 +330,12 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         }
       },
       {
-        data: source || destination ? {
-          url:  `assets/datasets/${source}-food-tree/tree-edges.csv`
-        } : undefined,
+        data: source ? { name: 'source' } : undefined,
         transform: source || destination ? [
           {
             lookup: 'target_type',
             from: {
-              data: {url: 'assets/datasets/overview/nodes-v3.csv'},
+              data: { name: 'nodes' },
               key: 'type',
               fields: ['a', 'b', 'label']
             }
@@ -469,6 +470,11 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           }
         }
       }
-    ]
+    ],
+    datasets: {
+      nodes,
+      edges,
+      source: source as unknown[]
+    }
   };
 }
