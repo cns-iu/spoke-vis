@@ -129,9 +129,14 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
           {filter: `datum.dest_name == '${destination}'`}
         ] : [],
         mark: {
-          type: 'rule',
-          color: '#9E9E9E'
+          type: 'rule'
         },
+        params: [
+          {
+            name: 'highlightSelectedEdge',
+            select: {type: 'point', on: 'mouseover'}
+          }
+        ],
         encoding: source || destination ? {
           x: {
             field: 'a1',
@@ -146,7 +151,35 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
           },
           y2: {
             field: 'b2'
-          }
+          },
+          color: {
+            condition: [
+              {
+                param: 'highlightSelectedEdge',
+                empty: false,
+                value: 'red'
+              }
+            ],
+            value: '#9E9E9E',
+            legend: null
+          },
+          tooltip: [
+            {
+              field: 'source_name',
+              title: 'Source',
+              type: 'nominal'
+            },
+            {
+              field: 'target_name',
+              title: 'Target',
+              type: 'nominal'
+            },
+            {
+              field: 'edge_type',
+              title: 'Edge Type',
+              type: 'nominal'
+            }
+          ]
         } : {}
       },
       {
