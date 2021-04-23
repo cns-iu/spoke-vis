@@ -12,8 +12,11 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
   // Clone values as vega modifies them
   const nodes = options.nodes.map(node => ({ ...node }));
   const edges = options.edges.map(edge => ({ ...edge }));
-  const source = options.source?.map(item => ({ ...item }));
   const destination = options.destination;
+  let source: Record<string, unknown>[] | undefined = undefined;
+  if (options.source && destination) {
+    source = options.source.filter(item => item.dest_name === destination).map(item => ({ ...item }));
+  }
 
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
@@ -243,8 +246,7 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
               key: 'type',
               fields: ['a', 'b', 'id', 'weight', 'color']
             }
-          },
-          {filter: `datum.dest_name == '${destination}'`}
+          }
         ] : [],
         mark: {
           type: 'circle',
