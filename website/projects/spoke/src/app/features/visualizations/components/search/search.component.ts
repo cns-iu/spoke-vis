@@ -75,6 +75,12 @@ export class SearchComponent implements OnDestroy {
     this.switchEnabled = true;
   }
 
+  logShowToggle(): void {
+    const category = this.inOverview ? 'show_details_clicked' : 'show_overview_clicked';
+    const label = this.switchEnabled ? 'was_enabled' : 'was_disabled';
+    this.ga.event('search_component', category, label);
+  }
+
   private getDiseaseOptions(): Observable<IndexItem[]> {
     const collator = new Intl.Collator();
     const compare = (a: IndexItem, b: IndexItem) => collator.compare(a.name, b.name);
@@ -178,12 +184,6 @@ export class SearchComponent implements OnDestroy {
       this.searchEnabled = typeof item === 'object' && item !== null;
       cdr.markForCheck();
     });
-  }
-
-  logShowToggle(): void {
-    const category = this.inOverview ? 'show_details_clicked' : 'show_overview_clicked';
-    const label = this.switchEnabled ? 'was_enabled' : 'was_disabled';
-    this.ga.event('search_component', category, label);
   }
 
   private setupUrlListener(): void {
