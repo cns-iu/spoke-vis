@@ -366,7 +366,7 @@ export class MapComponent {
 
   addPopups(): void {
     this.popups.forEach(popup => {
-        this.addPopupOnClick(popup.layer, popup.content)
+        this.addPopupOnClick(popup.layer, popup.content);
     });
   }
 
@@ -375,7 +375,7 @@ export class MapComponent {
     // When a click event occurs on a feature in the places layer, open a popup at the
     // location of the feature, with description HTML from its properties.
     map.on('click', layer, (e) => {
-      let descriptionHTML = this.createPopupHTML(e.features![0].properties, content);
+      const descriptionHTML = this.createPopupHTML(e.features![0].properties, content);
       new Popup({
         closeOnClick: true,
         closeOnMove: true,
@@ -388,12 +388,12 @@ export class MapComponent {
     });
 
     // Change the cursor to a pointer when the mouse is over the places layer.
-    map.on('mouseenter', layer, function () {
+    map.on('mouseenter', layer, () => {
         map.getCanvas().style.cursor = 'pointer';
     });
 
     // Change it back to a pointer when it leaves.
-    map.on('mouseleave', layer, function () {
+    map.on('mouseleave', layer, () => {
         map.getCanvas().style.cursor = '';
     });
   }
@@ -401,20 +401,25 @@ export class MapComponent {
   // Takes the description field of the element, and uses it with the popup content defined in the config object
   // to return the concatenated html string.
   createPopupHTML(description: Any, content: PopupContent): string {
-    let html: string = '';
+    let html = '';
     content.forEach((element, index) => {
-        if (!element) return;
+        if (!element) {
+          return;
+        }
         // The config object for popups is structued like ['<html>', 'propertyName', '</html>]
         // so on even indexes, we just concatenate the html string, on odd indexes we use the string to lookup the property value.
-        if (this.isEven(index)) html += element;
+        if (this.isEven(index)) {
+          html += element;
+        }
 
         // Along with property values, you can pass along a formatting function in form of ['propertyName', function]
         // This checks if there is one, if there is it uses that function to format the value of the property before
         // concatenating it.
         else if (typeof (element) === 'string'){
           html += description[element];
+        } else {
+          html += element[1](description[element[0]]);
         }
-        else html += element[1](description[element[0]]);
     });
 
     return html;
