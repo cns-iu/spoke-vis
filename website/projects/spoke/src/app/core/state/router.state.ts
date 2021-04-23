@@ -4,6 +4,7 @@ import { ActivatedRoute, NavigationExtras as BaseNavigationExtras, Params, Route
 import { Navigate, RouterState as RawRouterState } from '@ngxs/router-plugin';
 import { ActionType, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 
 /**
@@ -38,14 +39,16 @@ export class RouterState {
   /**
    * State datastream
    */
-  get state$(): Observable<Immutable<RouterStateSnapshot | undefined>> {
-    return this.store.select(RawRouterState.state);
+  get state$(): Observable<Immutable<RouterStateSnapshot>> {
+    return this.store.select(RawRouterState.state).pipe(
+      filter((state): state is RouterStateSnapshot => !!state)
+    );
   }
 
   /**
    * Current state value
    */
-  get snapshot(): Immutable<RouterStateSnapshot | undefined> {
+  get snapshot(): Immutable<RouterStateSnapshot> | undefined {
     return this.store.selectSnapshot(RawRouterState.state);
   }
 
@@ -65,7 +68,7 @@ export class RouterState {
    *
    * @returns The current state
    */
-  getState(): Immutable<RouterStateSnapshot | undefined> {
+  getState(): Immutable<RouterStateSnapshot> | undefined {
     return this.snapshot;
   }
 

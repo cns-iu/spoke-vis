@@ -1,31 +1,30 @@
 <div class="search-box">
-  <mat-form-field>
-    <mat-select class="disease" placeholder="Select disease ..." [value]="selectedIndexItem"
-                (selectionChange)="setSelectedIndexItem($event.value)">
-      <mat-option *ngFor="let item of indexItems$ | async" [value]="item">
-        {{ item.name }}
+  <mat-form-field class="disease">
+    <mat-placeholder>Select disease ...</mat-placeholder>
+    <mat-select class="input" [formControl]="diseaseControl">
+      <mat-option *ngFor="let disease of diseaseOptions | async" [value]="disease">
+        {{ disease.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field>
-    <input matInput type="search" placeholder="Search for food ..." [matAutocomplete]="auto"
-           [disabled]="!selectedIndexItem">
-    <mat-autocomplete [displayWith]="datasetItemDisplay" (optionSelected)="setSelectedDatasetItem($event.option.value)"
-                      #auto="matAutocomplete">
-      <mat-option *ngFor="let item of datasetItems$ | async" [value]="item">
-        {{ item.dest_name }}
+  <mat-form-field class="food">
+    <mat-placeholder>Search for food ...</mat-placeholder>
+    <input matInput class="input" type="search" [formControl]="foodControl" [matAutocomplete]="auto">
+    <mat-autocomplete [displayWith]="foodItemDisplay" #auto="matAutocomplete">
+      <mat-option *ngFor="let food of foodOptions | async" [value]="food">
+        {{ food.dest_name }}
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
 
-  <button mat-button [disabled]="!selectedIndexItem || !selectedDatasetItem" (click)="doSearch()">
+  <button mat-button class="search" [disabled]="!searchEnabled" (click)="searchVisualization()">
     Search
   </button>
 </div>
 
-<br />
-
-<a routerLink="/visualization/details" queryParamsHandling="preserve">
-  Show Detail
-</a>
+<button mat-button class="switch" [routerLink]="['/visualization', inOverview ? 'details' : 'overview']"
+        queryParamsHandling="preserve" [disabled]="!switchEnabled"
+        (click)="logShowToggle()">
+  Show {{ inOverview ? 'Details' : 'Overview' }}
+</button>

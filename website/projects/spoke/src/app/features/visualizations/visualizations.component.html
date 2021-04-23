@@ -1,9 +1,9 @@
 <mat-drawer-container>
-  <mat-drawer class="drawer" mode="side" disableClose [opened]="drawerOpen" #drawer>
+  <mat-drawer class="drawer" mode="over" disableClose [opened]="drawerOpen" #drawer>
     <spoke-search></spoke-search>
 
-    <button mat-flat-button class="toggle" disableRipple (click)="drawerOpen = !drawerOpen">
-      <mat-icon class="icon" [class.inverted]="!drawerOpen">arrow_right</mat-icon>
+    <button mat-flat-button class="toggle" disableRipple (click)="toggleDrawer()">
+      <mat-icon class="icon" [class.inverted]="!drawerOpen">arrow_left</mat-icon>
     </button>
   </mat-drawer>
 

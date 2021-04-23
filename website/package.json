@@ -7,7 +7,7 @@
     "build": "ng build",
     "build:doc": "npx compodoc -p tsconfig.compodoc.json --output dist/spoke/docs",
     "build:doc:spoke": "npx compodoc -p projects/spoke/tsconfig.app.json --output dist/spoke/docs",
-    "compodoc": "npm run build:doc",
+    "compodoc": "npm run build:doc:spoke",
     "test": "ng test",
     "test:wsl": "ng test --browsers=ChromeHeadlessWSL",
     "lint": "ng lint",

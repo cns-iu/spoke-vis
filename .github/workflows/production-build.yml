@@ -37,7 +37,7 @@ jobs:
       - run: npm ci
       - name: Build Spoke
         run: npm run build -- --output-hashing=none --base-href=/spoke-vis/
-      # - run: npm run compodoc
+      - run: npm run compodoc
       - name: Setup GitHub Pages files
         run: |
           cp dist/spoke/index.html dist/spoke/404.html
