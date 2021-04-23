@@ -1,9 +1,9 @@
 import { Any } from '@angular-ru/common/typings';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FeatureCollection } from 'geojson';
-import { FullscreenControl, Map, MapLayerMouseEvent, Marker, NavigationControl, Style } from 'mapbox-gl';
+import { FullscreenControl, Map, MapLayerMouseEvent, Marker, NavigationControl, Style, Popup } from 'mapbox-gl';
 
-import { Cluster, Edge, MapMarker, MiniMapOptions, Node, ZoomLookup } from '../../../core/models/Map';
+import { Cluster, Edge, MapMarker, MiniMapOptions, Node, PopupContent, ZoomLookup, PopupLayer } from '../../../core/models/Map';
 import { MiniMap } from './minimap';
 import { ZoomLevelControl } from './zoom-level.control';
 
@@ -133,16 +133,53 @@ export class MapComponent {
   map!: Map;
   nodeZoomIndex = 0;
   edgeZoomIndex = 0;
+  hoverEdgeID: string | number | undefined;
+  hoverNodeID: string | number | undefined;
   textOverlapEnabledZoom = defaultTextOverlapEnabledZoom;
   textOverlapEnabled = defaultTextOverlapEnabled;
   edges: Edge[] = defaultEdges;
   nodes: Node[] = defaultNodes;
 
-  // Work these variables back into the layer tags.
+  // These allow the layer tags to be much more readable.
   currentNodeFormula: Any = ['at', ['get', 'level'], ['literal', this.nodes]];
   currentEdgeFormula: Any = ['get', 'zoom', ['at', ['get', 'level'], ['literal', this.edges]]];
   edgeFormula = ['at', ['get', 'level'], ['literal', this.edges]];
   lastEdgeFormula = ['at', this.edges.length - 1, ['literal', this.edges]];
+
+  /*
+    Popup content needs to follow specific pattern to function properly.
+    Property names will be used to look up data from the geoJson sources.
+    Pass in format ['<anyHTML>and text</anyHTML><p>', 'propertyName', '</p>more html or text']
+
+    You can pass in as many as you like but they need to alternate between raw html, and property names.
+    You can also pass in a formatter with the property name in format ['propertyName', formatterMethod]
+  */
+  popups: PopupLayer[] = [
+    {
+        layer: 'edges',
+        content: [
+            '<p class="popup-label">Edge</p><p>',
+            ['label', this.capitalizeFirstLetter],
+            '</p>'
+        ]
+    },
+    {
+        layer: 'nodes',
+        content: [
+            '<p class="popup-label">Node</p><p>',
+            'label',
+            '</p>'
+        ]
+    }
+  ];
+
+  containerStyles = `
+      border: 1px solid lightgray;
+      border-radius: 5px;
+      -webkit-box-shadow: 3px 3px 5px 4px #00000021;
+      -moz-box-shadow: 3px 3px 5px 4px #00000021;
+      box-shadow: 3px 3px 5px 4px #00000021;
+  `;
 
   capitalizeFirstLetter(input: string): string {
     return input.charAt(0).toUpperCase() + input.slice(1);
@@ -179,9 +216,10 @@ export class MapComponent {
 
     this.map.resize();
 
-    if (this.mapMarkers.length) {
-      this.addMapMarkers(this.mapMarkers);
-    }
+    this.addMapMarkers(this.mapMarkers);
+    this.addEdgeHover(map);
+    this.addNodeHover(map);
+    this.addPopups();
 
     // When the user zooms the map, this method handles showing and hiding data based on zoom level
     map.on('zoom', () => this.updateFilters());
@@ -190,9 +228,21 @@ export class MapComponent {
   }
 
   addMapMarkers(markers: MapMarker[]): void {
+    if (!markers.length) {
+      return;
+    }
+
     markers.forEach(marker => {
+      const popup = new Popup({
+        closeOnClick: true,
+        closeOnMove: true,
+        closeButton: false,
+        className: 'map-marker-popup'
+      }).setHTML(`<h3>${marker.title}</h3>`);
+
       new Marker(marker.config || {})
         .setLngLat(marker.coordinates)
+        .setPopup(popup)
         .addTo(this.map);
     });
   }
@@ -248,6 +298,133 @@ export class MapComponent {
     return true;
   }
 
+  addEdgeHover(map: Map): void {
+    map.on('mousemove', 'edges', (e) => {
+        // When the mouse moves, check if the mouse is on top of a feature from the edges source.
+        if (e.features!.length > 0) {
+            // If there was already an edge with the hover status, turn that hover status off first
+            if (this.hoverEdgeID) {
+                map.setFeatureState(
+                    { source: 'edges', id: this.hoverEdgeID },
+                    { hover: false }
+                );
+            }
+            // Set the hover status of the new edge to true, and save the ID to the object so we can compare
+            // later, when the mouse moves again.
+            this.hoverEdgeID = e.features![0].id;
+            map.setFeatureState(
+                { source: 'edges', id: this.hoverEdgeID },
+                { hover: true }
+            );
+        }
+    });
+
+    map.on('mouseleave', 'edges', () => {
+        // When the mouse leaves the edge source features, turn the hover status off
+        if (this.hoverEdgeID) {
+            map.setFeatureState(
+                { source: 'edges', id: this.hoverEdgeID },
+                { hover: false }
+            );
+        }
+        this.hoverEdgeID = undefined;
+    });
+  }
+
+  addNodeHover(map: Map): void {
+    map.on('mousemove', 'nodes', (e) => {
+      // When the mouse moves, check if the mouse is on top of a feature from the nodes source.
+      if (e.features!.length > 0) {
+          // If there was already an node with the hover status, turn that hover status off first
+          if (this.hoverNodeID) {
+              map.setFeatureState(
+                  { source: 'nodes', id: this.hoverNodeID },
+                  { hover: false }
+              );
+          }
+          // Set the hover status of the new node to true, and save the ID to the object so we can compare
+          // later, when the mouse moves again.
+          this.hoverNodeID = e.features![0].id;
+          map.setFeatureState(
+              { source: 'nodes', id: this.hoverNodeID },
+              { hover: true }
+          );
+      }
+    });
+
+    map.on('mouseleave', 'nodes', () => {
+        // When the mouse leaves the edge source features, turn the hover status off
+        if (this.hoverNodeID) {
+            map.setFeatureState(
+                { source: 'nodes', id: this.hoverNodeID },
+                { hover: false }
+            );
+        }
+        this.hoverNodeID = undefined;
+    });
+  }
+
+  addPopups(): void {
+    this.popups.forEach(popup => {
+        this.addPopupOnClick(popup.layer, popup.content);
+    });
+  }
+
+  addPopupOnClick(layer: string, content: PopupContent): void {
+    const { map } = this;
+    // When a click event occurs on a feature in the places layer, open a popup at the
+    // location of the feature, with description HTML from its properties.
+    map.on('click', layer, (e) => {
+      const descriptionHTML = this.createPopupHTML(e.features![0].properties, content);
+      new Popup({
+        closeOnClick: true,
+        closeOnMove: true,
+        closeButton: false,
+        className: 'map-marker-popup'
+      })
+        .setLngLat(e.lngLat)
+        .setHTML(descriptionHTML)
+        .addTo(map);
+    });
+
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    map.on('mouseenter', layer, () => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', layer, () => {
+        map.getCanvas().style.cursor = '';
+    });
+  }
+
+  // Takes the description field of the element, and uses it with the popup content defined in the config object
+  // to return the concatenated html string.
+  createPopupHTML(description: Any, content: PopupContent): string {
+    let html = '';
+    content.forEach((element, index) => {
+        if (!element) {
+          return;
+        }
+        // The config object for popups is structued like ['<html>', 'propertyName', '</html>]
+        // so on even indexes, we just concatenate the html string, on odd indexes we use the string to lookup the property value.
+        if (this.isEven(index)) {
+          html += element;
+        }
+
+        // Along with property values, you can pass along a formatting function in form of ['propertyName', function]
+        // This checks if there is one, if there is it uses that function to format the value of the property before
+        // concatenating it.
+        else if (typeof (element) === 'string'){
+          html += description[element];
+        } else {
+          html += element[1](description[element[0]]);
+        }
+    });
+
+    return html;
+  }
+
   // Converts the current zoom number, to the index number of the object with the same .zoom property in the lookup array passed in.
   // Used because getZoom() will return very precise values, and the nodes / edges config objects will not match up exactly.
   getZoomIndex(zoomLookup: ZoomLookup): number {
@@ -263,5 +440,9 @@ export class MapComponent {
 
     console.error('No Zoom index found.  Zoom lookup: ', zoomLookup);
     return 0;
+  }
+
+  isEven(index: number): boolean {
+    return index % 2 === 0;
   }
 }

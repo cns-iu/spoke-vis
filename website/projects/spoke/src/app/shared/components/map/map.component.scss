@@ -15,6 +15,10 @@
     font-family: ‘Roboto’, sans-serif;
   }
 
+  ::ng-deep .mapboxgl-popup-content {
+    padding-bottom: 0rem;
+  }
+
   mgl-map {
     height: 100%;
     width: 100%;
