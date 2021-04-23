@@ -30,9 +30,7 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
     },
     layer: [
       {
-        data: {
-          values: edges
-        },
+        data: { name: 'edges' },
         transform: [{
           joinaggregate: [{
             op: 'sum',
@@ -105,16 +103,12 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
         }
       },
       {
-        data: source ? {
-          values: source
-        } : undefined,
+        data: source ? { name: 'source' } : undefined,
         transform: source || destination ? [
           {
             lookup: 'source_type',
             from: {
-              data: {
-                values: nodes
-              },
+              data: { name: 'nodes' },
               key: 'type',
               fields: ['a', 'b']
             },
@@ -123,9 +117,7 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
           {
             lookup: 'target_type',
             from: {
-              data: {
-                values: nodes
-              },
+              data: { name: 'nodes' },
               key: 'type',
               fields: ['a', 'b']
             },
@@ -155,9 +147,7 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
         } : {}
       },
       {
-        data: {
-          values: nodes
-        },
+        data: { name: 'nodes' },
         mark: {
           type: 'circle',
           opacity: 1,
@@ -244,16 +234,12 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
         }
       },
       {
-        data: source ? {
-          values: source
-        } : undefined,
+        data: source ? { name: 'source' } : undefined,
         transform: source || destination ? [
           {
             lookup: 'target_type',
             from: {
-              data: {
-                values: nodes
-              },
+              data: { name: 'nodes' },
               key: 'type',
               fields: ['a', 'b', 'id', 'weight', 'color']
             }
@@ -314,9 +300,7 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
         } : {}
       },
       {
-        data: {
-          values: nodes
-        },
+        data: { name: 'nodes' },
         mark: {
           type: 'text',
           dy: -30,
@@ -345,16 +329,12 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
         }
       },
       {
-        data: source ? {
-          values: source
-        } : undefined,
+        data: source ? { name: 'source' } : undefined,
         transform: source || destination ? [
           {
             lookup: 'target_type',
             from: {
-              data: {
-                values: nodes
-              },
+              data: { name: 'nodes' },
               key: 'type',
               fields: ['a', 'b', 'label']
             }
@@ -489,6 +469,11 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
           }
         }
       }
-    ]
+    ],
+    datasets: {
+      nodes,
+      edges,
+      source: source as unknown[]
+    }
   };
 }
