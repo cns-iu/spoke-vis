@@ -89,6 +89,7 @@ export class SearchComponent implements OnDestroy {
       takeUntil(this.destroy$),
       map(o => Object.values(o)),
       map(items => {
+        items = items.filter(item => item.selectable);
         items.sort(compare);
         return items;
       })
@@ -140,7 +141,7 @@ export class SearchComponent implements OnDestroy {
       takeUntil(destroy$),
       pluck('root', 'queryParams', 'disease'),
       map((id: string) => index.entities[id]),
-      filter(item => !!item),
+      filter(item => !!item && item.selectable),
       tap(item => diseaseControl.setValue(item))
     );
     const diseaseChange = (diseaseControl.valueChanges as Observable<IndexItem>).pipe(

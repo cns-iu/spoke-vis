@@ -1,12 +1,20 @@
 import { VisualizationSpec } from 'vega-embed';
 
+
 export interface SpecOptions {
-  source?: string;
+  nodes: Record<string, unknown>[];
+  edges: Record<string, unknown>[];
+  source?: Record<string, unknown>[];
   destination?: string;
 }
 
-export function createSpec(options: SpecOptions = {}): VisualizationSpec {
-  const { source, destination } = options;
+export function createSpec(options: SpecOptions): VisualizationSpec {
+  // Clone values as vega modifies them
+  const nodes = options.nodes.map(node => ({ ...node }));
+  const edges = options.edges.map(edge => ({ ...edge }));
+  const source = options.source?.map(item => ({ ...item }));
+  const destination = options.destination;
+
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     config: {
@@ -23,7 +31,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
     layer: [
       {
         data: {
-          url: 'assets/datasets/overview/edges-v3.csv'
+          values: edges
         },
         transform: [{
           joinaggregate: [{
@@ -97,14 +105,16 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         }
       },
       {
-        data: source || destination ? {
-          url:  `assets/datasets/${source}-food-tree/tree-edges.csv`
+        data: source ? {
+          values: source
         } : undefined,
         transform: source || destination ? [
           {
             lookup: 'source_type',
             from: {
-              data: {url: 'assets/datasets/overview/nodes-v3.csv'},
+              data: {
+                values: nodes
+              },
               key: 'type',
               fields: ['a', 'b']
             },
@@ -113,7 +123,9 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           {
             lookup: 'target_type',
             from: {
-              data: {url: 'assets/datasets/overview/nodes-v3.csv'},
+              data: {
+                values: nodes
+              },
               key: 'type',
               fields: ['a', 'b']
             },
@@ -144,7 +156,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
       },
       {
         data: {
-          url: 'assets/datasets/overview/nodes-v3.csv'
+          values: nodes
         },
         mark: {
           type: 'circle',
@@ -232,14 +244,16 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         }
       },
       {
-        data: source || destination ? {
-          url:  `assets/datasets/${source}-food-tree/tree-edges.csv`
+        data: source ? {
+          values: source
         } : undefined,
         transform: source || destination ? [
           {
             lookup: 'target_type',
             from: {
-              data: {url: 'assets/datasets/overview/nodes-v3.csv'},
+              data: {
+                values: nodes
+              },
               key: 'type',
               fields: ['a', 'b', 'id', 'weight', 'color']
             }
@@ -301,7 +315,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
       },
       {
         data: {
-          url: 'assets/datasets/overview/nodes-v3.csv'
+          values: nodes
         },
         mark: {
           type: 'text',
@@ -331,14 +345,16 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
         }
       },
       {
-        data: source || destination ? {
-          url:  `assets/datasets/${source}-food-tree/tree-edges.csv`
+        data: source ? {
+          values: source
         } : undefined,
         transform: source || destination ? [
           {
             lookup: 'target_type',
             from: {
-              data: {url: 'assets/datasets/overview/nodes-v3.csv'},
+              data: {
+                values: nodes
+              },
               key: 'type',
               fields: ['a', 'b', 'label']
             }
