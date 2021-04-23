@@ -152,7 +152,7 @@ export function createSpec(options: SpecOptions = {}): VisualizationSpec {
           stroke: source || destination ? undefined : 'red',
           strokeWidth: source || destination ? undefined : 2,
           fill: {
-            expr: source || destination ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
+            expr: source || destination && 'datum.label !== "Disease"' ? 'datum.color2 || "#052049"' : 'datum.color || "#052049"'
           }
         },
         params: source || destination ? [] : [
