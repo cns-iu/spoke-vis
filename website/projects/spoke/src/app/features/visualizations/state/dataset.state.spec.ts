@@ -13,7 +13,13 @@ const originalIt = it;
 
 
 describe('DatasetState', () => {
-  const indexItem: IndexItem = { id: 'foo', name: 'FOO', description: '', dir: '/path/to/stuff' };
+  const indexItem: IndexItem = {
+    id: 'foo',
+    name: 'FOO',
+    description: '',
+    dir: '/path/to/stuff',
+    selectable: true
+  };
   const def1: DatasetDefinition = { dataset: '1', file: 'data1.txt' };
   const def2: DatasetDefinition = { dataset: '2', file: 'data2.json', type: 'json' };
   const url1 = `${indexItem.dir}/${def1.file}`;

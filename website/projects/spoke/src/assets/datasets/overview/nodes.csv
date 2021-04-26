@@ -1,23 +1,20 @@
-type,label,weight
-Compound,Compound,1967305
-Protein,Protein,196097
-Gene,Gene,19989
-Reaction,Reaction,16320
-Anatomy,Anatomy,14939
-BiologicalProcess,BiologicalProcess,12898
-Disease,Disease,10209
-Organism,Organism,8109
-EC,EC,6682
-SideEffect,SideEffect,6061
-MolecularFunction,MolecularFunction,3274
-Pathway,Pathway,2128
-CellularComponent,CellularComponent,1677
-Food,Food,897
-PharmacologicClass,PharmacologicClass,534
-Symptom,Symptom,386
-AnatomyCellType,AnatomyCellType,102
-CellType,CellType,54
-DatabaseTimestamp,DatabaseTimestamp,52
-Nutrient,Nutrient,38
-SARSCov2,SARSCov2,27
-Version,Version,18
+id,type,label,weight,a,b,tooltip,color,color2
+0,Compound,Compound,1967305,5,3,,#1565C0,#DCE8F6
+1,Protein,Protein,196097,4,3,INTERACTS_PiP (1648233),#3AB8B9,#E1F5F5
+2,Gene,Gene,19989,6,3,UPREGULATES_KGuG (259742); DOWNREGULATES_KGdG (259742); UPREGULATES_OGuG (54958); DOWNREGULATES_OGdG (31972); UPREGULATES_GPuG (11828); DOWNREGULATES_GPdG (7968),#6A1B9A,#E9DDF0
+3,Reaction,Reaction,16320,5,4,,#1E88E5,#DDEDFB
+4,Anatomy,Anatomy,14939,7,3,ISA_AiA (18685); CONTAINS_AcA (18685); PARTOF_ApA (9233),#558B2F,#E5EEE0
+5,Disease,Disease,10209,7,5,RESEMBLES_DrD (62984); ISA_DiD (10393); CONTAINS_DcD (10393),#880E4F,#EDDBE5
+6,Organism,Organism,8109,4,5,CONTAINS_OcO (7917); ISA_OiO (7917),#E65100,#FCE5D9
+7,EC,EC,6682,4,4,,#FFCC80,#FFF8EC
+8,SideEffect,Side Effect,6061,5,2,,#42A5F5,#E3F2FE
+9,Pathway,Pathway,2128,3,4,CONTAINS_PWcPW (1384); ISA_PWiPW (1384),#F57C00,#FEEBD9
+10,Food,Food,897,3,2,,#D1B445,#F8F4E3
+11,PharmacologicClass,Pharmacologic Class,534,4,2,,#90CAF9,#EEF7FE
+12,Symptom,Symptom,386,8,5,,#C2185B,#F6DCE6
+13,AnatomyCellType,Anatomy Cell Type,102,7,2,,#8BC34A,#EEF6E4
+14,CellType,Cell Type,54,7,1,,#C5E1A5,#F7FBF2
+15,Nutrient,Nutrient,38,3,1,,#E8D694,#FCF9EF
+16,SARSCov2,SARS Cov2,27,2,4,,#FFA726,#FFF8EC
+17,ProteinFamily,Protein Family,0,2,1,,#97DBC6,#F0FAF7
+18,ProteinDomain,Protein Domain,0,2,2,,#6DC8C2,#E9F7F6

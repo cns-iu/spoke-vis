@@ -1,26 +1,37 @@
 [
   {
+    "id": "overview",
+    "name": "Overview",
+    "description": "Overview",
+    "dir": "assets/datasets/overview",
+    "selectable": false
+  },
+  {
     "id": "alzheimers-all",
     "name": "Alzheimer's disease",
     "description": "",
-    "dir": "assets/datasets/alzheimers-all-food-tree"
+    "dir": "assets/datasets/alzheimers-all-food-tree",
+    "selectable": true
   },
   {
     "id": "alzheimers",
     "name": "Alzheimer's disease",
     "description": "",
-    "dir": "assets/datasets/alzheimers-food-tree"
+    "dir": "assets/datasets/alzheimers-food-tree",
+    "selectable": true
   },
   {
     "id": "cad",
     "name": "coronary artery disease",
     "description": "",
-    "dir": "assets/datasets/cad-food-tree"
+    "dir": "assets/datasets/cad-food-tree",
+    "selectable": true
   },
   {
     "id": "epilepsy",
     "name": "epilepsy",
     "description": "",
-    "dir": "assets/datasets/epilepsy-food-tree"
+    "dir": "assets/datasets/epilepsy-food-tree",
+    "selectable": true
   }
 ]
