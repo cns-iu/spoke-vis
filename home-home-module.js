@@ -60,7 +60,7 @@ HomeComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComp
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](26, " SPOKE is a fully interactive tool for exploring the interconnections between data. ");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](27, "div", 10);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function HomeComponent_Template_div_click_27_listener() { return ctx.logClick("spoke_visualization"); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](28, "Go To SPOKE");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](28, "SPOKE Visualizer");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](29, "div", 11);
