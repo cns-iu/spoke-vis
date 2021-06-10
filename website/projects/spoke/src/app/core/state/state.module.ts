@@ -7,6 +7,7 @@ import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 
 import { environment } from '../../../environments/environment';
+import { PageState } from './page.state';
 import { RouterState } from './router.state';
 
 
@@ -14,6 +15,7 @@ import { RouterState } from './router.state';
  * Root states available to the entire application
  */
 const ROOT_STATES: Type<unknown>[] = [
+  PageState
 ];
 
 const EXTENSIONS: NgxsDataExtension[] = [
