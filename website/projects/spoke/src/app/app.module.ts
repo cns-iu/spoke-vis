@@ -7,7 +7,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
-import { TrackingPopupModule } from './core/components/tracking-popup/tracking-popup.module'
+import { TrackingPopupModule } from './core/components/tracking-popup/tracking-popup.module';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({

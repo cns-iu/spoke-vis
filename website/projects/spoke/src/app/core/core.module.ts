@@ -19,8 +19,6 @@ import { StateModule } from './state/state.module';
   exports: [
     HeaderModule,
     FooterModule,
-  ],
-  declarations: [
   ]
 })
 export class CoreModule { }

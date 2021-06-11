@@ -15,21 +15,12 @@ export class TrackingPopupComponent {
     this.container = elementRef.nativeElement;
   }
 
-  dismiss() {
-    this.page.setHasClosedPopup(true);
+  dismiss(): void {
     this.data.preClose();
   }
 
-  allow() {
-    this.page.setAllowTelemetry(true);
-    console.log('allow tracking');
+  submit(entry: boolean): void {
+    this.page.setAllowTelemetry(entry);
     this.dismiss();
   }
-
-  optOut() {
-    this.page.setAllowTelemetry(false);
-    console.log('don\'t track');
-    this.dismiss();
-  }
-
 }

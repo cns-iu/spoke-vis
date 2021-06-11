@@ -14,13 +14,10 @@ import { TrackingPopupComponent } from './core/components/tracking-popup/trackin
 export class AppComponent implements OnInit {
 
   ngOnInit(): void {
-    if (localStorage['POPUP_CLOSED'] === 'false') {
-    // if (true) {
-      const snackBar = this.snackbar.openFromComponent(TrackingPopupComponent, {
-        data: {preClose: () => {snackBar.dismiss()} },
-        duration: 10000
-      });
-    }
+    const snackBar = this.snackbar.openFromComponent(TrackingPopupComponent, {
+      data: {preClose: () => {snackBar.dismiss();} },
+      duration: 10000
+    });
   }
 
   constructor(elementRef: ElementRef<HTMLElement>, ga: GoogleAnalyticsService, readonly page: PageState, readonly snackbar: MatSnackBar) {
@@ -33,10 +30,10 @@ export class AppComponent implements OnInit {
       })
     ).subscribe();
 
-    if (localStorage['ALLOW_TELEMETRY'] !== 'false') {
-      console.log('allow tracking');
-    } else {
-      console.log('don\'t track');
-    }
+    // if (this.page.snapshot.allowTelemetry !== false) {
+    //   console.log('allow tracking');
+    // } else {
+    //   console.log('don\'t track');
+    // }
   }
 }

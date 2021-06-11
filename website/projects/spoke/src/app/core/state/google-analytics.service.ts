@@ -3,20 +3,19 @@ import { NGX_GOOGLE_ANALYTICS_SETTINGS_TOKEN } from 'ngx-google-analytics';
 import { IGoogleAnalyticsSettings } from 'ngx-google-analytics';
 import { GaActionEnum } from 'ngx-google-analytics';
 import { DOCUMENT } from '@angular/common';
-import { NGX_GTAG_FN } from 'ngx-google-analytics';
-import { GtagFn } from 'ngx-google-analytics';
+import { GtagFn, getGtagFn } from 'ngx-google-analytics';
+import { DataLayer, NGX_WINDOW, NGX_DATA_LAYER } from 'ngx-google-analytics';
+import { PageState } from './page.state';
 
-    
-function getGtagFnNull(): GtagFn {
-  return {} as GtagFn;
-};
-    
-const NGX_GTAG_FN_NULL = new InjectionToken<GtagFn>('ngx-gtag-fn', {
-  factory: () => getGtagFnNull()
+
+function gtagFunction(window: Window, dataLayer: DataLayer): GtagFn {
+  return localStorage['ALLOW_TELEMETRY'] !== 'false' ? getGtagFn(window, dataLayer) : () => {return {} as GtagFn};
+}
+
+const NGX_GTAG_FN_CUSTOM = new InjectionToken<GtagFn>('ngx-gtag-fn', {
+  providedIn: 'root',
+  factory: () => gtagFunction(Inject(NGX_WINDOW), Inject(NGX_DATA_LAYER))
 });
-    
-const token = localStorage['ALLOW_TELEMETRY'] !== 'false' ? NGX_GTAG_FN : NGX_GTAG_FN_NULL
-
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +29,8 @@ export class GoogleAnalyticsService {
   constructor(
     @Inject(NGX_GOOGLE_ANALYTICS_SETTINGS_TOKEN) private readonly settings: IGoogleAnalyticsSettings,
     @Inject(DOCUMENT) private readonly _document: any,
-    @Inject(token) private readonly _gtag: GtagFn
+    @Inject(NGX_GTAG_FN_CUSTOM) private readonly _gtag: GtagFn,
+    readonly page: PageState
   ) { }
 
   private throw(err: Error) {
