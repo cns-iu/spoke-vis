@@ -1,16 +1,22 @@
+/* eslint-disable  */
+
 import { Injectable, Inject, InjectionToken, isDevMode } from '@angular/core';
-import { NGX_GOOGLE_ANALYTICS_SETTINGS_TOKEN } from 'ngx-google-analytics';
-import { IGoogleAnalyticsSettings } from 'ngx-google-analytics';
-import { GaActionEnum } from 'ngx-google-analytics';
+import {
+    NGX_GOOGLE_ANALYTICS_SETTINGS_TOKEN,
+    IGoogleAnalyticsSettings,
+    GaActionEnum,
+    GtagFn,
+    getGtagFn,
+    DataLayer,
+    NGX_WINDOW,
+    NGX_DATA_LAYER
+} from 'ngx-google-analytics';
 import { DOCUMENT } from '@angular/common';
-import { GtagFn, getGtagFn } from 'ngx-google-analytics';
-import { DataLayer, NGX_WINDOW, NGX_DATA_LAYER } from 'ngx-google-analytics';
-import { PageState } from './page.state';
 
 
 function gtagFunction(window: Window, dataLayer: DataLayer): GtagFn {
-  return localStorage['ALLOW_TELEMETRY'] !== 'false' ? getGtagFn(window, dataLayer) : () => {return {} as GtagFn};
-}
+  return localStorage.ALLOW_TELEMETRY !== 'false' ? getGtagFn(window, dataLayer) : () => ({} as GtagFn)
+};
 
 const NGX_GTAG_FN_CUSTOM = new InjectionToken<GtagFn>('ngx-gtag-fn', {
   providedIn: 'root',
@@ -29,8 +35,7 @@ export class GoogleAnalyticsService {
   constructor(
     @Inject(NGX_GOOGLE_ANALYTICS_SETTINGS_TOKEN) private readonly settings: IGoogleAnalyticsSettings,
     @Inject(DOCUMENT) private readonly _document: any,
-    @Inject(NGX_GTAG_FN_CUSTOM) private readonly _gtag: GtagFn,
-    readonly page: PageState
+    @Inject(NGX_GTAG_FN_CUSTOM) private readonly _gtag: GtagFn
   ) { }
 
   private throw(err: Error) {

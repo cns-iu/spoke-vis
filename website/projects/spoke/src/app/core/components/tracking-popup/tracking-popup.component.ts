@@ -11,6 +11,7 @@ export class TrackingPopupComponent {
 
   container: HTMLElement;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(elementRef: ElementRef<HTMLElement>, readonly page: PageState, @Inject(MAT_SNACK_BAR_DATA) public data: any) {
     this.container = elementRef.nativeElement;
   }
