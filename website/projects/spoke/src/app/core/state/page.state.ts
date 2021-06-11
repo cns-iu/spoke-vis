@@ -19,15 +19,15 @@ const LOCAL_STORAGE_ALLOW_TELEMETRY_KEY = 'ALLOW_TELEMETRY';
 @Injectable()
 export class PageState extends NgxsImmutableDataRepository<PageStateModel> {
 
-  ngxsOnInit(): void {
-    super.ngxsOnInit();
-    const allowTelemetry = localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY)?.toLowerCase() === 'false';
-    this.patchState({ allowTelemetry });
-  }
-
   @DataAction()
   setAllowTelemetry(allowTelemetry: boolean): void {
     localStorage.setItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY, allowTelemetry.toString());
     this.ctx.patchState({ allowTelemetry });
+  }
+
+  ngxsOnInit(): void {
+    super.ngxsOnInit();
+    const allowTelemetry = localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY)?.toLowerCase() === 'false';
+    this.patchState({ allowTelemetry });
   }
 }
