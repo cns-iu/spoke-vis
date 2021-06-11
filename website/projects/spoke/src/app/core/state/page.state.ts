@@ -21,7 +21,7 @@ export class PageState extends NgxsImmutableDataRepository<PageStateModel> {
 
   ngxsOnInit(): void {
     super.ngxsOnInit();
-    const allowTelemetry = localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY)?.toLowerCase() === 'true';
+    const allowTelemetry = localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY)?.toLowerCase() === 'false';
     this.patchState({ allowTelemetry });
   }
 
