@@ -16,7 +16,7 @@ import { DOCUMENT } from '@angular/common';
 
 function gtagFunction(window: Window, dataLayer: DataLayer): GtagFn {
   return localStorage.ALLOW_TELEMETRY !== 'false' ? getGtagFn(window, dataLayer) : () => ({} as GtagFn)
-};
+}
 
 const NGX_GTAG_FN_CUSTOM = new InjectionToken<GtagFn>('ngx-gtag-fn', {
   providedIn: 'root',
@@ -44,7 +44,6 @@ export class GoogleAnalyticsService {
     }
   }
 
-  /** @todo Change this to `Object.fromEntity()` in the future... */
   private toKeyValue(map: Map<string, any>): { [param: string]: any } | void {
     return (map.size > 0)
       ? Array.from(map).reduce(
@@ -96,9 +95,9 @@ export class GoogleAnalyticsService {
       }
       const params = this.toKeyValue(opt);
       if (params) {
-        this.gtag('event', action as string, params);
+        this.gtag('event', action, params);
       } else {
-        this.gtag('event', action as string);
+        this.gtag('event', action);
       }
     } catch (error) {
       this.throw(error);
@@ -134,7 +133,7 @@ export class GoogleAnalyticsService {
       if (options) {
         Object
           .entries(options)
-          .map(([key, value]) => opt.set(key, value));
+          .forEach(([key, value]) => opt.set(key, value));
       }
       this.gtag('config', this.settings.trackingCode, this.toKeyValue(opt));
     } catch (error) {
