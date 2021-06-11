@@ -1,8 +1,5 @@
 import { Component, ElementRef, Inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
-import { GoogleAnalyticsService } from 'ngx-google-analytics';
-import { fromEvent } from 'rxjs';
-import { tap, throttleTime } from 'rxjs/operators';
 import { PageState } from '../../state/page.state';
 
 @Component({
@@ -13,11 +10,9 @@ import { PageState } from '../../state/page.state';
 export class TrackingPopupComponent {
 
   container: HTMLElement;
-  ga: GoogleAnalyticsService;
 
-  constructor(elementRef: ElementRef<HTMLElement>, ga: GoogleAnalyticsService, readonly page: PageState, @Inject(MAT_SNACK_BAR_DATA) public data: any) {
+  constructor(elementRef: ElementRef<HTMLElement>, readonly page: PageState, @Inject(MAT_SNACK_BAR_DATA) public data: any) {
     this.container = elementRef.nativeElement;
-    this.ga = ga;
   }
 
   dismiss() {
@@ -28,13 +23,6 @@ export class TrackingPopupComponent {
   allow() {
     this.page.setAllowTelemetry(true);
     console.log('allow tracking');
-    fromEvent<MouseEvent>(this.container, 'mousemove').pipe(
-      throttleTime(1000),
-      tap((event) => {
-        const label = `${event.clientX}_${event.clientY}_${this.container.clientWidth}_${this.container.clientHeight}`;
-        this.ga.event('webpage', 'mousemove', label);
-      })
-    ).subscribe();
     this.dismiss();
   }
 
