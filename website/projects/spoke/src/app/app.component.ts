@@ -25,9 +25,10 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.page.snapshot.allowTelemetry)
     const snackBar = this.snackbar.openFromComponent(TrackingPopupComponent, {
       data: {preClose: () => {snackBar.dismiss();} },
-      duration: 10000
+      duration: this.page.snapshot.allowTelemetry === undefined ? 1000000 : 3000
     });
   }
 }

@@ -4,7 +4,7 @@ import { NgxsImmutableDataRepository } from '@ngxs-labs/data/repositories';
 import { State } from '@ngxs/store';
 
 interface PageStateModel {
-  allowTelemetry: boolean;
+  allowTelemetry: boolean | undefined;
 }
 
 const LOCAL_STORAGE_ALLOW_TELEMETRY_KEY = 'ALLOW_TELEMETRY';
@@ -13,7 +13,7 @@ const LOCAL_STORAGE_ALLOW_TELEMETRY_KEY = 'ALLOW_TELEMETRY';
 @State<PageStateModel>({
   name: 'page',
   defaults: {
-    allowTelemetry: false
+    allowTelemetry: undefined
   }
 })
 @Injectable()
