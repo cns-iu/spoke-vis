@@ -17,7 +17,8 @@ describe('TrackingPopupComponent', () => {
       .provide({ provide: PageState, useValue: {} });
   });
 
-  it('passes the dummy test', () => {
-    expect().nothing();
+  it('creates', async () => {
+    const { instance } = await shallow.render();
+    expect(instance).toBeDefined();
   });
 });
