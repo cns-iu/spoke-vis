@@ -105,3 +105,6 @@ dist
 
 # ENV
 .envrc
+
+# IDE - VSCode
+.vscode/*
