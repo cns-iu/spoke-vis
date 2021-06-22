@@ -21,7 +21,9 @@ export class TrackingPopupComponent {
   }
 
   submit(entry: boolean): void {
+    
     this.page.setAllowTelemetry(entry);
+    console.log(this.page.snapshot.allowTelemetry)
     this.dismiss();
   }
 }
