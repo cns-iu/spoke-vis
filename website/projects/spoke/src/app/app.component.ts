@@ -1,7 +1,10 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { fromEvent } from 'rxjs';
 import { tap, throttleTime } from 'rxjs/operators';
+import { TrackingPopupComponent } from './core/components/tracking-popup/tracking-popup.component';
+import { PageState } from './core/state/page.state';
 
 
 @Component({
@@ -9,9 +12,9 @@ import { tap, throttleTime } from 'rxjs/operators';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
-  constructor(elementRef: ElementRef<HTMLElement>, ga: GoogleAnalyticsService) {
+  constructor(elementRef: ElementRef<HTMLElement>, ga: GoogleAnalyticsService, readonly page: PageState, readonly snackbar: MatSnackBar) {
     const container = elementRef.nativeElement;
     fromEvent<MouseEvent>(container, 'mousemove').pipe(
       throttleTime(1000),
@@ -20,5 +23,12 @@ export class AppComponent {
         ga.event('webpage', 'mousemove', label);
       })
     ).subscribe();
+  }
+
+  ngOnInit(): void {
+    const snackBar = this.snackbar.openFromComponent(TrackingPopupComponent, {
+      data: {preClose: () => {snackBar.dismiss();} },
+      duration: this.page.snapshot.allowTelemetry === undefined ? Infinity : 3000
+    });
   }
 }
