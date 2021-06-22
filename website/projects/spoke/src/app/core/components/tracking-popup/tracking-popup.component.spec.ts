@@ -20,11 +20,4 @@ describe('TrackingPopupComponent', () => {
   it('passes the dummy test', () => {
     expect().nothing();
   });
-
-  // it('should dismiss the snackbar', async () => {
-  //   const { instance, get } = await shallow.mock(MAT_SNACK_BAR_DATA, { preClose(): void { } }).render();
-  //   const ref = get(MAT_SNACK_BAR_DATA);
-  //   instance.dismiss();
-  //   expect(ref.preClose).toHaveBeenCalled();
-  // });
 });

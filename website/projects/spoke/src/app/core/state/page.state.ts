@@ -9,7 +9,7 @@ export interface PageStateModel {
 }
 
 export const LOCAL_STORAGE_ALLOW_TELEMETRY_KEY = 'ALLOW_TELEMETRY';
-export const INITIAL_TELEMETRY_SETTING  = localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY) === null ? undefined 
+export const INITIAL_TELEMETRY_SETTING  = localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY) === null ? undefined
   : localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY)?.toLowerCase() === 'true';
 
 @StateRepository()
