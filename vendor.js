@@ -1859,6 +1859,276 @@ function concatAll() {
 
 /***/ }),
 
+/***/ "0MNC":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@angular/cdk/__ivy_ngcc__/fesm2015/layout.js ***!
+  \*******************************************************************/
+/*! exports provided: BreakpointObserver, Breakpoints, LayoutModule, MediaMatcher */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BreakpointObserver", function() { return BreakpointObserver; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Breakpoints", function() { return Breakpoints; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LayoutModule", function() { return LayoutModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MediaMatcher", function() { return MediaMatcher; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/cdk/coercion */ "8LU1");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "qCKp");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "kU1M");
+/* harmony import */ var _angular_cdk_platform__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/cdk/platform */ "nLfN");
+
+
+
+
+
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+
+class LayoutModule {
+}
+LayoutModule.ɵfac = function LayoutModule_Factory(t) { return new (t || LayoutModule)(); };
+LayoutModule.ɵmod = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: LayoutModule });
+LayoutModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({});
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](LayoutModule, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"],
+        args: [{}]
+    }], null, null); })();
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/** Global registry for all dynamically-created, injected media queries. */
+const mediaQueriesForWebkitCompatibility = new Set();
+/** Style tag that holds all of the dynamically-created media queries. */
+let mediaQueryStyleNode;
+/** A utility for calling matchMedia queries. */
+class MediaMatcher {
+    constructor(_platform) {
+        this._platform = _platform;
+        this._matchMedia = this._platform.isBrowser && window.matchMedia ?
+            // matchMedia is bound to the window scope intentionally as it is an illegal invocation to
+            // call it from a different scope.
+            window.matchMedia.bind(window) :
+            noopMatchMedia;
+    }
+    /**
+     * Evaluates the given media query and returns the native MediaQueryList from which results
+     * can be retrieved.
+     * Confirms the layout engine will trigger for the selector query provided and returns the
+     * MediaQueryList for the query provided.
+     */
+    matchMedia(query) {
+        if (this._platform.WEBKIT) {
+            createEmptyStyleRule(query);
+        }
+        return this._matchMedia(query);
+    }
+}
+MediaMatcher.ɵfac = function MediaMatcher_Factory(t) { return new (t || MediaMatcher)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_cdk_platform__WEBPACK_IMPORTED_MODULE_4__["Platform"])); };
+MediaMatcher.ɵprov = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"])({ factory: function MediaMatcher_Factory() { return new MediaMatcher(Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"])(_angular_cdk_platform__WEBPACK_IMPORTED_MODULE_4__["Platform"])); }, token: MediaMatcher, providedIn: "root" });
+MediaMatcher.ctorParameters = () => [
+    { type: _angular_cdk_platform__WEBPACK_IMPORTED_MODULE_4__["Platform"] }
+];
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](MediaMatcher, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"],
+        args: [{ providedIn: 'root' }]
+    }], function () { return [{ type: _angular_cdk_platform__WEBPACK_IMPORTED_MODULE_4__["Platform"] }]; }, null); })();
+/**
+ * For Webkit engines that only trigger the MediaQueryListListener when
+ * there is at least one CSS selector for the respective media query.
+ */
+function createEmptyStyleRule(query) {
+    if (mediaQueriesForWebkitCompatibility.has(query)) {
+        return;
+    }
+    try {
+        if (!mediaQueryStyleNode) {
+            mediaQueryStyleNode = document.createElement('style');
+            mediaQueryStyleNode.setAttribute('type', 'text/css');
+            document.head.appendChild(mediaQueryStyleNode);
+        }
+        if (mediaQueryStyleNode.sheet) {
+            mediaQueryStyleNode.sheet
+                .insertRule(`@media ${query} {.fx-query-test{ }}`, 0);
+            mediaQueriesForWebkitCompatibility.add(query);
+        }
+    }
+    catch (e) {
+        console.error(e);
+    }
+}
+/** No-op matchMedia replacement for non-browser platforms. */
+function noopMatchMedia(query) {
+    // Use `as any` here to avoid adding additional necessary properties for
+    // the noop matcher.
+    return {
+        matches: query === 'all' || query === '',
+        media: query,
+        addListener: () => { },
+        removeListener: () => { }
+    };
+}
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/** Utility for checking the matching state of @media queries. */
+class BreakpointObserver {
+    constructor(_mediaMatcher, _zone) {
+        this._mediaMatcher = _mediaMatcher;
+        this._zone = _zone;
+        /**  A map of all media queries currently being listened for. */
+        this._queries = new Map();
+        /** A subject for all other observables to takeUntil based on. */
+        this._destroySubject = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
+    }
+    /** Completes the active subject, signalling to all other observables to complete. */
+    ngOnDestroy() {
+        this._destroySubject.next();
+        this._destroySubject.complete();
+    }
+    /**
+     * Whether one or more media queries match the current viewport size.
+     * @param value One or more media queries to check.
+     * @returns Whether any of the media queries match.
+     */
+    isMatched(value) {
+        const queries = splitQueries(Object(_angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_1__["coerceArray"])(value));
+        return queries.some(mediaQuery => this._registerQuery(mediaQuery).mql.matches);
+    }
+    /**
+     * Gets an observable of results for the given queries that will emit new results for any changes
+     * in matching of the given queries.
+     * @param value One or more media queries to check.
+     * @returns A stream of matches for the given queries.
+     */
+    observe(value) {
+        const queries = splitQueries(Object(_angular_cdk_coercion__WEBPACK_IMPORTED_MODULE_1__["coerceArray"])(value));
+        const observables = queries.map(query => this._registerQuery(query).observable);
+        let stateObservable = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["combineLatest"])(observables);
+        // Emit the first state immediately, and then debounce the subsequent emissions.
+        stateObservable = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["concat"])(stateObservable.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["take"])(1)), stateObservable.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["skip"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["debounceTime"])(0)));
+        return stateObservable.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(breakpointStates => {
+            const response = {
+                matches: false,
+                breakpoints: {},
+            };
+            breakpointStates.forEach(({ matches, query }) => {
+                response.matches = response.matches || matches;
+                response.breakpoints[query] = matches;
+            });
+            return response;
+        }));
+    }
+    /** Registers a specific query to be listened for. */
+    _registerQuery(query) {
+        // Only set up a new MediaQueryList if it is not already being listened for.
+        if (this._queries.has(query)) {
+            return this._queries.get(query);
+        }
+        const mql = this._mediaMatcher.matchMedia(query);
+        // Create callback for match changes and add it is as a listener.
+        const queryObservable = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"]((observer) => {
+            // Listener callback methods are wrapped to be placed back in ngZone. Callbacks must be placed
+            // back into the zone because matchMedia is only included in Zone.js by loading the
+            // webapis-media-query.js file alongside the zone.js file.  Additionally, some browsers do not
+            // have MediaQueryList inherit from EventTarget, which causes inconsistencies in how Zone.js
+            // patches it.
+            const handler = (e) => this._zone.run(() => observer.next(e));
+            mql.addListener(handler);
+            return () => {
+                mql.removeListener(handler);
+            };
+        }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["startWith"])(mql), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(({ matches }) => ({ query, matches })), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["takeUntil"])(this._destroySubject));
+        // Add the MediaQueryList to the set of queries.
+        const output = { observable: queryObservable, mql };
+        this._queries.set(query, output);
+        return output;
+    }
+}
+BreakpointObserver.ɵfac = function BreakpointObserver_Factory(t) { return new (t || BreakpointObserver)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](MediaMatcher), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"])); };
+BreakpointObserver.ɵprov = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"])({ factory: function BreakpointObserver_Factory() { return new BreakpointObserver(Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"])(MediaMatcher), Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"])(_angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"])); }, token: BreakpointObserver, providedIn: "root" });
+BreakpointObserver.ctorParameters = () => [
+    { type: MediaMatcher },
+    { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"] }
+];
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BreakpointObserver, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"],
+        args: [{ providedIn: 'root' }]
+    }], function () { return [{ type: MediaMatcher }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"] }]; }, null); })();
+/**
+ * Split each query string into separate query strings if two queries are provided as comma
+ * separated.
+ */
+function splitQueries(queries) {
+    return queries.map(query => query.split(','))
+        .reduce((a1, a2) => a1.concat(a2))
+        .map(query => query.trim());
+}
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+// PascalCase is being used as Breakpoints is used like an enum.
+// tslint:disable-next-line:variable-name
+const Breakpoints = {
+    XSmall: '(max-width: 599.98px)',
+    Small: '(min-width: 600px) and (max-width: 959.98px)',
+    Medium: '(min-width: 960px) and (max-width: 1279.98px)',
+    Large: '(min-width: 1280px) and (max-width: 1919.98px)',
+    XLarge: '(min-width: 1920px)',
+    Handset: '(max-width: 599.98px) and (orientation: portrait), ' +
+        '(max-width: 959.98px) and (orientation: landscape)',
+    Tablet: '(min-width: 600px) and (max-width: 839.98px) and (orientation: portrait), ' +
+        '(min-width: 960px) and (max-width: 1279.98px) and (orientation: landscape)',
+    Web: '(min-width: 840px) and (orientation: portrait), ' +
+        '(min-width: 1280px) and (orientation: landscape)',
+    HandsetPortrait: '(max-width: 599.98px) and (orientation: portrait)',
+    TabletPortrait: '(min-width: 600px) and (max-width: 839.98px) and (orientation: portrait)',
+    WebPortrait: '(min-width: 840px) and (orientation: portrait)',
+    HandsetLandscape: '(max-width: 959.98px) and (orientation: landscape)',
+    TabletLandscape: '(min-width: 960px) and (max-width: 1279.98px) and (orientation: landscape)',
+    WebLandscape: '(min-width: 1280px) and (orientation: landscape)',
+};
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+//# sourceMappingURL=layout.js.map
+
+/***/ }),
+
 /***/ "0Pi8":
 /*!******************************************************************!*\
   !*** ./node_modules/rxjs/_esm2015/internal/operators/endWith.js ***!
@@ -3415,6 +3685,239 @@ class TimeInterval {
     }
 }
 //# sourceMappingURL=timeInterval.js.map
+
+/***/ }),
+
+/***/ "4jw6":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@ngxs-labs/data/fesm2015/ngxs-labs-data-decorators.js ***!
+  \****************************************************************************/
+/*! exports provided: Computed, DataAction, Debounce, Named, Payload, Persistence, StateRepository */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Computed", function() { return Computed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DataAction", function() { return DataAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Debounce", function() { return Debounce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Named", function() { return Named; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Payload", function() { return Payload; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Persistence", function() { return Persistence; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StateRepository", function() { return StateRepository; });
+/* harmony import */ var _angular_ru_common_function__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular-ru/common/function */ "s52c");
+/* harmony import */ var _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @ngxs-labs/data/internals */ "ma1T");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "qCKp");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "kU1M");
+/* harmony import */ var _ngxs_labs_data_storage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @ngxs-labs/data/storage */ "x2AU");
+/* harmony import */ var _angular_ru_common_object__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular-ru/common/object */ "UA48");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/core */ "fXoL");
+
+
+
+
+
+
+
+
+const REPOSITORY_ACTION_OPTIONS = {
+    cancelUncompleted: true,
+    insideZone: false
+};
+
+// eslint-disable-next-line max-lines-per-function,@typescript-eslint/tslint/config
+function DataAction(options = REPOSITORY_ACTION_OPTIONS) {
+    // eslint-disable-next-line max-lines-per-function
+    return (target, name, descriptor) => {
+        Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["validateAction"])(target, descriptor);
+        const originalMethod = descriptor.value;
+        const key = name.toString();
+        // eslint-disable-next-line max-lines-per-function
+        descriptor.value = function (...args) {
+            const instance = this;
+            let result = null;
+            const repository = _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["NgxsDataFactory"].getRepositoryByInstance(instance);
+            const operations = repository.operations;
+            let operation = operations[key];
+            const stateMeta = repository.stateMeta;
+            const registry = Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["getMethodArgsRegistry"])(originalMethod);
+            if (!operation) {
+                // Note: late init operation when first invoke action method
+                const argumentsNames = Object(_angular_ru_common_function__WEBPACK_IMPORTED_MODULE_0__["$args"])(originalMethod);
+                const type = Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["actionNameCreator"])({
+                    statePath: stateMeta.path,
+                    methodName: key,
+                    argumentsNames,
+                    argumentRegistry: registry
+                });
+                operation = operations[key] = {
+                    type,
+                    options: { cancelUncompleted: options.cancelUncompleted }
+                };
+                stateMeta.actions[operation.type] = [
+                    { type: operation.type, options: operation.options, fn: operation.type }
+                ];
+            }
+            const mapped = _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["NgxsDataFactory"].ensureMappedState(stateMeta);
+            const stateInstance = mapped.instance;
+            // Note: invoke only after store.dispatch(...)
+            stateInstance[operation.type] = () => {
+                var _a;
+                if (options.insideZone) {
+                    (_a = _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["NgxsDataInjector"].ngZone) === null || _a === void 0 ? void 0 : _a.run(() => {
+                        result = originalMethod.apply(instance, args);
+                    });
+                }
+                else {
+                    result = originalMethod.apply(instance, args);
+                }
+                // Note: store.dispatch automatically subscribes, but we don’t need it
+                // We want to subscribe ourselves manually
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["isObservable"])(result) ? Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(null).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(() => result)) : result;
+            };
+            const event = _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["NgxsDataFactory"].createAction(operation, args, registry);
+            const dispatcher = _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["NgxsDataInjector"].store.dispatch(event);
+            if (Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["isObservable"])(result)) {
+                return Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["combineStream"])(dispatcher, result);
+            }
+            else {
+                return result;
+            }
+        };
+        return descriptor;
+    };
+}
+
+function Persistence(options) {
+    // eslint-disable-next-line @typescript-eslint/ban-types,@typescript-eslint/tslint/config
+    return function (stateClass) {
+        const stateMeta = Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["ensureStateMetadata"])(stateClass);
+        const repositoryMeta = Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["getRepository"])(stateClass);
+        const isUndecoratedClass = !stateMeta.name || !repositoryMeta;
+        if (isUndecoratedClass) {
+            throw new Error("@Persistence should be add before decorator @State and @StateRepository" /* NGXS_PERSISTENCE_STATE */);
+        }
+        return class extends stateClass {
+            constructor(...args) {
+                super(...args);
+                Object(_ngxs_labs_data_storage__WEBPACK_IMPORTED_MODULE_4__["registerStorageProviders"])(Object(_ngxs_labs_data_storage__WEBPACK_IMPORTED_MODULE_4__["ensureProviders"])(repositoryMeta, this, options));
+            }
+        };
+    };
+}
+
+function StateRepository() {
+    return (stateClass) => {
+        const stateMeta = Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["ensureStateMetadata"])(stateClass);
+        if (!stateMeta.name) {
+            throw new Error("@StateRepository should be add before decorator @State" /* NGXS_DATA_STATE */);
+        }
+        Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["createRepositoryMetadata"])(stateClass, stateMeta);
+        const cloneDefaults = Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["buildDefaultsGraph"])(stateClass);
+        defineProperties(stateClass, stateMeta, cloneDefaults);
+        Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["createStateSelector"])(stateClass);
+    };
+}
+function defineProperties(stateClass, stateMeta, cloneDefaults) {
+    Object.defineProperties(stateClass.prototype, {
+        name: {
+            enumerable: true,
+            configurable: true,
+            value: stateMeta.name
+        },
+        initialState: {
+            enumerable: true,
+            configurable: true,
+            get() {
+                // preserve mutation
+                return Object(_angular_ru_common_object__WEBPACK_IMPORTED_MODULE_5__["deepClone"])(cloneDefaults);
+            }
+        },
+        context: Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["createContext"])(stateClass)
+    });
+}
+
+const DEFAULT_TIMEOUT = 300;
+function Debounce(timeout = DEFAULT_TIMEOUT) {
+    let timeoutRef = null;
+    return (_target, _name, descriptor) => {
+        const originalMethod = descriptor.value;
+        descriptor.value = function (...args) {
+            var _a;
+            Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["checkExistNgZone"])();
+            (_a = _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["NgxsDataInjector"].ngZone) === null || _a === void 0 ? void 0 : _a.runOutsideAngular(() => {
+                window.clearTimeout(timeoutRef);
+                timeoutRef = window.setTimeout(() => {
+                    const result = originalMethod.apply(this, args);
+                    if (result && Object(_angular_core__WEBPACK_IMPORTED_MODULE_6__["isDevMode"])()) {
+                        console.warn("WARNING: If you use asynchronous actions `@Debounce() @DataAction()` the return result type should only void instead:" /* NGXS_DATA_ASYNC_ACTION_RETURN_TYPE */, result);
+                    }
+                }, timeout);
+            });
+        };
+        return descriptor;
+    };
+}
+
+function Payload(name) {
+    return (stateClass, methodName, parameterIndex) => {
+        const key = name.trim();
+        if (!key) {
+            throw new Error("Payload name should be initialized" /* NGXS_INVALID_PAYLOAD_NAME */);
+        }
+        const registry = Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["ensureMethodArgsRegistry"])(stateClass, methodName);
+        registry.createPayloadType(key, methodName, parameterIndex);
+    };
+}
+
+function Named(name) {
+    return (stateClass, methodName, parameterIndex) => {
+        const key = name.trim();
+        if (!key) {
+            throw new Error("Argument name should be initialized" /* NGXS_INVALID_ARG_NAME */);
+        }
+        const registry = Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["ensureMethodArgsRegistry"])(stateClass, methodName);
+        registry.createArgumentName(key, methodName, parameterIndex);
+    };
+}
+
+// eslint-disable-next-line max-lines-per-function
+function Computed() {
+    // eslint-disable-next-line max-lines-per-function
+    return (target, key, descriptor) => {
+        Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["validateComputedMethod"])(target, key);
+        const originalMethod = descriptor.get;
+        descriptor.get = function (...args) {
+            const cacheMap = Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["ensureComputedCache"])(this);
+            const cache = cacheMap === null || cacheMap === void 0 ? void 0 : cacheMap.get(originalMethod);
+            if (cache === null || cache === void 0 ? void 0 : cache.isObservable) {
+                return cache.value;
+            }
+            const invalidCache = !cache || cache.sequenceId !== Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["globalSequenceId"])();
+            if (invalidCache) {
+                cacheMap.delete(originalMethod);
+                const value = originalMethod.apply(this, args);
+                cacheMap.set(originalMethod, {
+                    value,
+                    sequenceId: Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["globalSequenceId"])(),
+                    isObservable: Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_1__["itObservable"])(value)
+                });
+                return value;
+            }
+            else {
+                return cache.value;
+            }
+        };
+        return descriptor;
+    };
+}
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+//# sourceMappingURL=ngxs-labs-data-decorators.js.map
+
 
 /***/ }),
 
@@ -22366,6 +22869,835 @@ class SingleSubscriber extends _Subscriber__WEBPACK_IMPORTED_MODULE_0__["Subscri
     }
 }
 //# sourceMappingURL=single.js.map
+
+/***/ }),
+
+/***/ "dNgK":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@angular/material/__ivy_ngcc__/fesm2015/snack-bar.js ***!
+  \***************************************************************************/
+/*! exports provided: MAT_SNACK_BAR_DATA, MAT_SNACK_BAR_DEFAULT_OPTIONS, MAT_SNACK_BAR_DEFAULT_OPTIONS_FACTORY, MatSnackBar, MatSnackBarConfig, MatSnackBarContainer, MatSnackBarModule, MatSnackBarRef, SimpleSnackBar, matSnackBarAnimations */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAT_SNACK_BAR_DATA", function() { return MAT_SNACK_BAR_DATA; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAT_SNACK_BAR_DEFAULT_OPTIONS", function() { return MAT_SNACK_BAR_DEFAULT_OPTIONS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAT_SNACK_BAR_DEFAULT_OPTIONS_FACTORY", function() { return MAT_SNACK_BAR_DEFAULT_OPTIONS_FACTORY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MatSnackBar", function() { return MatSnackBar; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MatSnackBarConfig", function() { return MatSnackBarConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MatSnackBarContainer", function() { return MatSnackBarContainer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MatSnackBarModule", function() { return MatSnackBarModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MatSnackBarRef", function() { return MatSnackBarRef; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SimpleSnackBar", function() { return SimpleSnackBar; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "matSnackBarAnimations", function() { return matSnackBarAnimations; });
+/* harmony import */ var _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/cdk/overlay */ "rDax");
+/* harmony import */ var _angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/cdk/portal */ "+rOU");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ "ofXK");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _angular_material_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/material/core */ "FKr1");
+/* harmony import */ var _angular_material_button__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/material/button */ "bTqV");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ "qCKp");
+/* harmony import */ var _angular_cdk_platform__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/cdk/platform */ "nLfN");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs/operators */ "kU1M");
+/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/animations */ "R0Ic");
+/* harmony import */ var _angular_cdk_a11y__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/cdk/a11y */ "u47x");
+/* harmony import */ var _angular_cdk_layout__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/cdk/layout */ "0MNC");
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/** Injection token that can be used to access the data that was passed in to a snack bar. */
+
+
+
+
+
+
+
+
+
+function SimpleSnackBar_div_2_Template(rf, ctx) { if (rf & 1) {
+    const _r2 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "div", 1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](1, "button", 2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("click", function SimpleSnackBar_div_2_Template_button_click_1_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵrestoreView"](_r2); const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"](); return ctx_r1.action(); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+} if (rf & 2) {
+    const ctx_r0 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](2);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtextInterpolate"](ctx_r0.data.action);
+} }
+function MatSnackBarContainer_ng_template_1_Template(rf, ctx) { }
+const MAT_SNACK_BAR_DATA = new _angular_core__WEBPACK_IMPORTED_MODULE_3__["InjectionToken"]('MatSnackBarData');
+/**
+ * Configuration used when opening a snack-bar.
+ */
+class MatSnackBarConfig {
+    constructor() {
+        /** The politeness level for the MatAriaLiveAnnouncer announcement. */
+        this.politeness = 'assertive';
+        /**
+         * Message to be announced by the LiveAnnouncer. When opening a snackbar without a custom
+         * component or template, the announcement message will default to the specified message.
+         */
+        this.announcementMessage = '';
+        /** The length of time in milliseconds to wait before automatically dismissing the snack bar. */
+        this.duration = 0;
+        /** Data being injected into the child component. */
+        this.data = null;
+        /** The horizontal position to place the snack bar. */
+        this.horizontalPosition = 'center';
+        /** The vertical position to place the snack bar. */
+        this.verticalPosition = 'bottom';
+    }
+}
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/** Maximum amount of milliseconds that can be passed into setTimeout. */
+const MAX_TIMEOUT = Math.pow(2, 31) - 1;
+/**
+ * Reference to a snack bar dispatched from the snack bar service.
+ */
+class MatSnackBarRef {
+    constructor(containerInstance, _overlayRef) {
+        this._overlayRef = _overlayRef;
+        /** Subject for notifying the user that the snack bar has been dismissed. */
+        this._afterDismissed = new rxjs__WEBPACK_IMPORTED_MODULE_6__["Subject"]();
+        /** Subject for notifying the user that the snack bar has opened and appeared. */
+        this._afterOpened = new rxjs__WEBPACK_IMPORTED_MODULE_6__["Subject"]();
+        /** Subject for notifying the user that the snack bar action was called. */
+        this._onAction = new rxjs__WEBPACK_IMPORTED_MODULE_6__["Subject"]();
+        /** Whether the snack bar was dismissed using the action button. */
+        this._dismissedByAction = false;
+        this.containerInstance = containerInstance;
+        // Dismiss snackbar on action.
+        this.onAction().subscribe(() => this.dismiss());
+        containerInstance._onExit.subscribe(() => this._finishDismiss());
+    }
+    /** Dismisses the snack bar. */
+    dismiss() {
+        if (!this._afterDismissed.closed) {
+            this.containerInstance.exit();
+        }
+        clearTimeout(this._durationTimeoutId);
+    }
+    /** Marks the snackbar action clicked. */
+    dismissWithAction() {
+        if (!this._onAction.closed) {
+            this._dismissedByAction = true;
+            this._onAction.next();
+            this._onAction.complete();
+        }
+    }
+    /**
+     * Marks the snackbar action clicked.
+     * @deprecated Use `dismissWithAction` instead.
+     * @breaking-change 8.0.0
+     */
+    closeWithAction() {
+        this.dismissWithAction();
+    }
+    /** Dismisses the snack bar after some duration */
+    _dismissAfter(duration) {
+        // Note that we need to cap the duration to the maximum value for setTimeout, because
+        // it'll revert to 1 if somebody passes in something greater (e.g. `Infinity`). See #17234.
+        this._durationTimeoutId = setTimeout(() => this.dismiss(), Math.min(duration, MAX_TIMEOUT));
+    }
+    /** Marks the snackbar as opened */
+    _open() {
+        if (!this._afterOpened.closed) {
+            this._afterOpened.next();
+            this._afterOpened.complete();
+        }
+    }
+    /** Cleans up the DOM after closing. */
+    _finishDismiss() {
+        this._overlayRef.dispose();
+        if (!this._onAction.closed) {
+            this._onAction.complete();
+        }
+        this._afterDismissed.next({ dismissedByAction: this._dismissedByAction });
+        this._afterDismissed.complete();
+        this._dismissedByAction = false;
+    }
+    /** Gets an observable that is notified when the snack bar is finished closing. */
+    afterDismissed() {
+        return this._afterDismissed;
+    }
+    /** Gets an observable that is notified when the snack bar has opened and appeared. */
+    afterOpened() {
+        return this.containerInstance._onEnter;
+    }
+    /** Gets an observable that is notified when the snack bar action is called. */
+    onAction() {
+        return this._onAction;
+    }
+}
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * A component used to open as the default snack bar, matching material spec.
+ * This should only be used internally by the snack bar service.
+ */
+class SimpleSnackBar {
+    constructor(snackBarRef, data) {
+        this.snackBarRef = snackBarRef;
+        this.data = data;
+    }
+    /** Performs the action on the snack bar. */
+    action() {
+        this.snackBarRef.dismissWithAction();
+    }
+    /** If the action button should be shown. */
+    get hasAction() {
+        return !!this.data.action;
+    }
+}
+SimpleSnackBar.ɵfac = function SimpleSnackBar_Factory(t) { return new (t || SimpleSnackBar)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](MatSnackBarRef), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](MAT_SNACK_BAR_DATA)); };
+SimpleSnackBar.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: SimpleSnackBar, selectors: [["simple-snack-bar"]], hostAttrs: [1, "mat-simple-snackbar"], decls: 3, vars: 2, consts: [["class", "mat-simple-snackbar-action", 4, "ngIf"], [1, "mat-simple-snackbar-action"], ["mat-button", "", 3, "click"]], template: function SimpleSnackBar_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "span");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](2, SimpleSnackBar_div_2_Template, 3, 1, "div", 0);
+    } if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtextInterpolate"](ctx.data.message);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵproperty"]("ngIf", ctx.hasAction);
+    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_2__["NgIf"], _angular_material_button__WEBPACK_IMPORTED_MODULE_5__["MatButton"]], styles: [".mat-simple-snackbar{display:flex;justify-content:space-between;align-items:center;line-height:20px;opacity:1}.mat-simple-snackbar-action{flex-shrink:0;margin:-8px -8px -8px 8px}.mat-simple-snackbar-action button{max-height:36px;min-width:0}[dir=rtl] .mat-simple-snackbar-action{margin-left:-8px;margin-right:8px}\n"], encapsulation: 2, changeDetection: 0 });
+SimpleSnackBar.ctorParameters = () => [
+    { type: MatSnackBarRef },
+    { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Inject"], args: [MAT_SNACK_BAR_DATA,] }] }
+];
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵsetClassMetadata"](SimpleSnackBar, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Component"],
+        args: [{
+                selector: 'simple-snack-bar',
+                template: "<span>{{data.message}}</span>\n<div class=\"mat-simple-snackbar-action\"  *ngIf=\"hasAction\">\n  <button mat-button (click)=\"action()\">{{data.action}}</button>\n</div>\n",
+                encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ViewEncapsulation"].None,
+                changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ChangeDetectionStrategy"].OnPush,
+                host: {
+                    'class': 'mat-simple-snackbar'
+                },
+                styles: [".mat-simple-snackbar{display:flex;justify-content:space-between;align-items:center;line-height:20px;opacity:1}.mat-simple-snackbar-action{flex-shrink:0;margin:-8px -8px -8px 8px}.mat-simple-snackbar-action button{max-height:36px;min-width:0}[dir=rtl] .mat-simple-snackbar-action{margin-left:-8px;margin-right:8px}\n"]
+            }]
+    }], function () { return [{ type: MatSnackBarRef }, { type: undefined, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Inject"],
+                args: [MAT_SNACK_BAR_DATA]
+            }] }]; }, null); })();
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * Animations used by the Material snack bar.
+ * @docs-private
+ */
+const matSnackBarAnimations = {
+    /** Animation that shows and hides a snack bar. */
+    snackBarState: Object(_angular_animations__WEBPACK_IMPORTED_MODULE_9__["trigger"])('state', [
+        Object(_angular_animations__WEBPACK_IMPORTED_MODULE_9__["state"])('void, hidden', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_9__["style"])({
+            transform: 'scale(0.8)',
+            opacity: 0,
+        })),
+        Object(_angular_animations__WEBPACK_IMPORTED_MODULE_9__["state"])('visible', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_9__["style"])({
+            transform: 'scale(1)',
+            opacity: 1,
+        })),
+        Object(_angular_animations__WEBPACK_IMPORTED_MODULE_9__["transition"])('* => visible', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_9__["animate"])('150ms cubic-bezier(0, 0, 0.2, 1)')),
+        Object(_angular_animations__WEBPACK_IMPORTED_MODULE_9__["transition"])('* => void, * => hidden', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_9__["animate"])('75ms cubic-bezier(0.4, 0.0, 1, 1)', Object(_angular_animations__WEBPACK_IMPORTED_MODULE_9__["style"])({
+            opacity: 0
+        }))),
+    ])
+};
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * Internal component that wraps user-provided snack bar content.
+ * @docs-private
+ */
+class MatSnackBarContainer extends _angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["BasePortalOutlet"] {
+    constructor(_ngZone, _elementRef, _changeDetectorRef, _platform, 
+    /** The snack bar configuration. */
+    snackBarConfig) {
+        super();
+        this._ngZone = _ngZone;
+        this._elementRef = _elementRef;
+        this._changeDetectorRef = _changeDetectorRef;
+        this._platform = _platform;
+        this.snackBarConfig = snackBarConfig;
+        /** The number of milliseconds to wait before announcing the snack bar's content. */
+        this._announceDelay = 150;
+        /** Whether the component has been destroyed. */
+        this._destroyed = false;
+        /** Subject for notifying that the snack bar has announced to screen readers. */
+        this._onAnnounce = new rxjs__WEBPACK_IMPORTED_MODULE_6__["Subject"]();
+        /** Subject for notifying that the snack bar has exited from view. */
+        this._onExit = new rxjs__WEBPACK_IMPORTED_MODULE_6__["Subject"]();
+        /** Subject for notifying that the snack bar has finished entering the view. */
+        this._onEnter = new rxjs__WEBPACK_IMPORTED_MODULE_6__["Subject"]();
+        /** The state of the snack bar animations. */
+        this._animationState = 'void';
+        /**
+         * Attaches a DOM portal to the snack bar container.
+         * @deprecated To be turned into a method.
+         * @breaking-change 10.0.0
+         */
+        this.attachDomPortal = (portal) => {
+            this._assertNotAttached();
+            this._applySnackBarClasses();
+            return this._portalOutlet.attachDomPortal(portal);
+        };
+        // Use aria-live rather than a live role like 'alert' or 'status'
+        // because NVDA and JAWS have show inconsistent behavior with live roles.
+        if (snackBarConfig.politeness === 'assertive' && !snackBarConfig.announcementMessage) {
+            this._live = 'assertive';
+        }
+        else if (snackBarConfig.politeness === 'off') {
+            this._live = 'off';
+        }
+        else {
+            this._live = 'polite';
+        }
+        // Only set role for Firefox. Set role based on aria-live because setting role="alert" implies
+        // aria-live="assertive" which may cause issues if aria-live is set to "polite" above.
+        if (this._platform.FIREFOX) {
+            if (this._live === 'polite') {
+                this._role = 'status';
+            }
+            if (this._live === 'assertive') {
+                this._role = 'alert';
+            }
+        }
+    }
+    /** Attach a component portal as content to this snack bar container. */
+    attachComponentPortal(portal) {
+        this._assertNotAttached();
+        this._applySnackBarClasses();
+        return this._portalOutlet.attachComponentPortal(portal);
+    }
+    /** Attach a template portal as content to this snack bar container. */
+    attachTemplatePortal(portal) {
+        this._assertNotAttached();
+        this._applySnackBarClasses();
+        return this._portalOutlet.attachTemplatePortal(portal);
+    }
+    /** Handle end of animations, updating the state of the snackbar. */
+    onAnimationEnd(event) {
+        const { fromState, toState } = event;
+        if ((toState === 'void' && fromState !== 'void') || toState === 'hidden') {
+            this._completeExit();
+        }
+        if (toState === 'visible') {
+            // Note: we shouldn't use `this` inside the zone callback,
+            // because it can cause a memory leak.
+            const onEnter = this._onEnter;
+            this._ngZone.run(() => {
+                onEnter.next();
+                onEnter.complete();
+            });
+        }
+    }
+    /** Begin animation of snack bar entrance into view. */
+    enter() {
+        if (!this._destroyed) {
+            this._animationState = 'visible';
+            this._changeDetectorRef.detectChanges();
+            this._screenReaderAnnounce();
+        }
+    }
+    /** Begin animation of the snack bar exiting from view. */
+    exit() {
+        // Note: this one transitions to `hidden`, rather than `void`, in order to handle the case
+        // where multiple snack bars are opened in quick succession (e.g. two consecutive calls to
+        // `MatSnackBar.open`).
+        this._animationState = 'hidden';
+        // Mark this element with an 'exit' attribute to indicate that the snackbar has
+        // been dismissed and will soon be removed from the DOM. This is used by the snackbar
+        // test harness.
+        this._elementRef.nativeElement.setAttribute('mat-exit', '');
+        // If the snack bar hasn't been announced by the time it exits it wouldn't have been open
+        // long enough to visually read it either, so clear the timeout for announcing.
+        clearTimeout(this._announceTimeoutId);
+        return this._onExit;
+    }
+    /** Makes sure the exit callbacks have been invoked when the element is destroyed. */
+    ngOnDestroy() {
+        this._destroyed = true;
+        this._completeExit();
+    }
+    /**
+     * Waits for the zone to settle before removing the element. Helps prevent
+     * errors where we end up removing an element which is in the middle of an animation.
+     */
+    _completeExit() {
+        this._ngZone.onMicrotaskEmpty.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_8__["take"])(1)).subscribe(() => {
+            this._onExit.next();
+            this._onExit.complete();
+        });
+    }
+    /** Applies the various positioning and user-configured CSS classes to the snack bar. */
+    _applySnackBarClasses() {
+        const element = this._elementRef.nativeElement;
+        const panelClasses = this.snackBarConfig.panelClass;
+        if (panelClasses) {
+            if (Array.isArray(panelClasses)) {
+                // Note that we can't use a spread here, because IE doesn't support multiple arguments.
+                panelClasses.forEach(cssClass => element.classList.add(cssClass));
+            }
+            else {
+                element.classList.add(panelClasses);
+            }
+        }
+        if (this.snackBarConfig.horizontalPosition === 'center') {
+            element.classList.add('mat-snack-bar-center');
+        }
+        if (this.snackBarConfig.verticalPosition === 'top') {
+            element.classList.add('mat-snack-bar-top');
+        }
+    }
+    /** Asserts that no content is already attached to the container. */
+    _assertNotAttached() {
+        if (this._portalOutlet.hasAttached() && (typeof ngDevMode === 'undefined' || ngDevMode)) {
+            throw Error('Attempting to attach snack bar content after content is already attached');
+        }
+    }
+    /**
+     * Starts a timeout to move the snack bar content to the live region so screen readers will
+     * announce it.
+     */
+    _screenReaderAnnounce() {
+        if (!this._announceTimeoutId) {
+            this._ngZone.runOutsideAngular(() => {
+                this._announceTimeoutId = setTimeout(() => {
+                    const inertElement = this._elementRef.nativeElement.querySelector('[aria-hidden]');
+                    const liveElement = this._elementRef.nativeElement.querySelector('[aria-live]');
+                    if (inertElement && liveElement) {
+                        // If an element in the snack bar content is focused before being moved
+                        // track it and restore focus after moving to the live region.
+                        let focusedElement = null;
+                        if (this._platform.isBrowser &&
+                            document.activeElement instanceof HTMLElement &&
+                            inertElement.contains(document.activeElement)) {
+                            focusedElement = document.activeElement;
+                        }
+                        inertElement.removeAttribute('aria-hidden');
+                        liveElement.appendChild(inertElement);
+                        focusedElement === null || focusedElement === void 0 ? void 0 : focusedElement.focus();
+                        this._onAnnounce.next();
+                        this._onAnnounce.complete();
+                    }
+                }, this._announceDelay);
+            });
+        }
+    }
+}
+MatSnackBarContainer.ɵfac = function MatSnackBarContainer_Factory(t) { return new (t || MatSnackBarContainer)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_3__["NgZone"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_3__["ElementRef"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_3__["ChangeDetectorRef"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_cdk_platform__WEBPACK_IMPORTED_MODULE_7__["Platform"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](MatSnackBarConfig)); };
+MatSnackBarContainer.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: MatSnackBarContainer, selectors: [["snack-bar-container"]], viewQuery: function MatSnackBarContainer_Query(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵviewQuery"](_angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["CdkPortalOutlet"], 3);
+    } if (rf & 2) {
+        let _t;
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵloadQuery"]()) && (ctx._portalOutlet = _t.first);
+    } }, hostAttrs: [1, "mat-snack-bar-container"], hostVars: 1, hostBindings: function MatSnackBarContainer_HostBindings(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵsyntheticHostListener"]("@state.done", function MatSnackBarContainer_animation_state_done_HostBindingHandler($event) { return ctx.onAnimationEnd($event); });
+    } if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵsyntheticHostProperty"]("@state", ctx._animationState);
+    } }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵInheritDefinitionFeature"]], decls: 3, vars: 2, consts: [["aria-hidden", "true"], ["cdkPortalOutlet", ""]], template: function MatSnackBarContainer_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "div", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](1, MatSnackBarContainer_ng_template_1_Template, 0, 0, "ng-template", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](2, "div");
+    } if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵattribute"]("aria-live", ctx._live)("role", ctx._role);
+    } }, directives: [_angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["CdkPortalOutlet"]], styles: [".mat-snack-bar-container{border-radius:4px;box-sizing:border-box;display:block;margin:24px;max-width:33vw;min-width:344px;padding:14px 16px;min-height:48px;transform-origin:center}.cdk-high-contrast-active .mat-snack-bar-container{border:solid 1px}.mat-snack-bar-handset{width:100%}.mat-snack-bar-handset .mat-snack-bar-container{margin:8px;max-width:100%;min-width:0;width:100%}\n"], encapsulation: 2, data: { animation: [matSnackBarAnimations.snackBarState] } });
+MatSnackBarContainer.ctorParameters = () => [
+    { type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["NgZone"] },
+    { type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ElementRef"] },
+    { type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ChangeDetectorRef"] },
+    { type: _angular_cdk_platform__WEBPACK_IMPORTED_MODULE_7__["Platform"] },
+    { type: MatSnackBarConfig }
+];
+MatSnackBarContainer.propDecorators = {
+    _portalOutlet: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ViewChild"], args: [_angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["CdkPortalOutlet"], { static: true },] }]
+};
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵsetClassMetadata"](MatSnackBarContainer, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Component"],
+        args: [{
+                selector: 'snack-bar-container',
+                template: "<!-- Initially holds the snack bar content, will be empty after announcing to screen readers. -->\n<div aria-hidden=\"true\">\n  <ng-template cdkPortalOutlet></ng-template>\n</div>\n\n<!-- Will receive the snack bar content from the non-live div, move will happen a short delay after opening -->\n<div [attr.aria-live]=\"_live\" [attr.role]=\"_role\"></div>\n",
+                // In Ivy embedded views will be change detected from their declaration place, rather than
+                // where they were stamped out. This means that we can't have the snack bar container be OnPush,
+                // because it might cause snack bars that were opened from a template not to be out of date.
+                // tslint:disable-next-line:validate-decorators
+                changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ChangeDetectionStrategy"].Default,
+                encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ViewEncapsulation"].None,
+                animations: [matSnackBarAnimations.snackBarState],
+                host: {
+                    'class': 'mat-snack-bar-container',
+                    '[@state]': '_animationState',
+                    '(@state.done)': 'onAnimationEnd($event)'
+                },
+                styles: [".mat-snack-bar-container{border-radius:4px;box-sizing:border-box;display:block;margin:24px;max-width:33vw;min-width:344px;padding:14px 16px;min-height:48px;transform-origin:center}.cdk-high-contrast-active .mat-snack-bar-container{border:solid 1px}.mat-snack-bar-handset{width:100%}.mat-snack-bar-handset .mat-snack-bar-container{margin:8px;max-width:100%;min-width:0;width:100%}\n"]
+            }]
+    }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["NgZone"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ElementRef"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ChangeDetectorRef"] }, { type: _angular_cdk_platform__WEBPACK_IMPORTED_MODULE_7__["Platform"] }, { type: MatSnackBarConfig }]; }, { _portalOutlet: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["ViewChild"],
+            args: [_angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["CdkPortalOutlet"], { static: true }]
+        }] }); })();
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+class MatSnackBarModule {
+}
+MatSnackBarModule.ɵfac = function MatSnackBarModule_Factory(t) { return new (t || MatSnackBarModule)(); };
+MatSnackBarModule.ɵmod = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineNgModule"]({ type: MatSnackBarModule });
+MatSnackBarModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineInjector"]({ imports: [[
+            _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_0__["OverlayModule"],
+            _angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["PortalModule"],
+            _angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"],
+            _angular_material_button__WEBPACK_IMPORTED_MODULE_5__["MatButtonModule"],
+            _angular_material_core__WEBPACK_IMPORTED_MODULE_4__["MatCommonModule"],
+        ], _angular_material_core__WEBPACK_IMPORTED_MODULE_4__["MatCommonModule"]] });
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵsetNgModuleScope"](MatSnackBarModule, { declarations: function () { return [MatSnackBarContainer, SimpleSnackBar]; }, imports: function () { return [_angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_0__["OverlayModule"],
+        _angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["PortalModule"],
+        _angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"],
+        _angular_material_button__WEBPACK_IMPORTED_MODULE_5__["MatButtonModule"],
+        _angular_material_core__WEBPACK_IMPORTED_MODULE_4__["MatCommonModule"]]; }, exports: function () { return [MatSnackBarContainer, _angular_material_core__WEBPACK_IMPORTED_MODULE_4__["MatCommonModule"]]; } }); })();
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵsetClassMetadata"](MatSnackBarModule, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["NgModule"],
+        args: [{
+                imports: [
+                    _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_0__["OverlayModule"],
+                    _angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["PortalModule"],
+                    _angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"],
+                    _angular_material_button__WEBPACK_IMPORTED_MODULE_5__["MatButtonModule"],
+                    _angular_material_core__WEBPACK_IMPORTED_MODULE_4__["MatCommonModule"],
+                ],
+                exports: [MatSnackBarContainer, _angular_material_core__WEBPACK_IMPORTED_MODULE_4__["MatCommonModule"]],
+                declarations: [MatSnackBarContainer, SimpleSnackBar],
+                entryComponents: [MatSnackBarContainer, SimpleSnackBar]
+            }]
+    }], null, null); })();
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/** Injection token that can be used to specify default snack bar. */
+const MAT_SNACK_BAR_DEFAULT_OPTIONS = new _angular_core__WEBPACK_IMPORTED_MODULE_3__["InjectionToken"]('mat-snack-bar-default-options', {
+    providedIn: 'root',
+    factory: MAT_SNACK_BAR_DEFAULT_OPTIONS_FACTORY,
+});
+/** @docs-private */
+function MAT_SNACK_BAR_DEFAULT_OPTIONS_FACTORY() {
+    return new MatSnackBarConfig();
+}
+/**
+ * Service to dispatch Material Design snack bar messages.
+ */
+class MatSnackBar {
+    constructor(_overlay, _live, _injector, _breakpointObserver, _parentSnackBar, _defaultConfig) {
+        this._overlay = _overlay;
+        this._live = _live;
+        this._injector = _injector;
+        this._breakpointObserver = _breakpointObserver;
+        this._parentSnackBar = _parentSnackBar;
+        this._defaultConfig = _defaultConfig;
+        /**
+         * Reference to the current snack bar in the view *at this level* (in the Angular injector tree).
+         * If there is a parent snack-bar service, all operations should delegate to that parent
+         * via `_openedSnackBarRef`.
+         */
+        this._snackBarRefAtThisLevel = null;
+        /** The component that should be rendered as the snack bar's simple component. */
+        this.simpleSnackBarComponent = SimpleSnackBar;
+        /** The container component that attaches the provided template or component. */
+        this.snackBarContainerComponent = MatSnackBarContainer;
+        /** The CSS class to apply for handset mode. */
+        this.handsetCssClass = 'mat-snack-bar-handset';
+    }
+    /** Reference to the currently opened snackbar at *any* level. */
+    get _openedSnackBarRef() {
+        const parent = this._parentSnackBar;
+        return parent ? parent._openedSnackBarRef : this._snackBarRefAtThisLevel;
+    }
+    set _openedSnackBarRef(value) {
+        if (this._parentSnackBar) {
+            this._parentSnackBar._openedSnackBarRef = value;
+        }
+        else {
+            this._snackBarRefAtThisLevel = value;
+        }
+    }
+    /**
+     * Creates and dispatches a snack bar with a custom component for the content, removing any
+     * currently opened snack bars.
+     *
+     * @param component Component to be instantiated.
+     * @param config Extra configuration for the snack bar.
+     */
+    openFromComponent(component, config) {
+        return this._attach(component, config);
+    }
+    /**
+     * Creates and dispatches a snack bar with a custom template for the content, removing any
+     * currently opened snack bars.
+     *
+     * @param template Template to be instantiated.
+     * @param config Extra configuration for the snack bar.
+     */
+    openFromTemplate(template, config) {
+        return this._attach(template, config);
+    }
+    /**
+     * Opens a snackbar with a message and an optional action.
+     * @param message The message to show in the snackbar.
+     * @param action The label for the snackbar action.
+     * @param config Additional configuration options for the snackbar.
+     */
+    open(message, action = '', config) {
+        const _config = Object.assign(Object.assign({}, this._defaultConfig), config);
+        // Since the user doesn't have access to the component, we can
+        // override the data to pass in our own message and action.
+        _config.data = { message, action };
+        // Since the snack bar has `role="alert"`, we don't
+        // want to announce the same message twice.
+        if (_config.announcementMessage === message) {
+            _config.announcementMessage = undefined;
+        }
+        return this.openFromComponent(this.simpleSnackBarComponent, _config);
+    }
+    /**
+     * Dismisses the currently-visible snack bar.
+     */
+    dismiss() {
+        if (this._openedSnackBarRef) {
+            this._openedSnackBarRef.dismiss();
+        }
+    }
+    ngOnDestroy() {
+        // Only dismiss the snack bar at the current level on destroy.
+        if (this._snackBarRefAtThisLevel) {
+            this._snackBarRefAtThisLevel.dismiss();
+        }
+    }
+    /**
+     * Attaches the snack bar container component to the overlay.
+     */
+    _attachSnackBarContainer(overlayRef, config) {
+        const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
+        const injector = _angular_core__WEBPACK_IMPORTED_MODULE_3__["Injector"].create({
+            parent: userInjector || this._injector,
+            providers: [{ provide: MatSnackBarConfig, useValue: config }]
+        });
+        const containerPortal = new _angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["ComponentPortal"](this.snackBarContainerComponent, config.viewContainerRef, injector);
+        const containerRef = overlayRef.attach(containerPortal);
+        containerRef.instance.snackBarConfig = config;
+        return containerRef.instance;
+    }
+    /**
+     * Places a new component or a template as the content of the snack bar container.
+     */
+    _attach(content, userConfig) {
+        const config = Object.assign(Object.assign(Object.assign({}, new MatSnackBarConfig()), this._defaultConfig), userConfig);
+        const overlayRef = this._createOverlay(config);
+        const container = this._attachSnackBarContainer(overlayRef, config);
+        const snackBarRef = new MatSnackBarRef(container, overlayRef);
+        if (content instanceof _angular_core__WEBPACK_IMPORTED_MODULE_3__["TemplateRef"]) {
+            const portal = new _angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["TemplatePortal"](content, null, {
+                $implicit: config.data,
+                snackBarRef
+            });
+            snackBarRef.instance = container.attachTemplatePortal(portal);
+        }
+        else {
+            const injector = this._createInjector(config, snackBarRef);
+            const portal = new _angular_cdk_portal__WEBPACK_IMPORTED_MODULE_1__["ComponentPortal"](content, undefined, injector);
+            const contentRef = container.attachComponentPortal(portal);
+            // We can't pass this via the injector, because the injector is created earlier.
+            snackBarRef.instance = contentRef.instance;
+        }
+        // Subscribe to the breakpoint observer and attach the mat-snack-bar-handset class as
+        // appropriate. This class is applied to the overlay element because the overlay must expand to
+        // fill the width of the screen for full width snackbars.
+        this._breakpointObserver.observe(_angular_cdk_layout__WEBPACK_IMPORTED_MODULE_11__["Breakpoints"].HandsetPortrait).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_8__["takeUntil"])(overlayRef.detachments())).subscribe(state => {
+            const classList = overlayRef.overlayElement.classList;
+            state.matches ? classList.add(this.handsetCssClass) : classList.remove(this.handsetCssClass);
+        });
+        if (config.announcementMessage) {
+            // Wait until the snack bar contents have been announced then deliver this message.
+            container._onAnnounce.subscribe(() => {
+                this._live.announce(config.announcementMessage, config.politeness);
+            });
+        }
+        this._animateSnackBar(snackBarRef, config);
+        this._openedSnackBarRef = snackBarRef;
+        return this._openedSnackBarRef;
+    }
+    /** Animates the old snack bar out and the new one in. */
+    _animateSnackBar(snackBarRef, config) {
+        // When the snackbar is dismissed, clear the reference to it.
+        snackBarRef.afterDismissed().subscribe(() => {
+            // Clear the snackbar ref if it hasn't already been replaced by a newer snackbar.
+            if (this._openedSnackBarRef == snackBarRef) {
+                this._openedSnackBarRef = null;
+            }
+            if (config.announcementMessage) {
+                this._live.clear();
+            }
+        });
+        if (this._openedSnackBarRef) {
+            // If a snack bar is already in view, dismiss it and enter the
+            // new snack bar after exit animation is complete.
+            this._openedSnackBarRef.afterDismissed().subscribe(() => {
+                snackBarRef.containerInstance.enter();
+            });
+            this._openedSnackBarRef.dismiss();
+        }
+        else {
+            // If no snack bar is in view, enter the new snack bar.
+            snackBarRef.containerInstance.enter();
+        }
+        // If a dismiss timeout is provided, set up dismiss based on after the snackbar is opened.
+        if (config.duration && config.duration > 0) {
+            snackBarRef.afterOpened().subscribe(() => snackBarRef._dismissAfter(config.duration));
+        }
+    }
+    /**
+     * Creates a new overlay and places it in the correct location.
+     * @param config The user-specified snack bar config.
+     */
+    _createOverlay(config) {
+        const overlayConfig = new _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_0__["OverlayConfig"]();
+        overlayConfig.direction = config.direction;
+        let positionStrategy = this._overlay.position().global();
+        // Set horizontal position.
+        const isRtl = config.direction === 'rtl';
+        const isLeft = (config.horizontalPosition === 'left' ||
+            (config.horizontalPosition === 'start' && !isRtl) ||
+            (config.horizontalPosition === 'end' && isRtl));
+        const isRight = !isLeft && config.horizontalPosition !== 'center';
+        if (isLeft) {
+            positionStrategy.left('0');
+        }
+        else if (isRight) {
+            positionStrategy.right('0');
+        }
+        else {
+            positionStrategy.centerHorizontally();
+        }
+        // Set horizontal position.
+        if (config.verticalPosition === 'top') {
+            positionStrategy.top('0');
+        }
+        else {
+            positionStrategy.bottom('0');
+        }
+        overlayConfig.positionStrategy = positionStrategy;
+        return this._overlay.create(overlayConfig);
+    }
+    /**
+     * Creates an injector to be used inside of a snack bar component.
+     * @param config Config that was used to create the snack bar.
+     * @param snackBarRef Reference to the snack bar.
+     */
+    _createInjector(config, snackBarRef) {
+        const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
+        return _angular_core__WEBPACK_IMPORTED_MODULE_3__["Injector"].create({
+            parent: userInjector || this._injector,
+            providers: [
+                { provide: MatSnackBarRef, useValue: snackBarRef },
+                { provide: MAT_SNACK_BAR_DATA, useValue: config.data }
+            ]
+        });
+    }
+}
+MatSnackBar.ɵfac = function MatSnackBar_Factory(t) { return new (t || MatSnackBar)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_0__["Overlay"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_angular_cdk_a11y__WEBPACK_IMPORTED_MODULE_10__["LiveAnnouncer"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_3__["Injector"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_angular_cdk_layout__WEBPACK_IMPORTED_MODULE_11__["BreakpointObserver"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](MatSnackBar, 12), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](MAT_SNACK_BAR_DEFAULT_OPTIONS)); };
+MatSnackBar.ɵprov = Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineInjectable"])({ factory: function MatSnackBar_Factory() { return new MatSnackBar(Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"])(_angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_0__["Overlay"]), Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"])(_angular_cdk_a11y__WEBPACK_IMPORTED_MODULE_10__["LiveAnnouncer"]), Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"])(_angular_core__WEBPACK_IMPORTED_MODULE_3__["INJECTOR"]), Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"])(_angular_cdk_layout__WEBPACK_IMPORTED_MODULE_11__["BreakpointObserver"]), Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"])(MatSnackBar, 12), Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"])(MAT_SNACK_BAR_DEFAULT_OPTIONS)); }, token: MatSnackBar, providedIn: MatSnackBarModule });
+MatSnackBar.ctorParameters = () => [
+    { type: _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_0__["Overlay"] },
+    { type: _angular_cdk_a11y__WEBPACK_IMPORTED_MODULE_10__["LiveAnnouncer"] },
+    { type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Injector"] },
+    { type: _angular_cdk_layout__WEBPACK_IMPORTED_MODULE_11__["BreakpointObserver"] },
+    { type: MatSnackBar, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Optional"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["SkipSelf"] }] },
+    { type: MatSnackBarConfig, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Inject"], args: [MAT_SNACK_BAR_DEFAULT_OPTIONS,] }] }
+];
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵsetClassMetadata"](MatSnackBar, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Injectable"],
+        args: [{ providedIn: MatSnackBarModule }]
+    }], function () { return [{ type: _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_0__["Overlay"] }, { type: _angular_cdk_a11y__WEBPACK_IMPORTED_MODULE_10__["LiveAnnouncer"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Injector"] }, { type: _angular_cdk_layout__WEBPACK_IMPORTED_MODULE_11__["BreakpointObserver"] }, { type: MatSnackBar, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Optional"]
+            }, {
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["SkipSelf"]
+            }] }, { type: MatSnackBarConfig, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_3__["Inject"],
+                args: [MAT_SNACK_BAR_DEFAULT_OPTIONS]
+            }] }]; }, null); })();
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+
+//# sourceMappingURL=snack-bar.js.map
 
 /***/ }),
 
@@ -67054,6 +68386,53 @@ class ObserveOnMessage {
 
 /***/ }),
 
+/***/ "q+1a":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@angular-ru/common/fesm2015/angular-ru-common-typings.js ***!
+  \*******************************************************************************/
+/*! exports provided: KeyboardKeys, PrimaryKey, SortOrderType */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "KeyboardKeys", function() { return KeyboardKeys; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PrimaryKey", function() { return PrimaryKey; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SortOrderType", function() { return SortOrderType; });
+// eslint-disable-next-line no-restricted-syntax
+var KeyboardKeys;
+(function (KeyboardKeys) {
+    KeyboardKeys["ARROW_DOWN"] = "ArrowDown";
+    KeyboardKeys["ARROW_LEFT"] = "ArrowLeft";
+    KeyboardKeys["ARROW_RIGHT"] = "ArrowRight";
+    KeyboardKeys["ARROW_UP"] = "ArrowUp";
+    KeyboardKeys["SHIFT"] = "Shift";
+    KeyboardKeys["BACKSPACE"] = "Backspace";
+    KeyboardKeys["CAPS_LOCK"] = "CapsLock";
+})(KeyboardKeys || (KeyboardKeys = {}));
+
+// eslint-disable-next-line no-restricted-syntax
+var PrimaryKey;
+(function (PrimaryKey) {
+    PrimaryKey["ID"] = "id";
+})(PrimaryKey || (PrimaryKey = {}));
+
+// eslint-disable-next-line
+var SortOrderType;
+(function (SortOrderType) {
+    SortOrderType["ASC"] = "asc";
+    SortOrderType["DESC"] = "desc";
+})(SortOrderType || (SortOrderType = {}));
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+//# sourceMappingURL=angular-ru-common-typings.js.map
+
+
+/***/ }),
+
 /***/ "q7zd":
 /*!**********************************************************************!*\
   !*** ./node_modules/rxjs/_esm2015/internal/operators/concatMapTo.js ***!
@@ -70849,6 +72228,53 @@ FullscreenOverlayContainer.ctorParameters = () => [
 
 
 //# sourceMappingURL=overlay.js.map
+
+/***/ }),
+
+/***/ "s52c":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@angular-ru/common/fesm2015/angular-ru-common-function.js ***!
+  \********************************************************************************/
+/*! exports provided: $args, hasConstructor, isFunctionLike, typeofType */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "$args", function() { return $args; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hasConstructor", function() { return hasConstructor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFunctionLike", function() { return isFunctionLike; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "typeofType", function() { return typeofType; });
+function $args(func) {
+    return (func + '') // fast to string
+        .replace(/[/][/].*$/gm, '') // strip single-line comments
+        .replace(/\s+/g, '') // strip white space
+        .replace(/[/][*][^/*]*[*][/]/g, '') // strip multi-line comments
+        .split('){', 1)[0]
+        .replace(/^[^(]*[(]/, '') // extract the parameters
+        .replace(/=[^,]+/g, '') // strip any ES6 defaults
+        .split(',')
+        .filter(Boolean); // split & filter [""]
+}
+
+function hasConstructor(obj) {
+    return !!(obj === null || obj === void 0 ? void 0 : obj.prototype) && !!(obj === null || obj === void 0 ? void 0 : obj.prototype.constructor.name);
+}
+
+function isFunctionLike(fn) {
+    return typeof fn === 'function';
+}
+
+function typeofType(classType) {
+    return () => classType;
+}
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+//# sourceMappingURL=angular-ru-common-function.js.map
+
 
 /***/ }),
 
@@ -88577,6 +90003,627 @@ class RefCountSubscriber extends _Subscriber__WEBPACK_IMPORTED_MODULE_0__["Subsc
 
 /***/ }),
 
+/***/ "x2AU":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@ngxs-labs/data/fesm2015/ngxs-labs-data-storage.js ***!
+  \*************************************************************************/
+/*! exports provided: DEFAULT_KEY_PREFIX, NGXS_DATA_STORAGE_CONTAINER, NGXS_DATA_STORAGE_CONTAINER_TOKEN, NGXS_DATA_STORAGE_DECODE_TYPE, NGXS_DATA_STORAGE_EXTENSION, NGXS_DATA_STORAGE_PLUGIN, NGXS_DATA_STORAGE_PREFIX, NGXS_DATA_STORAGE_PREFIX_TOKEN, NgxsDataStorageContainer, NgxsDataStoragePlugin, ensureProviders, isStorageEvent, registerStorageProviders, storageUseFactory */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_KEY_PREFIX", function() { return DEFAULT_KEY_PREFIX; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NGXS_DATA_STORAGE_CONTAINER", function() { return NGXS_DATA_STORAGE_CONTAINER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NGXS_DATA_STORAGE_CONTAINER_TOKEN", function() { return NGXS_DATA_STORAGE_CONTAINER_TOKEN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NGXS_DATA_STORAGE_DECODE_TYPE", function() { return NGXS_DATA_STORAGE_DECODE_TYPE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NGXS_DATA_STORAGE_EXTENSION", function() { return NGXS_DATA_STORAGE_EXTENSION; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NGXS_DATA_STORAGE_PLUGIN", function() { return NGXS_DATA_STORAGE_PLUGIN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NGXS_DATA_STORAGE_PREFIX", function() { return NGXS_DATA_STORAGE_PREFIX; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NGXS_DATA_STORAGE_PREFIX_TOKEN", function() { return NGXS_DATA_STORAGE_PREFIX_TOKEN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgxsDataStorageContainer", function() { return NgxsDataStorageContainer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgxsDataStoragePlugin", function() { return NgxsDataStoragePlugin; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ensureProviders", function() { return ensureProviders; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isStorageEvent", function() { return isStorageEvent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "registerStorageProviders", function() { return registerStorageProviders; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "storageUseFactory", function() { return storageUseFactory; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _ngxs_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @ngxs/store */ "AcyG");
+/* harmony import */ var _angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular-ru/common/utils */ "WbJO");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common */ "ofXK");
+/* harmony import */ var _ngxs_labs_data_tokens__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @ngxs-labs/data/tokens */ "dbuZ");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs */ "qCKp");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs/operators */ "kU1M");
+/* harmony import */ var _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @ngxs-labs/data/internals */ "ma1T");
+/* harmony import */ var _angular_ru_common_object__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular-ru/common/object */ "UA48");
+
+
+
+
+
+
+
+
+
+
+const NGXS_DATA_STORAGE_CONTAINER_TOKEN = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('NGXS_DATA_STORAGE_CONTAINER_TOKEN');
+
+class NgxsDataStorageContainer {
+    constructor() {
+        this.providers = new Set();
+        this.keys = new Map();
+    }
+    getProvidedKeys() {
+        return Array.from(this.keys.keys());
+    }
+}
+
+function storageUseFactory() {
+    return new NgxsDataStorageContainer();
+}
+
+const NGXS_DATA_STORAGE_CONTAINER = {
+    provide: NGXS_DATA_STORAGE_CONTAINER_TOKEN,
+    useFactory: storageUseFactory
+};
+
+const NGXS_DATA_STORAGE_DECODE_TYPE_TOKEN = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('NGXS_DATA_STORAGE_DECODE_TYPE_TOKEN');
+
+const NGXS_DATA_STORAGE_DECODE_TYPE = {
+    provide: NGXS_DATA_STORAGE_DECODE_TYPE_TOKEN,
+    useValue: "none" /* NONE */
+};
+
+function existTtl(provider) {
+    return provider.ttl !== -1 && !isNaN(provider.ttl) && provider.ttl > 0;
+}
+
+function isExpiredByTtl(expiry) {
+    return Date.now() >= expiry.getTime();
+}
+
+function canBePullFromStorage(options) {
+    const { data, provider } = options;
+    const canBeOverrideFromStorage = Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(data) || provider.nullable;
+    let result = {
+        canBeOverrideFromStorage,
+        versionMismatch: false,
+        expired: false,
+        expiry: null
+    };
+    result = ensureInfoByTtl(canBeOverrideFromStorage, result, options);
+    result = ensureInfoByVersionMismatch(canBeOverrideFromStorage, result, options);
+    return result;
+}
+function ensureInfoByTtl(canBeOverrideFromStorage, result, options) {
+    const { meta, provider } = options;
+    if (canBeOverrideFromStorage && existTtl(provider)) {
+        const expiry = new Date(meta.expiry);
+        const expiryExist = !isNaN(expiry.getTime());
+        if (expiryExist) {
+            if (isExpiredByTtl(expiry)) {
+                result = { canBeOverrideFromStorage: false, expired: true, expiry, versionMismatch: false };
+            }
+            else {
+                result = { canBeOverrideFromStorage, expired: false, expiry, versionMismatch: false };
+            }
+        }
+    }
+    return result;
+}
+function ensureInfoByVersionMismatch(canBeOverrideFromStorage, result, options) {
+    const { meta, provider } = options;
+    if (canBeOverrideFromStorage && meta.version !== provider.version) {
+        const instance = provider.stateInstance;
+        const tryMigrate = !provider.skipMigrate && !!((instance === null || instance === void 0 ? void 0 : instance.ngxsDataStorageMigrate) || provider.migrate);
+        if (tryMigrate) {
+            result = Object.assign(Object.assign({}, result), { versionMismatch: true });
+        }
+        else {
+            result = Object.assign(Object.assign({}, result), { canBeOverrideFromStorage: false, versionMismatch: true });
+        }
+    }
+    return result;
+}
+
+function ensureKey(provider) {
+    return `${provider.prefixKey}${provider.path}`;
+}
+
+function firedStateWhenExpired(key, options) {
+    var _a, _b, _c;
+    const { provider, expiry } = options;
+    const event = {
+        key,
+        expiry: expiry.toISOString(),
+        timestamp: new Date(Date.now()).toISOString()
+    };
+    const instance = provider.stateInstance;
+    (_a = instance === null || instance === void 0 ? void 0 : instance.expired$) === null || _a === void 0 ? void 0 : _a.next(event);
+    if (instance === null || instance === void 0 ? void 0 : instance.ngxsDataAfterExpired) {
+        if (_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_7__["NgxsDataInjector"].ngZone) {
+            (_b = _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_7__["NgxsDataInjector"].ngZone) === null || _b === void 0 ? void 0 : _b.run(() => { var _a; return (_a = instance === null || instance === void 0 ? void 0 : instance.ngxsDataAfterExpired) === null || _a === void 0 ? void 0 : _a.call(instance, event, provider); });
+        }
+        else {
+            (_c = instance === null || instance === void 0 ? void 0 : instance.ngxsDataAfterExpired) === null || _c === void 0 ? void 0 : _c.call(instance, event, provider);
+        }
+    }
+}
+
+const SPACE = 4;
+class InvalidStructureDataException extends Error {
+    constructor(message) {
+        super(`${message}. \nIncorrect structure for deserialization!!! Your structure should be like this: \n${JSON.stringify({ lastChanged: '2020-01-01T12:00:00.000Z', data: '{}', version: 1 }, null, SPACE)}`);
+    }
+}
+
+function parseStorageMeta(value) {
+    try {
+        return JSON.parse(value);
+    }
+    catch (e) {
+        throw new InvalidStructureDataException(e.message);
+    }
+}
+
+function ttlStrategyHandler(key, value, options) {
+    const { provider, engine } = options;
+    switch (provider.ttlExpiredStrategy) {
+        case 0 /* REMOVE_KEY_AFTER_EXPIRED */:
+            engine.removeItem(key);
+            break;
+        case 1 /* SET_NULL_DATA_AFTER_EXPIRED */:
+            // eslint-disable-next-line no-case-declarations
+            const meta = parseStorageMeta(value);
+            meta.data = null;
+            engine.setItem(key, JSON.stringify(meta));
+            break;
+        case 2 /* DO_NOTHING_AFTER_EXPIRED */:
+        default:
+            break;
+    }
+}
+
+function ttlHandler(start, options, subscription) {
+    const { provider, expiry, map, engine } = options;
+    const key = ensureKey(provider);
+    const value = engine.getItem(key);
+    if (value) {
+        if (isExpiredByTtl(expiry)) {
+            const endListen = new Date(Date.now()).toISOString();
+            ttlStrategyHandler(key, value, options);
+            firedStateWhenExpired(key, options);
+            subscription.unsubscribe();
+            map.set(provider, { subscription, startListen: start, endListen });
+        }
+    }
+    else {
+        subscription.unsubscribe();
+    }
+}
+
+function createTtlInterval(options) {
+    var _a, _b;
+    const { provider, map } = options;
+    (_a = map.get(provider)) === null || _a === void 0 ? void 0 : _a.subscription.unsubscribe();
+    const watcher = () => {
+        const startListen = new Date(Date.now()).toISOString();
+        const subscription = Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["interval"])(provider.ttlDelay).subscribe(() => ttlHandler(startListen, options, subscription));
+        map.set(provider, { subscription, startListen, endListen: null });
+    };
+    if (_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_7__["NgxsDataInjector"].ngZone) {
+        (_b = _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_7__["NgxsDataInjector"].ngZone) === null || _b === void 0 ? void 0 : _b.runOutsideAngular(() => watcher());
+    }
+    else {
+        watcher();
+    }
+}
+
+class InvalidDataValueException extends Error {
+    constructor() {
+        super(`missing key 'data' or it's value not serializable.`);
+    }
+}
+
+class InvalidLastChangedException extends Error {
+    constructor(value) {
+        super(`lastChanged key not found in object ${value}.`);
+    }
+}
+
+class InvalidVersionException extends Error {
+    constructor(value) {
+        super(`It's not possible to determine version (${value}), since it must be a integer type and must equal or more than 1.`);
+    }
+}
+
+function deserializeByStorageMeta(meta, value, provider) {
+    if (Object(_angular_ru_common_object__WEBPACK_IMPORTED_MODULE_8__["isSimpleObject"])(meta)) {
+        if (missingLastChanged(meta)) {
+            throw new InvalidLastChangedException(value);
+        }
+        else if (versionIsInvalid(meta)) {
+            throw new InvalidVersionException(meta.version);
+        }
+        else if (missingDataKey(meta)) {
+            throw new InvalidDataValueException();
+        }
+        return provider.decode === "base64" /* BASE64 */ ? JSON.parse(atob(meta.data)) : meta.data;
+    }
+    else {
+        throw new InvalidStructureDataException(`"${value}" not an object`);
+    }
+}
+function versionIsInvalid(meta) {
+    const version = parseFloat(meta.version);
+    return isNaN(version) || version < 1 || parseInt(meta.version) !== version;
+}
+function missingDataKey(meta) {
+    return !('data' in meta);
+}
+function missingLastChanged(meta) {
+    return !('lastChanged' in meta) || !meta.lastChanged;
+}
+
+function ensureSerializeData(data, provider) {
+    const dataLocal = Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(data) ? data : null;
+    return provider.decode === "base64" /* BASE64 */ ? btoa(JSON.stringify(dataLocal)) : dataLocal;
+}
+
+class NotDeclareEngineException extends Error {
+    constructor(key) {
+        super(`${"Not found storage engine from `existingEngine` or not found instance after injecting by `useClass`." /* NGXS_PERSISTENCE_ENGINE */} \nMetadata { key: '${key}' }`);
+    }
+}
+
+class NotImplementedStorageException extends Error {
+    constructor() {
+        super(`StorageEngine instance should be implemented by DataStorageEngine interface`);
+    }
+}
+
+function exposeEngine(provider, injector) {
+    const engine = provider.existingEngine ||
+        injector.get(provider.useClass, null);
+    if (!engine) {
+        throw new NotDeclareEngineException(ensureKey(provider));
+    }
+    else if (!('getItem' in engine)) {
+        throw new NotImplementedStorageException();
+    }
+    return engine;
+}
+
+function isInitAction(action) {
+    const matches = Object(_ngxs_store__WEBPACK_IMPORTED_MODULE_1__["actionMatcher"])(action);
+    return matches(_ngxs_store__WEBPACK_IMPORTED_MODULE_1__["InitState"]) || matches(_ngxs_store__WEBPACK_IMPORTED_MODULE_1__["UpdateState"]);
+}
+
+function isStorageEvent(action) {
+    return action.type === _ngxs_labs_data_tokens__WEBPACK_IMPORTED_MODULE_4__["NGXS_DATA_STORAGE_EVENT_TYPE"];
+}
+
+function rehydrate(params) {
+    var _a;
+    let states = params.states;
+    const { provider, data, info } = params;
+    if (!provider.rehydrate) {
+        return { states, rehydrateIn: false };
+    }
+    const prevData = Object(_ngxs_store__WEBPACK_IMPORTED_MODULE_1__["getValue"])(states, provider.path);
+    if (info.versionMismatch) {
+        const stateInstance = provider.stateInstance;
+        const instance = stateInstance;
+        const migrateFn = provider.migrate || ((_a = instance.ngxsDataStorageMigrate) === null || _a === void 0 ? void 0 : _a.bind(provider.stateInstance));
+        const newMigrationData = migrateFn === null || migrateFn === void 0 ? void 0 : migrateFn(prevData, data);
+        states = Object(_ngxs_store__WEBPACK_IMPORTED_MODULE_1__["setValue"])(states, provider.path, newMigrationData);
+        return { states, rehydrateIn: true };
+    }
+    else if (JSON.stringify(prevData) !== JSON.stringify(data)) {
+        states = Object(_ngxs_store__WEBPACK_IMPORTED_MODULE_1__["setValue"])(states, provider.path, data);
+        return { states, rehydrateIn: true };
+    }
+    return { states, rehydrateIn: false };
+}
+
+function silentDeserializeWarning(key, value, error) {
+    console.warn(`${"Error occurred while deserializing value" /* NGXS_PERSISTENCE_DESERIALIZE */} from metadata { key: '${key}', value: '${value}' }. \nError deserialize: ${error}`);
+}
+
+function silentSerializeWarning(key, error) {
+    console.warn(`${"Error occurred while serializing value" /* NGXS_PERSISTENCE_SERIALIZE */} from metadata { key: '${key}' }. \nError serialize: ${error}`);
+}
+
+class NgxsDataStoragePlugin {
+    constructor(_platformId, injector) {
+        this._platformId = _platformId;
+        NgxsDataStoragePlugin.injector = injector;
+        this.listenWindowEvents();
+    }
+    get store() {
+        return NgxsDataStoragePlugin.injector.get(_ngxs_store__WEBPACK_IMPORTED_MODULE_1__["Store"], null);
+    }
+    get size() {
+        return this.providers.size;
+    }
+    get ttlListeners() {
+        return NgxsDataStoragePlugin.ttlListeners;
+    }
+    /**
+     * @description:
+     * The storage container that contains meta information about
+     */
+    get container() {
+        return NgxsDataStoragePlugin.injector.get(NGXS_DATA_STORAGE_CONTAINER_TOKEN);
+    }
+    /**
+     * @description:
+     * Meta information about all the added keys and their options
+     */
+    get providers() {
+        return this.container.providers;
+    }
+    /**
+     * @description:
+     * Keys needed for dynamic synchronization with StorageEvents from
+     * localStorage or sessionStorage
+     */
+    get keys() {
+        return this.container.keys;
+    }
+    get entries() {
+        return this.providers.entries();
+    }
+    get skipStorageInterceptions() {
+        return this.size === 0 || Object(_angular_common__WEBPACK_IMPORTED_MODULE_3__["isPlatformServer"])(this._platformId);
+    }
+    static checkIsStorageEvent(options, info, data) {
+        var _a;
+        const { action, provider, key, value } = options;
+        if (info.rehydrateIn && isStorageEvent(action)) {
+            const instance = provider.stateInstance;
+            if (instance === null || instance === void 0 ? void 0 : instance.ngxsDataAfterStorageEvent) {
+                (_a = instance === null || instance === void 0 ? void 0 : instance.ngxsDataAfterStorageEvent) === null || _a === void 0 ? void 0 : _a.call(instance, { key, value, data, provider });
+            }
+        }
+    }
+    static checkExpiredInit(params) {
+        const { info, rehydrateInfo, options, map } = params;
+        const { provider, engine } = options;
+        if (rehydrateInfo.rehydrateIn && info.expiry) {
+            createTtlInterval({ provider, expiry: info.expiry, map, engine });
+        }
+    }
+    handle(states, action, next) {
+        if (this.skipStorageInterceptions) {
+            return next(states, action);
+        }
+        const init = isInitAction(action);
+        states = this.pullStateFromStorage(states, { action, init });
+        return next(states, action).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["tap"])((nextState) => this.pushStateToStorage(states, nextState, { action, init })));
+    }
+    serialize(data, provider) {
+        const meta = {
+            version: provider.version,
+            lastChanged: new Date().toISOString(),
+            data: ensureSerializeData(data, provider)
+        };
+        if (existTtl(provider)) {
+            const engine = exposeEngine(provider, NgxsDataStoragePlugin.injector);
+            const expiry = new Date(Date.now() + parseInt(provider.ttl));
+            createTtlInterval({ provider, expiry, map: this.ttlListeners, engine });
+            meta.expiry = expiry.toISOString();
+        }
+        return JSON.stringify(meta);
+    }
+    deserialize(meta, value, provider) {
+        return deserializeByStorageMeta(meta, value, provider);
+    }
+    destroyOldTasks() {
+        var _a;
+        (_a = NgxsDataStoragePlugin.eventsSubscriptions) === null || _a === void 0 ? void 0 : _a.unsubscribe();
+        NgxsDataStoragePlugin.ttlListeners = new WeakMap();
+    }
+    pushStateToStorage(states, nextState, meta) {
+        for (const [provider] of this.entries) {
+            const prevData = Object(_ngxs_store__WEBPACK_IMPORTED_MODULE_1__["getValue"])(states, provider.path);
+            const newData = Object(_ngxs_store__WEBPACK_IMPORTED_MODULE_1__["getValue"])(nextState, provider.path);
+            const canBeInitFire = provider.fireInit && meta.init;
+            if (prevData !== newData || canBeInitFire) {
+                const engine = exposeEngine(provider, NgxsDataStoragePlugin.injector);
+                const key = ensureKey(provider);
+                try {
+                    const data = this.serialize(newData, provider);
+                    engine.setItem(key, data);
+                    this.keys.set(key);
+                }
+                catch (error) {
+                    silentSerializeWarning(key, error.message);
+                }
+            }
+        }
+    }
+    pullStateFromStorage(states, { action, init }) {
+        if (this.canBeSyncStoreWithStorage(action, init)) {
+            for (const [provider] of this.entries) {
+                states = this.deserializeByProvider(states, action, provider);
+            }
+        }
+        return states;
+    }
+    canBeSyncStoreWithStorage(action, init) {
+        return this.size > 0 && (init || action.type === _ngxs_labs_data_tokens__WEBPACK_IMPORTED_MODULE_4__["NGXS_DATA_STORAGE_EVENT_TYPE"]);
+    }
+    deserializeByProvider(states, action, provider) {
+        const key = ensureKey(provider);
+        const engine = exposeEngine(provider, NgxsDataStoragePlugin.injector);
+        const value = engine.getItem(key);
+        const existValueByKeyInStorage = Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(value);
+        if (existValueByKeyInStorage) {
+            states = this.deserializeHandler(states, { key, engine, provider, value, action });
+        }
+        return states;
+    }
+    deserializeHandler(states, options) {
+        const { key, provider, value } = options;
+        try {
+            const meta = parseStorageMeta(value);
+            const data = this.deserialize(meta, value, provider);
+            const info = canBePullFromStorage({ provider, meta, data });
+            if (info.canBeOverrideFromStorage) {
+                const rehydrateInfo = rehydrate({ states, provider, data, info });
+                this.keys.set(key);
+                states = rehydrateInfo.states;
+                NgxsDataStoragePlugin.checkIsStorageEvent(options, rehydrateInfo, data);
+                NgxsDataStoragePlugin.checkExpiredInit({ info, rehydrateInfo, options, map: this.ttlListeners });
+            }
+            else {
+                this.removeKeyWhenPullInvalid(info, options);
+            }
+        }
+        catch (error) {
+            silentDeserializeWarning(key, value, error.message);
+        }
+        return states;
+    }
+    removeKeyWhenPullInvalid(info, options) {
+        const { key, engine, provider } = options;
+        if (info.expired) {
+            firedStateWhenExpired(key, { provider, engine, map: this.ttlListeners, expiry: info.expiry });
+        }
+        engine.removeItem(key);
+        this.keys.delete(key);
+    }
+    listenWindowEvents() {
+        if (Object(_angular_common__WEBPACK_IMPORTED_MODULE_3__["isPlatformServer"])(this._platformId)) {
+            return;
+        }
+        this.destroyOldTasks();
+        NgxsDataStoragePlugin.eventsSubscriptions = Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["fromEvent"])(window, 'storage').subscribe((event) => {
+            const keyUsageInStore = !!event.key && this.keys.has(event.key);
+            if (keyUsageInStore) {
+                this.store.dispatch({ type: _ngxs_labs_data_tokens__WEBPACK_IMPORTED_MODULE_4__["NGXS_DATA_STORAGE_EVENT_TYPE"] });
+            }
+        });
+    }
+}
+NgxsDataStoragePlugin.injector = null;
+NgxsDataStoragePlugin.eventsSubscriptions = null;
+NgxsDataStoragePlugin.ttlListeners = new WeakMap();
+/** @nocollapse */ NgxsDataStoragePlugin.ɵfac = function NgxsDataStoragePlugin_Factory(t) { return new (t || NgxsDataStoragePlugin)(Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"])(_angular_core__WEBPACK_IMPORTED_MODULE_0__["PLATFORM_ID"]), Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"])(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injector"], 2)); };
+/** @nocollapse */ NgxsDataStoragePlugin.ɵprov = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"])({ token: NgxsDataStoragePlugin, factory: NgxsDataStoragePlugin.ɵfac });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"])(NgxsDataStoragePlugin, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"]
+    }], function () { return [{ type: undefined, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"],
+                args: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["PLATFORM_ID"]]
+            }] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injector"], decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Self"]
+            }] }]; }, null); })();
+
+const NGXS_DATA_STORAGE_EXTENSION = {
+    provide: _ngxs_store__WEBPACK_IMPORTED_MODULE_1__["NGXS_PLUGINS"],
+    useClass: NgxsDataStoragePlugin,
+    multi: true
+};
+
+const NGXS_DATA_STORAGE_PREFIX_TOKEN = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('NGXS_DATA_STORAGE_PREFIX_TOKEN');
+
+const DEFAULT_KEY_PREFIX = '@ngxs.store.';
+const NGXS_DATA_STORAGE_PREFIX = {
+    provide: NGXS_DATA_STORAGE_PREFIX_TOKEN,
+    useValue: DEFAULT_KEY_PREFIX
+};
+
+function registerStorageProviders(options) {
+    var _a;
+    try {
+        const container = (_a = NgxsDataStoragePlugin.injector) === null || _a === void 0 ? void 0 : _a.get(NGXS_DATA_STORAGE_CONTAINER_TOKEN);
+        options.forEach((option) => {
+            container === null || container === void 0 ? void 0 : container.providers.add(option);
+        });
+    }
+    catch (_b) {
+        throw new Error("You forgot provide NGXS_DATA_STORAGE_CONTAINER or NGXS_DATA_STORAGE_EXTENSION!!! Example: \n\n@NgModule({\n imports: [ \n   NgxsDataPluginModule.forRoot([NGXS_DATA_STORAGE_PLUGIN]) \n ]\n})\nexport class AppModule {} \n\n" /* NGXS_PERSISTENCE_CONTAINER */);
+    }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+const STORAGE_TTL_DELAY = 1000 * 60; // 1min
+
+// eslint-disable-next-line max-lines-per-function
+function createDefault(options) {
+    const { meta, decodeType, prefix, stateInstance } = options;
+    return [
+        {
+            get path() {
+                return meta.stateMeta && meta.stateMeta.path;
+            },
+            existingEngine: localStorage,
+            ttl: -1,
+            version: 1,
+            decode: decodeType,
+            prefixKey: prefix,
+            nullable: false,
+            fireInit: true,
+            rehydrate: true,
+            ttlDelay: STORAGE_TTL_DELAY,
+            ttlExpiredStrategy: 0 /* REMOVE_KEY_AFTER_EXPIRED */,
+            stateInstance,
+            skipMigrate: false
+        }
+    ];
+}
+
+function validatePathInProvider(meta, provider) {
+    if (!('path' in provider)) {
+        provider = Object.assign(Object.assign({}, provider), { get path() {
+                return meta.stateMeta && meta.stateMeta.path;
+            } });
+    }
+    return provider;
+}
+
+// eslint-disable-next-line complexity
+function mergeOptions({ option, decodeType, prefix, meta, stateInstance }) {
+    const provider = Object.assign(Object.assign({}, option), { ttl: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.ttl) ? option.ttl : -1, version: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.version) ? option.version : 1, decode: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.decode) ? option.decode : decodeType, prefixKey: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.prefixKey) ? option.prefixKey : prefix, nullable: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.nullable) ? option.nullable : false, fireInit: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.fireInit) ? option.fireInit : true, rehydrate: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.rehydrate) ? option.rehydrate : true, ttlDelay: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.ttlDelay) ? option.ttlDelay : STORAGE_TTL_DELAY, ttlExpiredStrategy: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.ttlExpiredStrategy)
+            ? option.ttlExpiredStrategy
+            : 0 /* REMOVE_KEY_AFTER_EXPIRED */, stateInstance: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.stateInstance) ? option.stateInstance : stateInstance, skipMigrate: Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_2__["isNotNil"])(option.skipMigrate) ? option.skipMigrate : false });
+    return validatePathInProvider(meta, provider);
+}
+
+// eslint-disable-next-line max-lines-per-function
+function ensureProviders(meta, stateInstance, options) {
+    var _a, _b, _c, _d;
+    let providers;
+    const prefix = (_b = (_a = NgxsDataStoragePlugin.injector) === null || _a === void 0 ? void 0 : _a.get(NGXS_DATA_STORAGE_PREFIX_TOKEN, DEFAULT_KEY_PREFIX)) !== null && _b !== void 0 ? _b : DEFAULT_KEY_PREFIX;
+    const decodeType = (_d = (_c = NgxsDataStoragePlugin.injector) === null || _c === void 0 ? void 0 : _c.get(NGXS_DATA_STORAGE_DECODE_TYPE_TOKEN, "none" /* NONE */)) !== null && _d !== void 0 ? _d : "none" /* NONE */;
+    if (options) {
+        const prepared = Array.isArray(options) ? options : [options];
+        providers = prepared.map((option) => mergeOptions({ option, prefix, decodeType, meta, stateInstance }));
+    }
+    else {
+        providers = createDefault({ meta, prefix, decodeType, stateInstance });
+    }
+    return providers;
+}
+
+const NGXS_DATA_STORAGE_PLUGIN = [
+    NGXS_DATA_STORAGE_EXTENSION,
+    NGXS_DATA_STORAGE_CONTAINER,
+    NGXS_DATA_STORAGE_PREFIX,
+    NGXS_DATA_STORAGE_DECODE_TYPE
+];
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+//# sourceMappingURL=ngxs-labs-data-storage.js.map
+
+
+/***/ }),
+
 /***/ "xbPD":
 /*!*************************************************************************!*\
   !*** ./node_modules/rxjs/_esm2015/internal/operators/defaultIfEmpty.js ***!
@@ -89193,6 +91240,615 @@ class SkipSubscriber extends _Subscriber__WEBPACK_IMPORTED_MODULE_0__["Subscribe
     }
 }
 //# sourceMappingURL=skip.js.map
+
+/***/ }),
+
+/***/ "zmn3":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@ngxs-labs/data/fesm2015/ngxs-labs-data-repositories.js ***!
+  \******************************************************************************/
+/*! exports provided: NgxsAbstractDataRepository, NgxsDataEntityCollectionsRepository, NgxsDataRepository, NgxsImmutableDataRepository */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgxsAbstractDataRepository", function() { return AbstractRepository; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgxsDataEntityCollectionsRepository", function() { return AbstractNgxsDataEntityCollectionsRepository; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgxsDataRepository", function() { return AbstractNgxsDataRepository; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgxsImmutableDataRepository", function() { return AbstractNgxsImmutableDataRepository; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "mrSG");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ngxs-labs/data/decorators */ "4jw6");
+/* harmony import */ var _ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @ngxs-labs/data/internals */ "ma1T");
+/* harmony import */ var _angular_ru_common_object__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular-ru/common/object */ "UA48");
+/* harmony import */ var _angular_ru_common_typings__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular-ru/common/typings */ "q+1a");
+/* harmony import */ var _angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular-ru/common/utils */ "WbJO");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs */ "qCKp");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs/operators */ "kU1M");
+
+
+
+
+
+
+
+
+
+
+class AbstractRepository {
+    constructor() {
+        this.isInitialised = false;
+        this.isBootstrapped = false;
+        this._dirty = true;
+    }
+    get dirty() {
+        return this._dirty;
+    }
+    set dirty(value) {
+        this._dirty = value;
+    }
+    ngxsOnChanges(_) {
+        var _a, _b;
+        if (this.dirty && this.isBootstrapped) {
+            this.dirty = false;
+            (_b = (_a = this).ngxsDataDoCheck) === null || _b === void 0 ? void 0 : _b.call(_a);
+        }
+    }
+    ngxsOnInit() {
+        this.isInitialised = true;
+    }
+    ngxsAfterBootstrap() {
+        var _a, _b;
+        this.isBootstrapped = true;
+        if (this.dirty) {
+            this.dirty = false;
+            (_b = (_a = this).ngxsDataDoCheck) === null || _b === void 0 ? void 0 : _b.call(_a);
+        }
+    }
+    markAsDirtyAfterReset() {
+        var _a, _b;
+        this.dirty = true;
+        (_b = (_a = this).ngxsDataAfterReset) === null || _b === void 0 ? void 0 : _b.call(_a);
+    }
+}
+/** @nocollapse */ AbstractRepository.ɵfac = function AbstractRepository_Factory(t) { return new (t || AbstractRepository)(); };
+/** @nocollapse */ AbstractRepository.ɵprov = Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"])({ token: AbstractRepository, factory: AbstractRepository.ɵfac });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"])(AbstractRepository, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"]
+    }], null, null); })();
+
+class AbstractNgxsDataRepository extends AbstractRepository {
+    get snapshot() {
+        return Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_3__["ensureSnapshot"])(this.getState());
+    }
+    get ctx() {
+        return Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_3__["ensureDataStateContext"])(this.context);
+    }
+    getState() {
+        return this.ctx.getState();
+    }
+    dispatch(actions) {
+        return this.ctx.dispatch(actions);
+    }
+    patchState(val) {
+        this.ctx.patchState(val);
+    }
+    setState(stateValue) {
+        this.ctx.setState(stateValue);
+    }
+    reset() {
+        this.ctx.setState(this.initialState);
+        this.markAsDirtyAfterReset();
+    }
+}
+/** @nocollapse */ AbstractNgxsDataRepository.ɵfac = function AbstractNgxsDataRepository_Factory(t) { return ɵAbstractNgxsDataRepository_BaseFactory(t || AbstractNgxsDataRepository); };
+/** @nocollapse */ AbstractNgxsDataRepository.ɵprov = Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"])({ token: AbstractNgxsDataRepository, factory: AbstractNgxsDataRepository.ɵfac });
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Computed"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [])
+], AbstractNgxsDataRepository.prototype, "snapshot", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('patchValue')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataRepository.prototype, "patchState", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('stateValue')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataRepository.prototype, "setState", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", []),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataRepository.prototype, "reset", null);
+const ɵAbstractNgxsDataRepository_BaseFactory = /*@__PURE__*/ Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵgetInheritedFactory"])(AbstractNgxsDataRepository);
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"])(AbstractNgxsDataRepository, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"]
+    }], null, { snapshot: [], patchState: [], setState: [], reset: [] }); })();
+
+class AbstractNgxsImmutableDataRepository extends AbstractRepository {
+    get snapshot() {
+        return Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_3__["ensureSnapshot"])(this.getState());
+    }
+    get ctx() {
+        return Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_3__["ensureDataStateContext"])(this.context);
+    }
+    getState() {
+        return this.ctx.getState();
+    }
+    dispatch(actions) {
+        return this.ctx.dispatch(actions);
+    }
+    patchState(val) {
+        this.ctx.patchState(val);
+    }
+    setState(stateValue) {
+        this.ctx.setState(stateValue);
+    }
+    reset() {
+        this.ctx.setState(this.initialState);
+        this.markAsDirtyAfterReset();
+    }
+}
+/** @nocollapse */ AbstractNgxsImmutableDataRepository.ɵfac = function AbstractNgxsImmutableDataRepository_Factory(t) { return ɵAbstractNgxsImmutableDataRepository_BaseFactory(t || AbstractNgxsImmutableDataRepository); };
+/** @nocollapse */ AbstractNgxsImmutableDataRepository.ɵprov = Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"])({ token: AbstractNgxsImmutableDataRepository, factory: AbstractNgxsImmutableDataRepository.ɵfac });
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Computed"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [])
+], AbstractNgxsImmutableDataRepository.prototype, "snapshot", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('patchValue')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsImmutableDataRepository.prototype, "patchState", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('stateValue')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsImmutableDataRepository.prototype, "setState", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", []),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsImmutableDataRepository.prototype, "reset", null);
+const ɵAbstractNgxsImmutableDataRepository_BaseFactory = /*@__PURE__*/ Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵgetInheritedFactory"])(AbstractNgxsImmutableDataRepository);
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"])(AbstractNgxsImmutableDataRepository, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"]
+    }], null, { snapshot: [], patchState: [], setState: [], reset: [] }); })();
+
+class AbstractNgxsDataEntityCollectionsRepository extends AbstractRepository {
+    constructor() {
+        super(...arguments);
+        this.primaryKey = _angular_ru_common_typings__WEBPACK_IMPORTED_MODULE_5__["PrimaryKey"].ID;
+        this.comparator = null;
+    }
+    get snapshot() {
+        return Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_3__["ensureSnapshot"])(this.getState());
+    }
+    get ids() {
+        return this.snapshot.ids;
+    }
+    get entities() {
+        return this.snapshot.entities;
+    }
+    get entitiesArray() {
+        const snapshot = this.snapshot;
+        return snapshot.ids.map((id) => snapshot.entities[id]);
+    }
+    get ids$() {
+        return this.state$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_8__["map"])((value) => value.ids));
+    }
+    get entities$() {
+        return this.state$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_8__["map"])((value) => value.entities));
+    }
+    get entitiesArray$() {
+        return this.state$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_8__["map"])((value) => value.ids.map((id) => value.entities[id])));
+    }
+    get ctx() {
+        return Object(_ngxs_labs_data_internals__WEBPACK_IMPORTED_MODULE_3__["ensureDataStateContext"])(this.context);
+    }
+    setComparator(comparator) {
+        this.comparator = comparator;
+        return this;
+    }
+    dispatch(actions) {
+        return this.ctx.dispatch(actions);
+    }
+    getState() {
+        return this.ctx.getState();
+    }
+    selectId(entity) {
+        var _a;
+        return (_a = entity) === null || _a === void 0 ? void 0 : _a[this.primaryKey];
+    }
+    selectOne(id) {
+        var _a;
+        return (_a = this.snapshot.entities[id]) !== null && _a !== void 0 ? _a : null;
+    }
+    selectAll() {
+        const state = this.getState();
+        return state.ids.map((id) => state.entities[id]);
+    }
+    reset() {
+        this.setEntitiesState(this.initialState);
+        this.markAsDirtyAfterReset();
+    }
+    addOne(entity) {
+        this.addEntityOne(entity);
+    }
+    addMany(entities) {
+        this.addEntitiesMany(entities);
+    }
+    setOne(entity) {
+        this.setEntityOne(entity);
+    }
+    setMany(entities) {
+        this.setEntitiesMany(entities);
+    }
+    setAll(entities) {
+        this.setEntitiesAll(entities);
+    }
+    updateOne(update) {
+        this.updateEntitiesMany([update]);
+    }
+    updateMany(updates) {
+        this.updateEntitiesMany(updates);
+    }
+    upsertOne(entity) {
+        this.upsertEntitiesMany([entity]);
+    }
+    upsertMany(entities) {
+        this.upsertEntitiesMany(entities);
+    }
+    removeOne(id) {
+        this.removeEntitiesMany([id]);
+    }
+    removeMany(ids) {
+        this.removeEntitiesMany(ids);
+    }
+    removeByEntity(entity) {
+        const id = this.selectId(entity);
+        this.removeEntitiesMany([id]);
+    }
+    removeByEntities(entities) {
+        const ids = [];
+        for (const entity of entities) {
+            const id = this.selectId(entity);
+            ids.push(id);
+        }
+        this.removeEntitiesMany(ids);
+    }
+    removeAll() {
+        this.setEntitiesState(this.initialState);
+    }
+    sort(comparator) {
+        this.comparator = comparator !== null && comparator !== void 0 ? comparator : this.comparator;
+        if (Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_6__["isNil"])(this.comparator)) {
+            console.warn("You must set the compare function before sorting." /* NGXS_COMPARE */);
+            return;
+        }
+        this.setEntitiesState(this.getState());
+    }
+    addEntityOne(entity) {
+        const state = this.getState();
+        const id = this.selectIdValue(entity);
+        if (id in state.entities) {
+            return;
+        }
+        this.setEntitiesState(Object.assign(Object.assign({}, state), { ids: [...state.ids, id], entities: Object.assign(Object.assign({}, state.entities), { [id]: entity }) }));
+    }
+    addEntitiesMany(entities) {
+        const state = this.getState();
+        const dictionary = {};
+        const ids = [];
+        for (const entity of entities) {
+            const id = this.selectIdValue(entity);
+            if (id in state.entities || id in dictionary) {
+                continue;
+            }
+            ids.push(id);
+            dictionary[id] = entity;
+        }
+        if (ids.length) {
+            this.setEntitiesState(Object.assign(Object.assign({}, state), { ids: [...state.ids, ...ids], entities: Object.assign(Object.assign({}, state.entities), dictionary) }));
+        }
+    }
+    setEntitiesAll(entities) {
+        const state = this.getState();
+        const dictionary = {};
+        const ids = [];
+        for (const entity of entities) {
+            const id = this.selectIdValue(entity);
+            if (id in dictionary) {
+                continue;
+            }
+            ids.push(id);
+            dictionary[id] = entity;
+        }
+        this.setEntitiesState(Object.assign(Object.assign({}, state), { ids, entities: dictionary }));
+    }
+    setEntityOne(entity) {
+        const state = this.getState();
+        const id = this.selectIdValue(entity);
+        if (id in state.entities) {
+            this.setEntitiesState(Object.assign(Object.assign({}, state), { entities: Object.assign(Object.assign({}, state.entities), { [id]: entity }) }));
+        }
+        else {
+            this.setEntitiesState(Object.assign(Object.assign({}, state), { ids: [...state.ids, id], entities: Object.assign(Object.assign({}, state.entities), { [id]: entity }) }));
+        }
+    }
+    setEntitiesMany(entities) {
+        for (const entity of entities) {
+            this.setEntityOne(entity);
+        }
+    }
+    updateEntitiesMany(updates) {
+        const state = this.getState();
+        updates = updates.filter((update) => update.id in state.entities);
+        if (updates.length === 0) {
+            return;
+        }
+        const keys = this.generateKeyMap(state);
+        const entities = Object.assign({}, state.entities);
+        for (const update of updates) {
+            const updated = this.updateOrigin(entities, update);
+            const newId = this.selectIdValue(updated);
+            if (newId !== update.id) {
+                delete keys[update.id];
+                delete entities[update.id];
+            }
+            keys[update.id] = newId;
+            entities[newId] = updated;
+        }
+        this.setEntitiesState(Object.assign(Object.assign({}, state), { ids: state.ids.map((id) => { var _a; return (_a = keys[id]) !== null && _a !== void 0 ? _a : id; }), entities }));
+    }
+    upsertEntitiesMany(entities) {
+        const state = this.getState();
+        const updates = [];
+        const added = [];
+        for (const entity of entities) {
+            const id = this.selectIdValue(entity);
+            if (id in state.entities) {
+                updates.push({ id, changes: entity });
+            }
+            else {
+                added.push(entity);
+            }
+        }
+        this.updateMany(updates);
+        this.addMany(added);
+    }
+    removeEntitiesMany(ids) {
+        const state = this.getState();
+        const keys = this.generateKeyMap(state);
+        const entities = Object.assign({}, state.entities);
+        for (const id of ids) {
+            if (id in entities) {
+                delete keys[id];
+                delete entities[id];
+            }
+        }
+        this.setEntitiesState(Object.assign(Object.assign({}, state), { ids: state.ids.filter((id) => id in keys), entities }));
+    }
+    setEntitiesState(state) {
+        const ids = this.sortKeysByComparator(state.ids, state.entities);
+        this.ctx.setState(Object.assign(Object.assign({}, state), { ids, entities: state.entities }));
+    }
+    sortKeysByComparator(originalIds, entities) {
+        if (Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_6__["isNil"])(this.comparator)) {
+            return originalIds;
+        }
+        const ids = originalIds.slice();
+        const comparator = this.comparator;
+        if (typeof comparator === 'function') {
+            return ids.sort((a, b) => comparator(entities[a], entities[b]));
+        }
+        return this.sortByComparatorOptions(ids, comparator, entities);
+    }
+    sortByComparatorOptions(ids, comparator, entities) {
+        switch (comparator === null || comparator === void 0 ? void 0 : comparator.sortByOrder) {
+            case _angular_ru_common_typings__WEBPACK_IMPORTED_MODULE_5__["SortOrderType"].ASC:
+                return ids.sort((a, b) => Object(_angular_ru_common_object__WEBPACK_IMPORTED_MODULE_4__["sortByAsc"])(comparator === null || comparator === void 0 ? void 0 : comparator.sortBy, entities[a], entities[b]));
+            case _angular_ru_common_typings__WEBPACK_IMPORTED_MODULE_5__["SortOrderType"].DESC:
+                return ids.sort((a, b) => Object(_angular_ru_common_object__WEBPACK_IMPORTED_MODULE_4__["sortByDesc"])(comparator === null || comparator === void 0 ? void 0 : comparator.sortBy, entities[a], entities[b]));
+            default:
+                if (Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["isDevMode"])()) {
+                    console.warn(`Invalid --> { sortByOrder: "${comparator === null || comparator === void 0 ? void 0 : comparator.sortByOrder}" } not supported!`);
+                }
+                return ids;
+        }
+    }
+    generateKeyMap(state) {
+        return state.ids.reduce((keyDictionary, id) => {
+            keyDictionary[id] = id;
+            return keyDictionary;
+        }, {});
+    }
+    updateOrigin(entities, update) {
+        const original = entities[update.id];
+        return Object.assign(Object.assign({}, original), update.changes);
+    }
+    selectIdValue(entity) {
+        const id = this.selectId(entity);
+        const invalidId = Object(_angular_ru_common_utils__WEBPACK_IMPORTED_MODULE_6__["isNil"])(id) && Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["isDevMode"])();
+        if (invalidId) {
+            console.warn(`The entity passed to the 'selectId' implementation returned ${id}.`, `You should probably provide your own 'selectId' implementation.`, 'The entity that was passed:', entity, 'The current `selectId` implementation: (entity: V): K => entity.id');
+        }
+        return id;
+    }
+}
+/** @nocollapse */ AbstractNgxsDataEntityCollectionsRepository.ɵfac = function AbstractNgxsDataEntityCollectionsRepository_Factory(t) { return ɵAbstractNgxsDataEntityCollectionsRepository_BaseFactory(t || AbstractNgxsDataEntityCollectionsRepository); };
+/** @nocollapse */ AbstractNgxsDataEntityCollectionsRepository.ɵprov = Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineInjectable"])({ token: AbstractNgxsDataEntityCollectionsRepository, factory: AbstractNgxsDataEntityCollectionsRepository.ɵfac });
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Computed"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [])
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "snapshot", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Computed"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Array),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [])
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "ids", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Computed"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Object),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [])
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "entities", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Computed"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Array),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [])
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "entitiesArray", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Computed"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", rxjs__WEBPACK_IMPORTED_MODULE_7__["Observable"]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [])
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "ids$", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Computed"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", rxjs__WEBPACK_IMPORTED_MODULE_7__["Observable"]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [])
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "entities$", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Computed"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", rxjs__WEBPACK_IMPORTED_MODULE_7__["Observable"]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [])
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "entitiesArray$", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", []),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "reset", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('entity')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "addOne", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('entities')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Array]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "addMany", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('entity')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "setOne", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('entities')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Array]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "setMany", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('entities')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Array]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "setAll", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('update')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "updateOne", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('updates')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Array]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "updateMany", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('entity')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "upsertOne", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('entities')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Array]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "upsertMany", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('id')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "removeOne", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('ids')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Array]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "removeMany", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('entity')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "removeByEntity", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('entities')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Array]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "removeByEntities", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", []),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "removeAll", null);
+Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["DataAction"])(),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(0, Object(_ngxs_labs_data_decorators__WEBPACK_IMPORTED_MODULE_2__["Payload"])('comparator')),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:type", Function),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Object]),
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", void 0)
+], AbstractNgxsDataEntityCollectionsRepository.prototype, "sort", null);
+const ɵAbstractNgxsDataEntityCollectionsRepository_BaseFactory = /*@__PURE__*/ Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵgetInheritedFactory"])(AbstractNgxsDataEntityCollectionsRepository);
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵsetClassMetadata"])(AbstractNgxsDataEntityCollectionsRepository, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"]
+    }], null, { snapshot: [], ids: [], entities: [], entitiesArray: [], ids$: [], entities$: [], entitiesArray$: [], reset: [], addOne: [], addMany: [], setOne: [], setMany: [], setAll: [], updateOne: [], updateMany: [], upsertOne: [], upsertMany: [], removeOne: [], removeMany: [], removeByEntity: [], removeByEntities: [], removeAll: [], sort: [] }); })();
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+//# sourceMappingURL=ngxs-labs-data-repositories.js.map
+
 
 /***/ }),
 
