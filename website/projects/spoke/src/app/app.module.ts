@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
+import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule, NGX_GTAG_FN } from 'ngx-google-analytics';
 
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CoreModule } from './core/core.module';
 import { TrackingPopupModule } from './core/components/tracking-popup/tracking-popup.module';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CoreModule } from './core/core.module';
+import { gtagFunction } from './core/gtag-function.token';
+
 
 @NgModule({
   imports: [
@@ -25,7 +27,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   declarations: [
     AppComponent
   ],
-  providers: [],
+  providers: [{provide: NGX_GTAG_FN, useFactory: () => gtagFunction()}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

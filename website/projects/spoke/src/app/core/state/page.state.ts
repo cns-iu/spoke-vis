@@ -3,17 +3,19 @@ import { DataAction, StateRepository } from '@ngxs-labs/data/decorators';
 import { NgxsImmutableDataRepository } from '@ngxs-labs/data/repositories';
 import { State } from '@ngxs/store';
 
-interface PageStateModel {
-  allowTelemetry: boolean | undefined;
+
+export interface PageStateModel {
+  allowTelemetry?: boolean;
 }
 
 const LOCAL_STORAGE_ALLOW_TELEMETRY_KEY = 'ALLOW_TELEMETRY';
+const INITIAL_TELEMETRY_SETTING  = localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY) === null ? undefined : localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY)?.toLowerCase() === 'true';
 
 @StateRepository()
 @State<PageStateModel>({
   name: 'page',
   defaults: {
-    allowTelemetry: localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY) === null ? undefined : localStorage.getItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY)?.toLowerCase() === 'true'
+    allowTelemetry: INITIAL_TELEMETRY_SETTING
   }
 })
 @Injectable()
@@ -23,9 +25,5 @@ export class PageState extends NgxsImmutableDataRepository<PageStateModel> {
   setAllowTelemetry(allowTelemetry: boolean): void {
     localStorage.setItem(LOCAL_STORAGE_ALLOW_TELEMETRY_KEY, allowTelemetry.toString());
     this.ctx.patchState({ allowTelemetry });
-  }
-
-  ngxsOnInit(): void {
-    super.ngxsOnInit();
   }
 }

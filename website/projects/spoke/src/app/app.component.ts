@@ -1,10 +1,11 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { GoogleAnalyticsService } from './core/state/google-analytics.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { fromEvent } from 'rxjs';
 import { tap, throttleTime } from 'rxjs/operators';
-import { PageState } from './core/state/page.state';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TrackingPopupComponent } from './core/components/tracking-popup/tracking-popup.component';
+import { PageState } from './core/state/page.state';
+
 
 @Component({
   selector: 'spoke-root',
