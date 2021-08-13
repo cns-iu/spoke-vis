@@ -19,7 +19,7 @@ describe('TrackingPopupComponent', () => {
       .mock(PageState, {
         ...mockPageState,
         snapshot: {allowTelemetry: undefined}
-      })
+      });
   });
 
   it('creates', async () => {
