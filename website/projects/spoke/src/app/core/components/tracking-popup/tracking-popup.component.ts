@@ -5,7 +5,7 @@ import { PageState } from '../../state/page.state';
 
 
 @Component({
-  selector: 'ccf-tracking-popup',
+  selector: 'spoke-tracking-popup',
   templateUrl: './tracking-popup.component.html',
   styleUrls: ['./tracking-popup.component.scss']
 })
