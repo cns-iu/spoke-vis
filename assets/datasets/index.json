@@ -11,7 +11,7 @@
     "name": "Alzheimer's disease",
     "description": "",
     "dir": "assets/datasets/alzheimers-all-food-tree",
-    "selectable": true
+    "selectable": false
   },
   {
     "id": "alzheimers",
