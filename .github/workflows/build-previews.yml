@@ -32,7 +32,9 @@ jobs:
       - name: Build Spoke
         run: npm run build -- --output-hashing=none --base-href=/
 
-      - run: node -v > .nvmrc
+      - name: Setup Netlify files
+        run: |
+          echo '/* /index.html 200' > website/dist/spoke/_redirects
       - uses: jsmrcaga/action-netlify-deploy@v1.7.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
