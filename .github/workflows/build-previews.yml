@@ -32,9 +32,11 @@ jobs:
       - name: Build Spoke
         run: npm run build -- --output-hashing=none --base-href=/
 
+      - run: node -v > .nvmrc
       - uses: jsmrcaga/action-netlify-deploy@master
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          build_command: false
+          build_command: echo
+          install_command: echo
           build_directory: website/dist/spoke
