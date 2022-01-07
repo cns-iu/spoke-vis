@@ -244,6 +244,11 @@ export function createSpec(options: SpecOptions): VisualizationSpec {
               field: 'tooltip',
               title: 'Link Types (#Links)',
               type: 'ordinal'
+            },
+            {
+              field: 'weight',
+              title: '#Nodes',
+              type: 'quantitative'
             }
           ],
           size: {
