@@ -13219,6 +13219,11 @@ function createSpec(options) {
                             field: 'tooltip',
                             title: 'Link Types (#Links)',
                             type: 'ordinal'
+                        },
+                        {
+                            field: 'weight',
+                            title: '#Nodes',
+                            type: 'quantitative'
                         }
                     ],
                     size: {
